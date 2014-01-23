@@ -180,24 +180,24 @@ int main (int argc, char *argv[])
  
     if (hasLabels)
       {
-      ss << labels[i] << "(" << i << ")" << ".vtk";
+      ss << labels[i] << ":" << i << ".stl";
       }
     else
       {
-      ss << filePrefix << i << ".vtk";
+      ss << filePrefix << i << ".stl";
       }
-    cout << argv[0] << " writing " << ss.str() << endl;
+    std::cout << argv[0] << " writing " << ss.str() << std::endl;
     writer->SetFileTypeToBinary();
     writer->SetFileName(ss.str().c_str());
     writer->Write();
     confilter->Update();
     if (confilter->GetNumberOfExtractedRegions() > 1)
       {
-      std:: cout << "WARNING: "
-                 << ss
+      std::cout << "WARNING: "
+                 << ss.str()
                  << " has "
                  << confilter->GetNumberOfExtractedRegions()
-                 << " disconnected labels" <<std::endl;
+                 << " disconnected labels" << std::endl;
       }
     }
   return EXIT_SUCCESS;
