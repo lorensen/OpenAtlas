@@ -179,11 +179,11 @@ int main( int argc, char *argv[] )
         // from the center pixel, add the neighbor label to the list
         // of adjacent labels for the center pixel and vice versa.
         std::vector<unsigned int> pIndices;
-        pIndices.push_back(1);
-        pIndices.push_back(3);
+//        pIndices.push_back(1);
+//        pIndices.push_back(3);
         pIndices.push_back(4);
-        pIndices.push_back(5);
-        pIndices.push_back(7);
+//        pIndices.push_back(5);
+//        pIndices.push_back(7);
         for (unsigned int i = 0; i < pIndices.size(); ++i)
           {
           NeighborhoodIteratorType::PixelType neighPixel =
