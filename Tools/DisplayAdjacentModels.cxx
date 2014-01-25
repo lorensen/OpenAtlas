@@ -1,5 +1,7 @@
 #include <OpenAtlasUtilities.h>
 
+#include <vtkWindowToImageFilter.h>
+#include <vtkPNGWriter.h>
 #include <vtkActor.h>
 #include <vtkActor2D.h>
 #include <vtkBalloonRepresentation.h>
@@ -25,7 +27,7 @@ int main (int argc, char *argv[])
   if (argc < 4)
     {
     std::cout << "Usage: " << argv[0]
-              << " label anatomyFile adjacencyFile"
+              << " label anatomyFile adjacencyFile [snapshot dir]"
               << std::endl;
     return EXIT_FAILURE;
     }
@@ -206,8 +208,26 @@ int main (int argc, char *argv[])
   renderWindow->Render();
 
   // Begin mouse interaction
-  renderWindowInteractor->Initialize();
-  renderWindowInteractor->Start();
-
+  if (argc < 5)
+    {
+    renderWindowInteractor->Initialize();
+    renderWindowInteractor->Start();
+    }
+  else
+    {
+    // Screenshot  
+    vtkSmartPointer<vtkWindowToImageFilter> windowToImageFilter = 
+      vtkSmartPointer<vtkWindowToImageFilter>::New();
+    windowToImageFilter->SetInput(renderWindow);
+    windowToImageFilter->Update();
+  
+    std::ostringstream snapshotFileName;
+    snapshotFileName << argv[4] << "/" << labels[label] << ".png" << std::ends;
+    vtkSmartPointer<vtkPNGWriter> writer = 
+      vtkSmartPointer<vtkPNGWriter>::New();
+    writer->SetFileName(snapshotFileName.str().c_str());
+    writer->SetInputConnection(windowToImageFilter->GetOutputPort());
+    writer->Write();
+    }    
   return EXIT_SUCCESS;
 }
