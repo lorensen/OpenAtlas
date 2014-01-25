@@ -1,23 +1,22 @@
-#include <itkMacro.h>
 #include <OpenAtlasUtilities.h>
 
-#include <vtkSmartPointer.h>
-#include <vtkCamera.h>
-#include <vtkProperty.h>
-#include <vtkOrientationMarkerWidget.h>
-#include <vtkPolyDataMapper.h>
-#include <vtkSTLReader.h>
-#include <vtkPolyDataReader.h>
 #include <vtkActor.h>
 #include <vtkActor2D.h>
-#include <vtkRenderWindow.h>
-#include <vtkRenderer.h>
-#include <vtkRenderWindowInteractor.h>
 #include <vtkBalloonRepresentation.h>
 #include <vtkBalloonWidget.h>
+#include <vtkCamera.h>
 #include <vtkOrientationMarkerWidget.h>
-#include <vtkTextProperty.h>
+#include <vtkOrientationMarkerWidget.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkPolyDataReader.h>
+#include <vtkProperty.h>
+#include <vtkRenderWindow.h>
+#include <vtkRenderWindowInteractor.h>
+#include <vtkRenderer.h>
+#include <vtkSTLReader.h>
+#include <vtkSmartPointer.h>
 #include <vtkTextMapper.h>
+#include <vtkTextProperty.h>
 
 #include <sstream>
 
@@ -78,13 +77,17 @@ int main (int argc, char *argv[])
     vtkSmartPointer<vtkActor>::New();
   iconActor->SetMapper(iconMapper);
 
+  std::cout << labels[label] << " is connected to" << std::endl;
   neighbors[label].insert(label);
   for (std::set<unsigned int>::iterator sit = neighbors[ label ].begin();
        sit != neighbors[ label ].end(); ++sit)
     {
+    if (labels[*sit] != labels[label])
+      {
+      std::cout << "\t" << labels[*sit] << std::endl;
+      }
     if ((*sit == 2 || *sit == 41))
       {
-      std::cout << "Skipping: " << *sit << std::endl;
       continue;
       }
     vtkSmartPointer<vtkSTLReader> reader = 
@@ -104,6 +107,9 @@ int main (int argc, char *argv[])
     if (*sit == label)
       {
       actor->GetProperty()->EdgeVisibilityOn();
+      actor->GetProperty()->SetEdgeColor(colors[*sit][0] * .4,
+                                         colors[*sit][1] * .4,
+                                         colors[*sit][2] * .4);
       iconMapper->SetInputConnection(reader->GetOutputPort());
       iconActor->GetProperty()->SetColor(colors[*sit][0],
                                          colors[*sit][1],
@@ -120,7 +126,6 @@ int main (int argc, char *argv[])
     {
     if (*sit == 2 || *sit == 41)
       {
-      std::cout << "Skipping: " << *sit << std::endl;
       continue;
       }
     vtkSmartPointer<vtkPolyDataReader> reader = 
@@ -137,8 +142,10 @@ int main (int argc, char *argv[])
     actor->GetProperty()->SetColor(colors[*sit][0],
                                    colors[*sit][1],
                                    colors[*sit][2]);
-    actor->GetProperty()->SetEdgeColor(.2, .2, .2);
-    actor->GetProperty()->EdgeVisibilityOn();
+    actor->GetProperty()->SetEdgeColor(colors[*sit][0] * .4,
+                                       colors[*sit][1] * .4,
+                                       colors[*sit][2] * .4);
+   actor->GetProperty()->EdgeVisibilityOn();
     rightRenderer->AddActor(actor);
     }
 
@@ -146,7 +153,7 @@ int main (int argc, char *argv[])
     vtkSmartPointer<vtkTextProperty>::New();
   textProperty->SetFontSize(16);
   textProperty->SetFontFamilyToCourier();
-  textProperty->SetJustificationToLeft();
+  textProperty->SetJustificationToCentered();
 
   vtkSmartPointer<vtkTextMapper> textMapper =
     vtkSmartPointer<vtkTextMapper>::New();
@@ -180,6 +187,7 @@ int main (int argc, char *argv[])
   rightRenderer->SetActiveCamera(camera);
 
   leftRenderer->ResetCamera();
+  leftRenderer->ResetCameraClippingRange();
   camera->Azimuth(30);
   camera->Elevation(30);
 
@@ -192,7 +200,8 @@ int main (int argc, char *argv[])
   vtkSmartPointer<vtkActor2D> textActor =
     vtkSmartPointer<vtkActor2D>::New();
   textActor->SetMapper(textMapper);
-  textActor->SetPosition(0, 16);
+  textActor->SetPosition(320, 16);
+
   leftRenderer->AddActor(textActor);
   renderWindow->Render();
 
