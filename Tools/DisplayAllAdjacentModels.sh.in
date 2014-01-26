@@ -1,6 +1,7 @@
 #!/bin/bash 
+Atlas=$1
 OpenAtlasHome=@OpenAtlas_SOURCE_DIR@/..
-pushd $OpenAtlasHome/Atlases/SPLAtlas/Models
+pushd $OpenAtlasHome/Atlases/$Atlas/Models
 
 all=`ls -1 VTK| sort | cut -d":" -f2 | cut -d"." -f1,1`
 echo $all
@@ -9,6 +10,6 @@ AppDir=""
 if [ `uname` == "Darwin" ]; then AppDir=DisplayAdjacentModels.app/Contents/MacOS/ ; fi
 
 for i in $all; do
-@OpenAtlas_BINARY_DIR@/$AppDir/DisplayAdjacentModels $i $OpenAtlasHome/Atlases/SPLAtlas/Atlas/hncma-atlas-lut.ctbl ./adjacencies.txt 
+@OpenAtlas_BINARY_DIR@/$AppDir/DisplayAdjacentModels $i $OpenAtlasHome/Atlases/$Atlas/Atlas/hncma-atlas-lut.ctbl ./adjacencies.txt 
 done
 popd

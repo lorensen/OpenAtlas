@@ -1,0 +1,12 @@
+#!/bin/bash 
+Prog=GenerateModelsFromLabels
+Atlas=$1
+OpenAtlasHome=@OpenAtlas_SOURCE_DIR@/..
+pushd $OpenAtlasHome/Atlases/$Atlas/Models/STL
+
+AppDir=""
+if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
+
+@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $OpenAtlasHome/Atlases/$Atlas/Atlas/hncma-atlas.nrrd 1 5000 $OpenAtlasHome/Atlases/$Atlas/Atlas/hncma-atlas-lut.ctbl
+
+popd

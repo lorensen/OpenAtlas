@@ -28,4 +28,7 @@ target_link_libraries(DisplayAdjacentModels
         OpenAtlasUtilities ${ITK_LIBRARIES} ${VTK_LIBRARIES})
 
 configure_file(${OpenAtlas_SOURCE_DIR}/DisplayAllAdjacentModels.sh.in ${OpenAtlas_BINARY_DIR}/DisplayAllAdjacentModels.sh)
+configure_file(${OpenAtlas_SOURCE_DIR}/GenerateCubesFromLabels.sh.in ${OpenAtlas_BINARY_DIR}/GenerateCubesFromLabels.sh)
+configure_file(${OpenAtlas_SOURCE_DIR}/GenerateModelsFromLabels.sh.in ${OpenAtlas_BINARY_DIR}/GenerateModelsFromLabels.sh)
+configure_file(${OpenAtlas_SOURCE_DIR}/DisplayAdjacentModels.sh.in ${OpenAtlas_BINARY_DIR}/DisplayAdjacentModels.sh)
 

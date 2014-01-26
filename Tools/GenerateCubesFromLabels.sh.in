@@ -1,0 +1,12 @@
+#!/bin/bash 
+Prog=GenerateCubesFromLabels
+Atlas=$1
+OpenAtlasHome=@OpenAtlas_SOURCE_DIR@/..
+pushd $OpenAtlasHome/Atlases/$Atlas/Models/VTK
+
+AppDir=""
+if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
+
+@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $OpenAtlasHome/Atlases/$Atlas/Atlas/hncma-atlas.nrrd 1 5000 $OpenAtlasHome/Atlases/$Atlas/Atlas/hncma-atlas-lut.ctbl
+
+popd

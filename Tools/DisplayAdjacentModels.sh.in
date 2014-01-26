@@ -1,0 +1,13 @@
+#!/bin/bash 
+Prog=DisplayAdjacentModels
+Atlas=$1
+Label=$2
+OpenAtlasHome=@OpenAtlas_SOURCE_DIR@/..
+pushd $OpenAtlasHome/Atlases/$Atlas/Models
+
+AppDir=""
+if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
+
+@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $Label $OpenAtlasHome/Atlases/$Atlas/Atlas/hncma-atlas-lut.ctbl ./adjacencies.txt 
+
+popd
