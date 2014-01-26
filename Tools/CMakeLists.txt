@@ -26,3 +26,6 @@ target_link_libraries(GenerateAdjacencies ${ITK_LIBRARIES} ${VTK_LIBRARIES})
 add_executable(DisplayAdjacentModels MACOSX_BUNDLE DisplayAdjacentModels)
 target_link_libraries(DisplayAdjacentModels
         OpenAtlasUtilities ${ITK_LIBRARIES} ${VTK_LIBRARIES})
+
+configure_file(${OpenAtlas_SOURCE_DIR}/DisplayAllAdjacentModels.sh.in ${OpenAtlas_BINARY_DIR}/DisplayAllAdjacentModels.sh)
+
