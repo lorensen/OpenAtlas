@@ -4,6 +4,8 @@ then
 echo "Usage: GenerateAdjacencies.sh AtlasName"
 echo "       Generates a file that lists adjacent labels for each label in the atlas"
 echo "       The generated file is Atlases/AtlasName/Models/adjacencies.txt"
+echo "       Available Atlases are;"
+echo "         `ls -1 @OpenAtlas_SOURCE_DIR@/../Atlases`"
 exit 1
 fi
 

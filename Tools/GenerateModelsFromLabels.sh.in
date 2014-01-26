@@ -3,6 +3,8 @@ if [[ $# < 1 || $1 == "--help" ]]
 then
 echo "Usage: GenerateModelsFromLabels.sh AtlasName"
 echo "       Generates STL models( .stl) for each label in the atlas"
+echo "       Available Atlases are;"
+echo "         `ls -1 @OpenAtlas_SOURCE_DIR@/../Atlases`"
 exit 1
 fi
 
