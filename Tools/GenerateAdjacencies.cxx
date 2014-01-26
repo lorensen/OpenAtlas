@@ -9,9 +9,9 @@ is an iterator and 0 is where there is not.
 
 For a given 3*3*3 neighborhood:
 Slice 0:
+0 0 0 
 0 1 0 
-1 1 1 
-0 1 0 
+0 0 0 
 
 Slice 1:
 0 1 0 
@@ -23,13 +23,13 @@ Slice 2:
 0 0 0 
 0 0 0 
 
-The value of the iterator with index (1,1,1) is compared to the other 7
+The value of the iterator with index (1,1,1) is compared to the other
 iterators.  If it is different from the value of a given iterator,
 the anatomy labels of those two voxels must be different.
 Therefore, for both of those anatomies, we insert the corresponding 
 adjacent label into its corresponding list.
 
-Inputs: Label image
+Inputs: Label volume
 Outputs: Adjacency file
 
 =========================================================================*/
@@ -142,7 +142,7 @@ int main( int argc, char *argv[] )
   // Loop through each label image, starting with the second one
   for (int slice = 1; slice < numberOfSlices; ++slice)
     {
-    std::cout << "Slice: " << slice << std::endl;
+    std::cout << "." << std::flush;
     
     // Read the next image
     try 
@@ -179,11 +179,7 @@ int main( int argc, char *argv[] )
         // from the center pixel, add the neighbor label to the list
         // of adjacent labels for the center pixel and vice versa.
         std::vector<unsigned int> pIndices;
-//        pIndices.push_back(1);
-//        pIndices.push_back(3);
         pIndices.push_back(4);
-//        pIndices.push_back(5);
-//        pIndices.push_back(7);
         for (unsigned int i = 0; i < pIndices.size(); ++i)
           {
           NeighborhoodIteratorType::PixelType neighPixel =
@@ -222,6 +218,7 @@ int main( int argc, char *argv[] )
     prevImage = currImage;
     }
   
+  std::cout << std::endl;
   // Write out the adjaceny mapping values
   for (unsigned int i = 1; i < 5000; ++i)
     {
@@ -229,7 +226,9 @@ int main( int argc, char *argv[] )
       {
       continue;
       }
-    std::cout << "Size for " << i << ": " << adjacencyIntArrayList[i].size() << std::endl;
+    std::cout << "Label " << i << " has "
+              << adjacencyIntArrayList[i].size() << " adjacent labels"
+              << std::endl;
     fout << i << " " << adjacencyIntArrayList[i].size();
     for (PixelTypeSetType::iterator sit = adjacencyIntArrayList[ i ].begin();
          sit != adjacencyIntArrayList[ i ].end(); sit++)
