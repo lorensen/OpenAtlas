@@ -93,17 +93,20 @@ int ReadAdjacenyFile(const char * filename, std::vector<std::set<unsigned int> >
   while (!file.eof())
     {
     std::getline(file, line, '\n');
-    std::istringstream isstream(line);
-    isstream >> label;
-    isstream >> count;
-    if (label >= adjacencies.size())
+    if (line.find("#") == std::string::npos)
       {
-      adjacencies.resize((label + 1) * 2);
-      }
-    for (unsigned int i = 0; i < count; ++i)
-      {
-      isstream >> neighbor;
-      adjacencies[label].insert(neighbor);
+      std::istringstream isstream(line);
+      isstream >> label;
+      isstream >> count;
+      if (label >= adjacencies.size())
+        {
+        adjacencies.resize((label + 1) * 2);
+        }
+      for (unsigned int i = 0; i < count; ++i)
+        {
+        isstream >> neighbor;
+        adjacencies[label].insert(neighbor);
+        }
       }
     }
   return 0;
