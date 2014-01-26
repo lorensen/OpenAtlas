@@ -7,6 +7,6 @@ pushd $OpenAtlasHome/Atlases/$Atlas/Models
 AppDir=""
 if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
 
-@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $OpenAtlasHome/Atlases/$Atlas/Atlas/hncma-atlas.nrrd adjencies.txt
+@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $OpenAtlasHome/Atlases/$Atlas/Atlas/hncma-atlas.nrrd adjacencies.txt
 
 popd
