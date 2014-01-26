@@ -1,4 +1,11 @@
 #!/bin/bash 
+if [[ $# < 1 || $1 == "--help" ]]
+then
+echo "Usage: GenerateCubesFromLabels.sh AtlasName"
+echo "       Generates cube models( .vtk) for each label in the atlas"
+exit 1
+fi
+
 Prog=GenerateCubesFromLabels
 Atlas=$1
 OpenAtlasHome=@OpenAtlas_SOURCE_DIR@/..
@@ -7,6 +14,8 @@ pushd $OpenAtlasHome/Atlases/$Atlas/Models/VTK
 AppDir=""
 if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
 
+echo "$Prog: Cube models will be written to $OpenAtlasHome/Atlases/$Atlas/Models/VTK"
 @OpenAtlas_BINARY_DIR@/$AppDir/$Prog $OpenAtlasHome/Atlases/$Atlas/Atlas/hncma-atlas.nrrd 1 5000 $OpenAtlasHome/Atlases/$Atlas/Atlas/hncma-atlas-lut.ctbl
+echo "$Prog: Cube models have been written to $OpenAtlasHome/Atlases/$Atlas/Models/VTK"
 
 popd

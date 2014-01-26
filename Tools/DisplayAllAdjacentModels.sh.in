@@ -1,4 +1,11 @@
 #!/bin/bash 
+if [[ $# < 1 || $1 == "--help" ]]
+then
+echo "Usage: DisplayAllAdjacentModels.sh AtlasName"
+echo "       Displays all models (.vtk and .stl) for each label in an atlas"
+exit 1
+fi
+
 Atlas=$1
 OpenAtlasHome=@OpenAtlas_SOURCE_DIR@/..
 pushd $OpenAtlasHome/Atlases/$Atlas/Models
@@ -8,6 +15,12 @@ echo $all
 
 AppDir=""
 if [ `uname` == "Darwin" ]; then AppDir=DisplayAdjacentModels.app/Contents/MacOS/ ; fi
+
+if [ ! -f ./adjacencies.txt ] ; then
+    echo "$Prog: $OpenAtlasHome/Atlases/$Atlas/Models/adjacencies.txt not found"
+    echo "$Prog: Please run @OpenAtlas_BINARY_DIR@/GenerateAdjacencies.sh"
+    exit 1
+fi
 
 for i in $all; do
 @OpenAtlas_BINARY_DIR@/$AppDir/DisplayAdjacentModels $i $OpenAtlasHome/Atlases/$Atlas/Atlas/hncma-atlas-lut.ctbl ./adjacencies.txt 

@@ -1,4 +1,12 @@
 #!/bin/bash 
+if [[ $# == 0 || $1 == "--help" ]]
+then
+echo "Usage: GenerateAdjacencies.sh AtlasName"
+echo "       Generates a file that lists adjacent labels for each label in the atlas"
+echo "       The generated file is Atlases/AtlasName/Models/adjacencies.txt"
+exit 1
+fi
+
 Prog=GenerateAdjacencies
 Atlas=$1
 OpenAtlasHome=@OpenAtlas_SOURCE_DIR@/..

@@ -1,4 +1,11 @@
 #!/bin/bash 
+if [[ $# < 1 || $1 == "--help" ]]
+then
+echo "Usage: GenerateModelsFromLabels.sh AtlasName"
+echo "       Generates STL models( .stl) for each label in the atlas"
+exit 1
+fi
+
 Prog=GenerateModelsFromLabels
 Atlas=$1
 OpenAtlasHome=@OpenAtlas_SOURCE_DIR@/..
@@ -7,6 +14,8 @@ pushd $OpenAtlasHome/Atlases/$Atlas/Models/STL
 AppDir=""
 if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
 
+echo "$Prog: STL models will be written to $OpenAtlasHome/Atlases/$Atlas/Models/STL"
 @OpenAtlas_BINARY_DIR@/$AppDir/$Prog $OpenAtlasHome/Atlases/$Atlas/Atlas/hncma-atlas.nrrd 1 5000 $OpenAtlasHome/Atlases/$Atlas/Atlas/hncma-atlas-lut.ctbl
+echo "$Prog: STL models have been written to $OpenAtlasHome/Atlases/$Atlas/Models/STL"
 
 popd
