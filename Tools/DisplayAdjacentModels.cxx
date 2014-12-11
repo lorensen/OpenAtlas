@@ -8,7 +8,6 @@
 #include <vtkBalloonWidget.h>
 #include <vtkCamera.h>
 #include <vtkOrientationMarkerWidget.h>
-#include <vtkOrientationMarkerWidget.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkPolyDataReader.h>
 #include <vtkProperty.h>
