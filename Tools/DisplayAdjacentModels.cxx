@@ -78,14 +78,14 @@ int main (int argc, char *argv[])
     vtkSmartPointer<vtkActor>::New();
   iconActor->SetMapper(iconMapper);
 
-  std::cout << labels[label] << " is connected to" << std::endl;
+  std::cout << labels[label] << "(" << label << ")" << " is connected to" << std::endl;
   neighbors[label].insert(label);
   for (std::set<unsigned int>::iterator sit = neighbors[ label ].begin();
        sit != neighbors[ label ].end(); ++sit)
     {
     if (labels[*sit] != labels[label])
       {
-      std::cout << "\t" << labels[*sit] << std::endl;
+      std::cout << "\t" << labels[*sit] << "(" << *sit << ")" <<std::endl;
       }
     if ((*sit == 2 || *sit == 41))
       {
@@ -146,7 +146,7 @@ int main (int argc, char *argv[])
     actor->GetProperty()->SetEdgeColor(colors[*sit][0] * .4,
                                        colors[*sit][1] * .4,
                                        colors[*sit][2] * .4);
-   actor->GetProperty()->EdgeVisibilityOn();
+    actor->GetProperty()->EdgeVisibilityOn();
     rightRenderer->AddActor(actor);
     }
 
