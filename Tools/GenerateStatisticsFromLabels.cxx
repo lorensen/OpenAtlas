@@ -130,6 +130,8 @@ int main (int argc, char *argv[])
     ValidLabelValuesType;
   typedef LabelStatisticsImageFilterType::LabelPixelType
     LabelPixelType;
+  typedef LabelStatisticsImageFilterType::BoundingBoxType
+    BoundingBoxType;
 
   for(ValidLabelValuesType::const_iterator vIt =
         labelStatistics->GetValidLabelValues().begin();
@@ -159,6 +161,7 @@ int main (int argc, char *argv[])
         return EXIT_FAILURE;
         }
     
+      fout << "Name:  " << labels[labelValue] << std::endl;
       fout << "Label: " << *vIt << std::endl;
       fout << "    count: "
                 << labelStatistics->GetCount( labelValue )
@@ -189,12 +192,16 @@ int main (int argc, char *argv[])
            << labelStatistics->GetRegion( labelValue ).GetIndex()[0] << ", "
            << labelStatistics->GetRegion( labelValue ).GetIndex()[1] << ", "
            << labelStatistics->GetRegion( labelValue ).GetIndex()[2] << ")"
-           << std::endl
-           << "            "
-           << "size("
+           << " size("
            << labelStatistics->GetRegion( labelValue ).GetSize()[0] << ", "
            << labelStatistics->GetRegion( labelValue ).GetSize()[1] << ", "
            << labelStatistics->GetRegion( labelValue ).GetSize()[2] << ")"
+           << std::endl;
+      BoundingBoxType box = labelStatistics->GetBoundingBox(labelValue);
+      fout << "    bounding box: "
+           << "(" << box[0] << ", " << box[1] << ") "
+           << "(" << box[2] << ", " << box[3] << ") "
+           << "(" << box[4] << ", " << box[5] << ") "
            << std::endl;
       fout.close();
       }
