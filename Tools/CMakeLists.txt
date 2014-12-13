@@ -24,6 +24,10 @@ target_link_libraries(GenerateCubesFromLabels
 add_executable(GenerateAdjacencies MACOSX_BUNDLE GenerateAdjacencies)
 target_link_libraries(GenerateAdjacencies ${ITK_LIBRARIES} ${VTK_LIBRARIES})
 
+add_executable(GenerateStatisticsFromLabels MACOSX_BUNDLE GenerateStatisticsFromLabels)
+target_link_libraries(GenerateStatisticsFromLabels
+        OpenAtlasUtilities ${ITK_LIBRARIES})
+
 add_executable(DisplayAdjacentModels MACOSX_BUNDLE DisplayAdjacentModels)
 target_link_libraries(DisplayAdjacentModels
         OpenAtlasUtilities ${ITK_LIBRARIES} ${VTK_LIBRARIES})
@@ -33,4 +37,3 @@ configure_file(${OpenAtlas_SOURCE_DIR}/GenerateCubesFromLabels.sh.in ${OpenAtlas
 configure_file(${OpenAtlas_SOURCE_DIR}/GenerateModelsFromLabels.sh.in ${OpenAtlas_BINARY_DIR}/GenerateModelsFromLabels.sh)
 configure_file(${OpenAtlas_SOURCE_DIR}/DisplayAdjacentModels.sh.in ${OpenAtlas_BINARY_DIR}/DisplayAdjacentModels.sh)
 configure_file(${OpenAtlas_SOURCE_DIR}/GenerateAdjacencies.sh.in ${OpenAtlas_BINARY_DIR}/GenerateAdjacencies.sh)
-
