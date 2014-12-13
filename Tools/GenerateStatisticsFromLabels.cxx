@@ -12,7 +12,6 @@
 //
 #include "itkLabelStatisticsImageFilter.h"
 #include "itkImageFileReader.h"
-#include "itkOrientImageFilter.h"
 #include "itkResampleImageFilter.h"
 
 #include <itksys/SystemTools.hxx>
@@ -54,25 +53,22 @@ int main (int argc, char *argv[])
 
   typedef itk::Image<unsigned short, 3>          ImageType;
   typedef itk::Image<unsigned int, 3>            LabelImageType;
+  typedef double                                 CoordRepType;
 
-  typedef itk::ImageFileReader<ImageType>          ImageReaderType;
+  typedef itk::ImageFileReader<ImageType>        ImageReaderType;
   ImageReaderType::Pointer imageReader = ImageReaderType::New();
 
-  typedef itk::ImageFileReader<LabelImageType>     LabelImageReaderType;
+  typedef itk::ImageFileReader<LabelImageType>   LabelImageReaderType;
   LabelImageReaderType::Pointer labelReader = LabelImageReaderType::New();
-
-  typedef itk::OrientImageFilter<LabelImageType,LabelImageType> OrienterType;
-  OrienterType::Pointer orienter = OrienterType::New();
 
   typedef itk::ResampleImageFilter< ImageType, ImageType > ResampleFilterType;
   ResampleFilterType::Pointer resample = ResampleFilterType::New();
 
-  typedef double                                 CoordRepType;
-  typedef itk::IdentityTransform<CoordRepType,3>  TransformType;
+  typedef itk::IdentityTransform<CoordRepType,3> TransformType;
   TransformType::Pointer identityTransform = TransformType::New();
 
   typedef itk::LinearInterpolateImageFunction<ImageType,CoordRepType>
-                                                            InterpolatorType;
+    InterpolatorType;
   InterpolatorType::Pointer interpolator = InterpolatorType::New();
 
   typedef itk::LabelStatisticsImageFilter< ImageType, LabelImageType >
@@ -80,6 +76,7 @@ int main (int argc, char *argv[])
   LabelStatisticsImageFilterType::Pointer labelStatistics =
     LabelStatisticsImageFilterType::New();
 
+  // Read the grayscale volume
   imageReader->SetFileName(argv[1]);
   try
     {
@@ -91,6 +88,7 @@ int main (int argc, char *argv[])
     return EXIT_FAILURE;
     }
 
+  // Read the label volume
   labelReader->SetFileName(argv[2]);
   try
     {
@@ -102,14 +100,14 @@ int main (int argc, char *argv[])
     return EXIT_FAILURE;
     }
 
-  orienter->SetDesiredCoordinateOrientation(itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_ALS);
-  orienter->SetInput(labelReader->GetOutput());
+  // Resample grayscale into label coordinate space
   resample->SetInput(imageReader->GetOutput());
   resample->SetReferenceImage( labelReader->GetOutput() );
   resample->UseReferenceImageOn();
   resample->SetTransform( identityTransform );
   resample->SetInterpolator( interpolator );
 
+  // Compute the statistics
   labelStatistics->SetLabelInput( labelReader->GetOutput());
   labelStatistics->SetInput(resample->GetOutput());
   labelStatistics->UseHistogramsOn(); // needed to compute median
@@ -123,19 +121,18 @@ int main (int argc, char *argv[])
     return EXIT_FAILURE;
     }
 
-  // Define all of the variables
+  // Output the statistics
   std::string filePrefix = "Label";
-
-  // output the statistics
-
   std::cout << "Number of labels: "
             << labelStatistics->GetNumberOfLabels() << std::endl;
-  std::cout << std::endl;
   
-  typedef LabelStatisticsImageFilterType::ValidLabelValuesContainerType ValidLabelValuesType;
-  typedef LabelStatisticsImageFilterType::LabelPixelType LabelPixelType;
+  typedef LabelStatisticsImageFilterType::ValidLabelValuesContainerType
+    ValidLabelValuesType;
+  typedef LabelStatisticsImageFilterType::LabelPixelType
+    LabelPixelType;
 
-  for(ValidLabelValuesType::const_iterator vIt = labelStatistics->GetValidLabelValues().begin();
+  for(ValidLabelValuesType::const_iterator vIt =
+        labelStatistics->GetValidLabelValues().begin();
       vIt != labelStatistics->GetValidLabelValues().end();
       ++vIt)
     {
@@ -155,7 +152,6 @@ int main (int argc, char *argv[])
         {
         ss << filePrefix << labelValue << ".txt";
         }
-      std::cout << argv[0] << " writing " << ss.str() << std::endl;
       std::ofstream fout(ss.str().c_str());
       if (!fout)
         {
@@ -164,37 +160,37 @@ int main (int argc, char *argv[])
         }
     
       fout << "Label: " << *vIt << std::endl;
-      fout << "\tcount: "
+      fout << "    count: "
                 << labelStatistics->GetCount( labelValue )
                 << std::endl;
-      fout << "\tmin: "
+      fout << "    min: "
            << labelStatistics->GetMinimum( labelValue )
                 << std::endl;
-      fout << "\tmax: "
+      fout << "    max: "
                 << labelStatistics->GetMaximum( labelValue )
                 << std::endl;
-      fout << "\tmedian: "
+      fout << "    median: "
                 << labelStatistics->GetMedian( labelValue )
                 << std::endl;
-      fout << "\tmean: "
+      fout << "    mean: "
                 << labelStatistics->GetMean( labelValue )
                 << std::endl;
-      fout << "\tsigma: "
+      fout << "    sigma: "
                 << labelStatistics->GetSigma( labelValue )
                 << std::endl;
-      fout << "\tvariance: "
+      fout << "    variance: "
                 << labelStatistics->GetVariance( labelValue )
                 << std::endl;
-      fout << "\tsum: "
+      fout << "    sum: "
                 << labelStatistics->GetSum( labelValue )
                 << std::endl;
-      fout << "\tregion: "
+      fout << "    region: "
            << "index("
            << labelStatistics->GetRegion( labelValue ).GetIndex()[0] << ", "
            << labelStatistics->GetRegion( labelValue ).GetIndex()[1] << ", "
            << labelStatistics->GetRegion( labelValue ).GetIndex()[2] << ")"
            << std::endl
-           << "\t        "
+           << "            "
            << "size("
            << labelStatistics->GetRegion( labelValue ).GetSize()[0] << ", "
            << labelStatistics->GetRegion( labelValue ).GetSize()[1] << ", "
