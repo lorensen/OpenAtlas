@@ -25,6 +25,6 @@ if [ ! -f ./adjacencies.txt ] ; then
 fi
 
 for i in $all; do
-@OpenAtlas_BINARY_DIR@/$AppDir/DisplayAdjacentModels $i $OpenAtlasHome/Atlases/$Atlas/Atlas/hncma-atlas-lut.ctbl ./adjacencies.txt 
+@OpenAtlas_BINARY_DIR@/$AppDir/DisplayAdjacentModels $i $OpenAtlasHome/Atlases/$Atlas/Atlas/hncma-atlas-lut.ctbl ./adjacencies.txt Screenshot/
 done
 popd
