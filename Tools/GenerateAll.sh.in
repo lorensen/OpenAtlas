@@ -9,7 +9,7 @@ exit 1
 fi
 
 Atlas=$1
-@OpenAtlas_BINARY_DIR@/GenerateAdjacencies.sh
-@OpenAtlas_BINARY_DIR@/GenerateModelsFromLabels.sh
-@OpenAtlas_BINARY_DIR@/GenerateCubesFromLabels.sh
-@OpenAtlas_BINARY_DIR@/GenerateStatisticsFromLabels.sh
+@OpenAtlas_BINARY_DIR@/GenerateAdjacencies.sh $Atlas
+@OpenAtlas_BINARY_DIR@/GenerateStatisticsFromLabels.sh $Atlas
+@OpenAtlas_BINARY_DIR@/GenerateModelsFromLabels.sh $Atlas
+@OpenAtlas_BINARY_DIR@/GenerateCubesFromLabels.sh $Atlas
