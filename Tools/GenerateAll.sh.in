@@ -1,0 +1,15 @@
+#!/bin/bash 
+if [[ $# == 0 || $1 == "--help" ]]
+then
+echo "Usage: GenerateAll.sh AtlasName"
+echo "       Runs all the generation scripts for the atlas"
+echo "       Available Atlases are;"
+echo "         `ls -1 @OpenAtlas_SOURCE_DIR@/../Atlases`"
+exit 1
+fi
+
+Atlas=$1
+@OpenAtlas_BINARY_DIR@/GenerateAdjacencies.sh
+@OpenAtlas_BINARY_DIR@/GenerateModelsFromLabels.sh
+@OpenAtlas_BINARY_DIR@/GenerateCubesFromLabels.sh
+@OpenAtlas_BINARY_DIR@/GenerateStatisticsFromLabels.sh

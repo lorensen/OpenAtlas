@@ -32,6 +32,10 @@ add_executable(DisplayAdjacentModels MACOSX_BUNDLE DisplayAdjacentModels)
 target_link_libraries(DisplayAdjacentModels
         OpenAtlasUtilities ${ITK_LIBRARIES} ${VTK_LIBRARIES})
 
+enable_testing()
+include(CTest)
+
+configure_file(${OpenAtlas_SOURCE_DIR}/GenerateAll.sh.in ${OpenAtlas_BINARY_DIR}/GenerateAll.sh)
 configure_file(${OpenAtlas_SOURCE_DIR}/DisplayAllAdjacentModels.sh.in ${OpenAtlas_BINARY_DIR}/DisplayAllAdjacentModels.sh)
 configure_file(${OpenAtlas_SOURCE_DIR}/GenerateCubesFromLabels.sh.in ${OpenAtlas_BINARY_DIR}/GenerateCubesFromLabels.sh)
 configure_file(${OpenAtlas_SOURCE_DIR}/GenerateModelsFromLabels.sh.in ${OpenAtlas_BINARY_DIR}/GenerateModelsFromLabels.sh)
