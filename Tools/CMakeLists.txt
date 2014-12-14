@@ -37,3 +37,4 @@ configure_file(${OpenAtlas_SOURCE_DIR}/GenerateCubesFromLabels.sh.in ${OpenAtlas
 configure_file(${OpenAtlas_SOURCE_DIR}/GenerateModelsFromLabels.sh.in ${OpenAtlas_BINARY_DIR}/GenerateModelsFromLabels.sh)
 configure_file(${OpenAtlas_SOURCE_DIR}/DisplayAdjacentModels.sh.in ${OpenAtlas_BINARY_DIR}/DisplayAdjacentModels.sh)
 configure_file(${OpenAtlas_SOURCE_DIR}/GenerateAdjacencies.sh.in ${OpenAtlas_BINARY_DIR}/GenerateAdjacencies.sh)
+configure_file(${OpenAtlas_SOURCE_DIR}/GenerateStatisticsFromLabels.sh.in ${OpenAtlas_BINARY_DIR}/GenerateStatisticsFromLabels.sh)

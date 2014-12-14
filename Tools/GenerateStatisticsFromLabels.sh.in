@@ -1,0 +1,23 @@
+#!/bin/bash 
+if [[ $# < 1 || $1 == "--help" ]]
+then
+echo "Usage: GenerateStatisticsFromLabels.sh AtlasName"
+echo "       Generates a variety of statistics for each label in the atlas"
+echo "       Available Atlases are;"
+echo "         `ls -1 @OpenAtlas_SOURCE_DIR@/../Atlases`"
+exit 1
+fi
+
+Prog=GenerateStatisticsFromLabels
+Atlas=$1
+OpenAtlasHome=@OpenAtlas_SOURCE_DIR@/..
+pushd $OpenAtlasHome/Atlases/$Atlas/Statistics
+
+AppDir=""
+if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
+
+echo "$Prog: Statistics files will be written to $OpenAtlasHome/Atlases/$Atlas/Statistics"
+@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $OpenAtlasHome/Atlases/$Atlas/Atlas/A1_grayT1.nrrd $OpenAtlasHome/Atlases/$Atlas/Atlas/hncma-atlas.nrrd $OpenAtlasHome/Atlases/$Atlas/Atlas/hncma-atlas-lut.ctbl
+echo "$Prog: Statistics files have been written to $OpenAtlasHome/Atlases/$Atlas/Statistics"
+
+popd
