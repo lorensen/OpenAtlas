@@ -48,7 +48,6 @@ int main (int argc, char *argv[])
  
   bool hasLabels = argc > 4;
   std::vector<std::string> labels;
-  std::vector<std::vector<float> > colors;
 
   if (hasLabels)
     {
@@ -56,7 +55,6 @@ int main (int argc, char *argv[])
     try
       {
       ReadLabelFile(argv[4], labels);
-      ReadColorFile(argv[4], colors);
       }
     catch (itk::ExceptionObject& e)
       {
@@ -181,20 +179,11 @@ int main (int argc, char *argv[])
     // select the cells for a given label
     selector->ThresholdBetween(i, i);
  
-   vtkSmartPointer<vtkUnsignedCharArray> cellData =
-     vtkSmartPointer<vtkUnsignedCharArray>::New();
-   cellData->SetNumberOfComponents(3);
-   cellData->SetNumberOfTuples(geometry->GetOutput()->GetNumberOfCells());
    geometry->Update();
-   for  (int c = 0; c < geometry->GetOutput()->GetNumberOfCells(); ++c)
+   if (hasLabels && labels[i] == "")
      {
-     float rgb[3];
-     rgb[0] = colors[i][0] * 255.0;
-     rgb[1] = colors[i][1] * 255.0;
-     rgb[2] = colors[i][2] * 255.0;
-     cellData->InsertTuple(c, rgb);
+     std::cout << "WARNING: label " << i << " is not in the color table." << std::endl;
      }
-//   geometry->GetOutput()->GetCellData()->SetScalars(cellData);
     // output the polydata
     std::stringstream ss;
     if (hasLabels)
