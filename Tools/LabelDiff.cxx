@@ -49,7 +49,7 @@
 
 int main (int argc, char *argv[])
 {
-  if (argc < 4)
+  if (argc < 5)
     {
     std::cout << "Usage: " << argv[0] << " Label OldVolume NewVolume LabelLUT" << std::endl;
     return EXIT_FAILURE;
@@ -337,7 +337,7 @@ int main (int argc, char *argv[])
 
   renderWindow->Render();
 
-  if (argc < 5)
+  if (argc < 6)
     {
     renderWindowInteractor->Initialize();
     renderWindowInteractor->Start();

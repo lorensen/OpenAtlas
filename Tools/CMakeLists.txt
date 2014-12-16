@@ -36,6 +36,10 @@ add_executable(LabelDiff MACOSX_BUNDLE LabelDiff)
 target_link_libraries(LabelDiff
         OpenAtlasUtilities ${ITK_LIBRARIES} ${VTK_LIBRARIES})
 
+Add_executable(LabelsChanged MACOSX_BUNDLE LabelsChanged)
+target_link_libraries(LabelsChanged
+        OpenAtlasUtilities ${ITK_LIBRARIES})
+
 enable_testing()
 include(CTest)
 
