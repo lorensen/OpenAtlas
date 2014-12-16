@@ -32,6 +32,10 @@ add_executable(DisplayAdjacentModels MACOSX_BUNDLE DisplayAdjacentModels)
 target_link_libraries(DisplayAdjacentModels
         OpenAtlasUtilities ${ITK_LIBRARIES} ${VTK_LIBRARIES})
 
+add_executable(LabelDiff MACOSX_BUNDLE LabelDiff)
+target_link_libraries(LabelDiff
+        OpenAtlasUtilities ${ITK_LIBRARIES} ${VTK_LIBRARIES})
+
 enable_testing()
 include(CTest)
 
