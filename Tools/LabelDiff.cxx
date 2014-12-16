@@ -139,14 +139,17 @@ int main (int argc, char *argv[])
 
   while (!oldIt.IsAtEnd())
     {
+    // no change
     if (oldIt.Get() == label && newIt.Get() == label)
       {
       diffIt.Set(label);
       }
+    // added
     else if (oldIt.Get() != label && newIt.Get() == label)
       {
-      diffIt.Set(10000);
+      diffIt.Set(label + 1);
       }
+    // removed
     else if (oldIt.Get() == label && newIt.Get() != label)
       {
       diffIt.Set(20000);
@@ -232,6 +235,12 @@ int main (int argc, char *argv[])
   geometry->Update();
   original->DeepCopy(geometry->GetOutput());
 
+  vtkSmartPointer<vtkPolyData> newPD =
+    vtkSmartPointer<vtkPolyData>::New();
+  selector->ThresholdBetween(label, label + 1);
+  geometry->Update();
+  newPD->DeepCopy(geometry->GetOutput());
+
   vtkSmartPointer<vtkPolyData> removed =
     vtkSmartPointer<vtkPolyData>::New();
   selector->ThresholdBetween(20000, 20000);
@@ -240,14 +249,26 @@ int main (int argc, char *argv[])
 
   vtkSmartPointer<vtkPolyData> added =
     vtkSmartPointer<vtkPolyData>::New();
-  selector->ThresholdBetween(10000, 10000);
+  selector->ThresholdBetween(label + 1, label + 1);
   geometry->Update();
   added->DeepCopy(geometry->GetOutput());
 
-  vtkSmartPointer<vtkRenderer> renderer =
+  // Define viewport ranges
+  // (xmin, ymin, xmax, ymax)
+  double leftViewport[4] = {0.0, 0.0, 0.5, 1.0};
+  double rightViewport[4] = {0.5, 0.0, 1.0, 1.0};
+
+  vtkSmartPointer<vtkRenderer> leftRenderer =
     vtkSmartPointer<vtkRenderer>::New();
-  renderer->SetBackground(.6, .5, .4);
-  renderer->AddActor(textActor);
+  leftRenderer->SetViewport(leftViewport);
+  leftRenderer->SetBackground(.6, .5, .4);
+
+  vtkSmartPointer<vtkRenderer> rightRenderer =
+    vtkSmartPointer<vtkRenderer>::New();
+  rightRenderer->SetViewport(rightViewport);
+  rightRenderer->SetBackground(.4, .5, .6);
+
+  leftRenderer->AddActor(textActor);
 
   // An interactor
   vtkSmartPointer<vtkRenderWindowInteractor> renderWindowInteractor = 
@@ -263,6 +284,16 @@ int main (int argc, char *argv[])
                                  colors[label][1],
                                  colors[label][2]);
   originalActor->GetProperty()->SetRepresentationToWireframe();
+
+  vtkSmartPointer<vtkPolyDataMapper> newMapper = 
+    vtkSmartPointer<vtkPolyDataMapper>::New();
+  newMapper->SetInputData(newPD);
+  vtkSmartPointer<vtkActor> newActor = 
+    vtkSmartPointer<vtkActor>::New();
+  newActor->SetMapper(newMapper);
+  newActor->GetProperty()->SetColor(colors[label][0],
+                                 colors[label][1],
+                                 colors[label][2]);
 
   vtkSmartPointer<vtkPolyDataMapper> removedMapper = 
     vtkSmartPointer<vtkPolyDataMapper>::New();
@@ -284,14 +315,16 @@ int main (int argc, char *argv[])
                                       1.0,
                                       0.0);
 
-  renderer->AddActor(originalActor);
-  renderer->AddActor(removedActor);
-  renderer->AddActor(addedActor);
+  leftRenderer->AddActor(originalActor);
+  leftRenderer->AddActor(removedActor);
+  leftRenderer->AddActor(addedActor);
+  rightRenderer->AddActor(newActor);
 
   vtkSmartPointer<vtkRenderWindow> renderWindow = 
     vtkSmartPointer<vtkRenderWindow>::New();
   renderWindow->SetSize(1280, 640);
-  renderWindow->AddRenderer(renderer);
+  renderWindow->AddRenderer(leftRenderer);
+  renderWindow->AddRenderer(rightRenderer);
 
   renderWindowInteractor->SetRenderWindow(renderWindow);
   vtkSmartPointer<vtkCamera> camera =
@@ -300,9 +333,11 @@ int main (int argc, char *argv[])
   camera->SetFocalPoint(0, 0, 0);
   camera->SetPosition(0, 1, 0);
 
-  renderer->SetActiveCamera(camera);
-  renderer->ResetCamera();
-  renderer->ResetCameraClippingRange();
+  leftRenderer->SetActiveCamera(camera);
+  rightRenderer->SetActiveCamera(camera);
+
+  leftRenderer->ResetCamera();
+  leftRenderer->ResetCameraClippingRange();
   camera->Azimuth(30);
   camera->Elevation(30);
 
