@@ -29,5 +29,13 @@ if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
 for label in $Labels; do
   @OpenAtlas_BINARY_DIR@/$AppDir/$Prog  $label $OldLabels $NewLabels $OpenAtlasHome/Atlases/$Atlas/Atlas/hncma-atlas-lut.ctbl $OpenAtlasHome/Atlases/$Atlas/Changes
 done
-(cd $OpenAtlasHome/Atlases/$Atlas/; git add Changes)
-(cd $OpenAtlasHome; git commit -m "ENH: Labels with changes")
+# Now commit the diffs
+# Modified
+(cd $OpenAtlasHome; git commit -m "AUTO: Label diffs modified." `git status | grep Changes |grep modified: | cut -d":" -f2,2`)
+# Added
+(cd $OpenAtlasHome/Atlases/$Atlas/Changes; find . \*.png -exec git add {} \;)
+git commit -m "AUTO: Label diffs added."
+# Removed
+git rm `git status | grep Changes | grep deleted: | cut -d":" -f2,2`
+git commit -m "SYNC: Files deleted (or moved) from wiki."
+
