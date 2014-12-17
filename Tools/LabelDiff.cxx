@@ -352,7 +352,7 @@ int main (int argc, char *argv[])
   
     std::ostringstream snapshotFileName;
     snapshotFileName << argv[5] << "/" << labels[label] << "_diff.png" << std::ends;
-    std::cout << "Writing " << snapshotFileName << std::endl;
+    std::cout << "Writing " << snapshotFileName.str() << std::endl;
     vtkSmartPointer<vtkPNGWriter> writer = 
       vtkSmartPointer<vtkPNGWriter>::New();
     writer->SetFileName(snapshotFileName.str().c_str());

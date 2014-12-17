@@ -1,0 +1,33 @@
+#!/bin/bash
+if [[ $# == 0 || $1 == "--help" ]]
+then
+echo "Usage: GenerateDiffs.sh Atlas OldLabels NewLabels
+echo "       Generates images of the differences for any labels that have changed
+echo "       The generated images are Atlases/AtlasName/Differences"
+echo "       Available Atlases are;"
+echo "         `ls -1 @OpenAtlas_SOURCE_DIR@/../Atlases`"
+exit 1
+fi
+Atlas=$1
+OldLabels=$2
+NewLabels=$3
+OpenAtlasHome=@OpenAtlas_SOURCE_DIR@/..
+
+# First generate a list of all labels that have changes
+Prog=LabelsChanged
+AppDir=""
+if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
+
+Labels=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog "$OldLabels" "$NewLabels"`
+
+# Remove all of the old changes
+(cd $OpenAtlasHome/Atlases/$Atlas/Changes; rm -f *.png)
+# Generate images of each label that has changed
+Prog=LabelDiff
+AppDir=""
+if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
+for label in $Labels; do
+  @OpenAtlas_BINARY_DIR@/$AppDir/$Prog  $label $OldLabels $NewLabels $OpenAtlasHome/Atlases/$Atlas/Atlas/hncma-atlas-lut.ctbl $OpenAtlasHome/Atlases/$Atlas/Changes
+done
+(cd $OpenAtlasHome/Atlases/$Atlas/; git add Changes)
+(cd $OpenAtlasHome; git commit -m "ENH: Labels with changes")
