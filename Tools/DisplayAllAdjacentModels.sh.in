@@ -12,7 +12,7 @@ Atlas=$1
 OpenAtlasHome=@OpenAtlas_SOURCE_DIR@
 pushd $OpenAtlasHome/Atlases/$Atlas/Models
 
-all=`ls -1 VTK| sort | cut -d":" -f2 | cut -d"." -f1,1`
+all=`ls -1 VTK| sort | cut -d"-" -f2 | cut -d"." -f1,1`
 echo $all
 
 AppDir=""
@@ -25,6 +25,6 @@ if [ ! -f ./adjacencies.txt ] ; then
 fi
 
 for i in $all; do
-@OpenAtlas_BINARY_DIR@/$AppDir/DisplayAdjacentModels $i $OpenAtlasHome/Atlases/$Atlas/Atlas/hncma-atlas-lut.ctbl ./adjacencies.txt Screenshot/
+@OpenAtlas_BINARY_DIR@/$AppDir/DisplayAdjacentModels $i $OpenAtlasHome/Atlases/$Atlas/Atlas/hncma-atlas-lut.ctbl ./adjacencies.txt $OpenAtlasHome/Atlases/$Atlas/Models/Screenshot/
 done
 popd
