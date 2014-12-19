@@ -94,7 +94,7 @@ int main (int argc, char *argv[])
     vtkSmartPointer<vtkSTLReader> reader = 
       vtkSmartPointer<vtkSTLReader>::New();
     std::ostringstream fileName;
-    fileName << "STL/" << labels[*sit] << ":" << *sit << ".stl" << std::ends;
+    fileName << "STL/" << labels[*sit] << "-" << *sit << ".stl" << std::ends;
     reader->SetFileName(fileName.str().c_str());
     vtkSmartPointer<vtkPolyDataMapper> mapper = 
       vtkSmartPointer<vtkPolyDataMapper>::New();
@@ -132,7 +132,7 @@ int main (int argc, char *argv[])
     vtkSmartPointer<vtkPolyDataReader> reader = 
       vtkSmartPointer<vtkPolyDataReader>::New();
     std::ostringstream fileName;
-    fileName << "VTK/" << labels[*sit] << ":" << *sit << ".vtk" << std::ends;
+    fileName << "VTK/" << labels[*sit] << "-" << *sit << ".vtk" << std::ends;
     reader->SetFileName(fileName.str().c_str());
     vtkSmartPointer<vtkPolyDataMapper> mapper = 
       vtkSmartPointer<vtkPolyDataMapper>::New();

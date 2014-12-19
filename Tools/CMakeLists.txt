@@ -1,7 +1,3 @@
-cmake_minimum_required(VERSION 2.8)
- 
-PROJECT(OpenAtlas)
- 
 find_package(ITK REQUIRED)
 include(${ITK_USE_FILE})
  
@@ -11,7 +7,7 @@ include(${VTK_USE_FILE})
  
 add_library(OpenAtlasUtilities OpenAtlasUtilities.cxx)
 
-include_directories(${OpenAtlas_SOURCE_DIR})
+include_directories(${OpenAtlas_SOURCE_DIR}/Tools)
 
 add_executable(GenerateModelsFromLabels MACOSX_BUNDLE GenerateModelsFromLabels)
 target_link_libraries(GenerateModelsFromLabels
@@ -47,11 +43,11 @@ target_link_libraries(ReportDisconnectedRegions
 enable_testing()
 include(CTest)
 
-configure_file(${OpenAtlas_SOURCE_DIR}/GenerateAll.sh.in ${OpenAtlas_BINARY_DIR}/GenerateAll.sh)
-configure_file(${OpenAtlas_SOURCE_DIR}/DisplayAllAdjacentModels.sh.in ${OpenAtlas_BINARY_DIR}/DisplayAllAdjacentModels.sh)
-configure_file(${OpenAtlas_SOURCE_DIR}/GenerateCubesFromLabels.sh.in ${OpenAtlas_BINARY_DIR}/GenerateCubesFromLabels.sh)
-configure_file(${OpenAtlas_SOURCE_DIR}/GenerateModelsFromLabels.sh.in ${OpenAtlas_BINARY_DIR}/GenerateModelsFromLabels.sh)
-configure_file(${OpenAtlas_SOURCE_DIR}/DisplayAdjacentModels.sh.in ${OpenAtlas_BINARY_DIR}/DisplayAdjacentModels.sh)
-configure_file(${OpenAtlas_SOURCE_DIR}/GenerateAdjacencies.sh.in ${OpenAtlas_BINARY_DIR}/GenerateAdjacencies.sh)
-configure_file(${OpenAtlas_SOURCE_DIR}/GenerateStatisticsFromLabels.sh.in ${OpenAtlas_BINARY_DIR}/GenerateStatisticsFromLabels.sh)
-configure_file(${OpenAtlas_SOURCE_DIR}/GenerateDiffs.sh.in ${OpenAtlas_BINARY_DIR}/GenerateDiffs.sh)
+configure_file(${OpenAtlas_SOURCE_DIR}/Tools/GenerateAll.sh.in ${OpenAtlas_BINARY_DIR}/GenerateAll.sh)
+configure_file(${OpenAtlas_SOURCE_DIR}/Tools/DisplayAllAdjacentModels.sh.in ${OpenAtlas_BINARY_DIR}/DisplayAllAdjacentModels.sh)
+configure_file(${OpenAtlas_SOURCE_DIR}/Tools/GenerateCubesFromLabels.sh.in ${OpenAtlas_BINARY_DIR}/GenerateCubesFromLabels.sh)
+configure_file(${OpenAtlas_SOURCE_DIR}/Tools/GenerateModelsFromLabels.sh.in ${OpenAtlas_BINARY_DIR}/GenerateModelsFromLabels.sh)
+configure_file(${OpenAtlas_SOURCE_DIR}/Tools/DisplayAdjacentModels.sh.in ${OpenAtlas_BINARY_DIR}/DisplayAdjacentModels.sh)
+configure_file(${OpenAtlas_SOURCE_DIR}/Tools/GenerateAdjacencies.sh.in ${OpenAtlas_BINARY_DIR}/GenerateAdjacencies.sh)
+configure_file(${OpenAtlas_SOURCE_DIR}/Tools/GenerateStatisticsFromLabels.sh.in ${OpenAtlas_BINARY_DIR}/GenerateStatisticsFromLabels.sh)
+configure_file(${OpenAtlas_SOURCE_DIR}/Tools/GenerateDiffs.sh.in ${OpenAtlas_BINARY_DIR}/GenerateDiffs.sh)

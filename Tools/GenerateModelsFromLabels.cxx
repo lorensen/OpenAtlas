@@ -180,7 +180,7 @@ int main (int argc, char *argv[])
  
     if (hasLabels)
       {
-      ss << labels[i] << ":" << i << ".stl";
+      ss << labels[i] << "-" << i << ".stl";
       }
     else
       {

@@ -4,13 +4,16 @@ then
 echo "Usage: GenerateStatisticsFromLabels.sh AtlasName"
 echo "       Generates a variety of statistics for each label in the atlas"
 echo "       Available Atlases are;"
-echo "         `ls -1 @OpenAtlas_SOURCE_DIR@/../Atlases`"
+echo "         `ls -1 @OpenAtlas_SOURCE_DIR@/Atlases`"
 exit 1
 fi
 
 Prog=GenerateStatisticsFromLabels
 Atlas=$1
-OpenAtlasHome=@OpenAtlas_SOURCE_DIR@/..
+OpenAtlasHome=@OpenAtlas_SOURCE_DIR@
+if [ ! -d $OpenAtlasHome/Atlases/$Atlas/Statistics ] ; then
+  mkdir $OpenAtlasHome/Atlases/$Atlas/Statistics
+fi
 pushd $OpenAtlasHome/Atlases/$Atlas/Statistics
 
 AppDir=""

@@ -5,13 +5,13 @@ echo "Usage: GenerateDiffs.sh Atlas OldLabels NewLabels
 echo "       Generates images of the differences for any labels that have changed
 echo "       The generated images are Atlases/AtlasName/Differences"
 echo "       Available Atlases are;"
-echo "         `ls -1 @OpenAtlas_SOURCE_DIR@/../Atlases`"
+echo "         `ls -1 @OpenAtlas_SOURCE_DIR@`"
 exit 1
 fi
 Atlas=$1
 OldLabels=$2
 NewLabels=$3
-OpenAtlasHome=@OpenAtlas_SOURCE_DIR@/..
+OpenAtlasHome=@OpenAtlas_SOURCE_DIR@
 
 # First generate a list of all labels that have changes
 Prog=LabelsChanged

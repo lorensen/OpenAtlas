@@ -4,13 +4,13 @@ then
 echo "Usage: GenerateModelsFromLabels.sh AtlasName"
 echo "       Generates STL models( .stl) for each label in the atlas"
 echo "       Available Atlases are;"
-echo "         `ls -1 @OpenAtlas_SOURCE_DIR@/../Atlases`"
+echo "         `ls -1 @OpenAtlas_SOURCE_DIR@`"
 exit 1
 fi
 
 Prog=GenerateModelsFromLabels
 Atlas=$1
-OpenAtlasHome=@OpenAtlas_SOURCE_DIR@/..
+OpenAtlasHome=@OpenAtlas_SOURCE_DIR@
 pushd $OpenAtlasHome/Atlases/$Atlas/Models/STL
 
 AppDir=""

@@ -5,13 +5,13 @@ echo "Usage: DisplayAdjacentModels.sh AtlasName Label"
 echo "       Displays all models adjacent to a given label"
 echo "       Assumes adjacencies.txt has been genenerated by GenerateAdjacencies.sh"
 echo "       Available Atlases are;"
-echo "         `ls -1 @OpenAtlas_SOURCE_DIR@/../Atlases`"
+echo "         `ls -1 @OpenAtlas_SOURCE_DIR@/Atlases`"
 exit 1
 fi
 Prog=DisplayAdjacentModels
 Atlas=$1
 Label=$2
-OpenAtlasHome=@OpenAtlas_SOURCE_DIR@/..
+OpenAtlasHome=@OpenAtlas_SOURCE_DIR@
 pushd $OpenAtlasHome/Atlases/$Atlas/Models
 
 AppDir=""

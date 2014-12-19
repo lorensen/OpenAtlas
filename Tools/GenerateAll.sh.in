@@ -4,7 +4,7 @@ then
 echo "Usage: GenerateAll.sh AtlasName"
 echo "       Runs all the generation scripts for the atlas"
 echo "       Available Atlases are;"
-echo "         `ls -1 @OpenAtlas_SOURCE_DIR@/../Atlases`"
+echo "         `ls -1 @OpenAtlas_SOURCE_DIR@/Atlases`"
 exit 1
 fi
 

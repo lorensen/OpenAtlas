@@ -148,7 +148,7 @@ int main (int argc, char *argv[])
           {
           continue;
           }
-        ss << labels[labelValue] << ":" << labelValue << ".txt";
+        ss << labels[labelValue] << "-" << labelValue << ".txt";
         }
       else
         {

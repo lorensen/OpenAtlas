@@ -188,7 +188,7 @@ int main (int argc, char *argv[])
     std::stringstream ss;
     if (hasLabels)
       {
-      ss << labels[i] << ":" << i << ".vtk";
+      ss << labels[i] << "-" << i << ".vtk";
       }
     else
       {
