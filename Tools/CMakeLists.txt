@@ -40,6 +40,10 @@ Add_executable(LabelsChanged MACOSX_BUNDLE LabelsChanged)
 target_link_libraries(LabelsChanged
         OpenAtlasUtilities ${ITK_LIBRARIES})
 
+Add_executable(ReportDisconnectedRegions MACOSX_BUNDLE ReportDisconnectedRegions)
+target_link_libraries(ReportDisconnectedRegions
+        ${VTK_LIBRARIES})
+
 enable_testing()
 include(CTest)
 

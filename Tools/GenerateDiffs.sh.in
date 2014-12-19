@@ -20,6 +20,8 @@ if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
 
 Labels=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog "$OldLabels" "$NewLabels"`
 
+mkdir $OpenAtlasHome/Atlases/$Atlas/Changes
+
 # Remove all of the old changes
 (cd $OpenAtlasHome/Atlases/$Atlas/Changes; rm -f *.png)
 # Generate images of each label that has changed
@@ -38,4 +40,3 @@ git commit -m "AUTO: Label diffs added."
 # Removed
 git rm `git status | grep Changes | grep deleted: | cut -d":" -f2,2`
 git commit -m "SYNC: Files deleted (or moved) from wiki."
-

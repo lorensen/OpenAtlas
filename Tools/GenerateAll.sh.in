@@ -9,7 +9,15 @@ exit 1
 fi
 
 Atlas=$1
+echo -n "Generate Adjaciencies..."
 @OpenAtlas_BINARY_DIR@/GenerateAdjacencies.sh $Atlas
+echo "Done"
+echo -n "Generate Statistics..."
 @OpenAtlas_BINARY_DIR@/GenerateStatisticsFromLabels.sh $Atlas
+echo "Done"
+echo -n "Generate STL Models..."
 @OpenAtlas_BINARY_DIR@/GenerateModelsFromLabels.sh $Atlas
+echo "Done"
+echo -n "Generate Cubes..."
 @OpenAtlas_BINARY_DIR@/GenerateCubesFromLabels.sh $Atlas
+echo "Done"
