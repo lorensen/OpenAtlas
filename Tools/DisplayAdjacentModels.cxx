@@ -156,10 +156,12 @@ int main (int argc, char *argv[])
   textProperty->SetFontFamilyToCourier();
   textProperty->SetJustificationToCentered();
 
+  std::ostringstream partName;
+  partName << labels[label] << "(" << label << ")" << std::ends;
   vtkSmartPointer<vtkTextMapper> textMapper =
     vtkSmartPointer<vtkTextMapper>::New();
   textMapper->SetTextProperty(textProperty);
-  textMapper->SetInput(labels[label].c_str());
+  textMapper->SetInput(partName.str().c_str());
 
   // Set up the widget
   vtkSmartPointer<vtkOrientationMarkerWidget> orientationWidget =
