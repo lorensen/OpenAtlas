@@ -40,9 +40,6 @@ Add_executable(ReportDisconnectedRegions MACOSX_BUNDLE ReportDisconnectedRegions
 target_link_libraries(ReportDisconnectedRegions
         ${VTK_LIBRARIES})
 
-enable_testing()
-include(CTest)
-
 configure_file(${OpenAtlas_SOURCE_DIR}/Tools/GenerateAll.sh.in ${OpenAtlas_BINARY_DIR}/GenerateAll.sh)
 configure_file(${OpenAtlas_SOURCE_DIR}/Tools/DisplayAllAdjacentModels.sh.in ${OpenAtlas_BINARY_DIR}/DisplayAllAdjacentModels.sh)
 configure_file(${OpenAtlas_SOURCE_DIR}/Tools/GenerateCubesFromLabels.sh.in ${OpenAtlas_BINARY_DIR}/GenerateCubesFromLabels.sh)
