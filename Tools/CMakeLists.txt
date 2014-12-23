@@ -1,8 +1,25 @@
-find_package(ITK REQUIRED)
+set(ITK_IO_MODULES_USED "ITKIONRRD;ITKIOPNG")
+find_package(ITK COMPONENTS
+  
+  ITKCommon
+  ITKIOImageBase
+  ITKImageGrid
+  ITKImageStatistics
+  ITKVtkGlue
+  ${ITK_IO_MODULES_USED}
+)
 include(${ITK_USE_FILE})
  
-set(VTK_MODULES_REQUESTED "")
-find_package(VTK REQUIRED)
+find_package(VTK COMPONENTS
+  vtkFiltersGeneral
+  vtkFiltersGeometry
+  vtkIOGeometry
+  vtkIOImage
+  vtkIOLegacy
+  vtkImagingStatistics
+  vtkInteractionWidgets
+  vtkRenderingOpenGL
+)
 include(${VTK_USE_FILE})
  
 add_library(OpenAtlasUtilities OpenAtlasUtilities.cxx)
@@ -48,3 +65,4 @@ configure_file(${OpenAtlas_SOURCE_DIR}/Tools/DisplayAdjacentModels.sh.in ${OpenA
 configure_file(${OpenAtlas_SOURCE_DIR}/Tools/GenerateAdjacencies.sh.in ${OpenAtlas_BINARY_DIR}/GenerateAdjacencies.sh)
 configure_file(${OpenAtlas_SOURCE_DIR}/Tools/GenerateStatisticsFromLabels.sh.in ${OpenAtlas_BINARY_DIR}/GenerateStatisticsFromLabels.sh)
 configure_file(${OpenAtlas_SOURCE_DIR}/Tools/GenerateDiffs.sh.in ${OpenAtlas_BINARY_DIR}/GenerateDiffs.sh)
+configure_file(${OpenAtlas_SOURCE_DIR}/Tools/ReportAllDisconnectedRegions.sh.in ${OpenAtlas_BINARY_DIR}/ReportAllDisconnectedRegions.sh)
