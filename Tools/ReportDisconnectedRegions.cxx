@@ -39,6 +39,7 @@ int main (int argc, char *argv[])
               << " has "
               << confilter->GetNumberOfExtractedRegions()
               << " disconnected regions" << std::endl;
+    return EXIT_FAILURE;
     }
   return EXIT_SUCCESS;
 }

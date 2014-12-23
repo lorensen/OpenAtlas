@@ -13,6 +13,20 @@ OldLabels=$2
 NewLabels=$3
 OpenAtlasHome=@OpenAtlas_SOURCE_DIR@
 
+# Validate inputs
+if [ ! -d $OpenAtlasHome/Atlases/$Atlas/Models ] ; then
+  echo "$0 $1 $2 $3: $OpenAtlasHome/Atlases/$Atlas/Models does not exist"
+  exit 1
+fi
+if [ ! -f $OldLabels ] ; then
+  echo "$0: $OldLabels does not exist"
+  exit 1
+fi
+if [ ! -f $NewLabels ] ; then
+  echo "$0: $NewLabels does not exist"
+  exit 1
+fi
+
 # First generate a list of all labels that have changes
 Prog=LabelsChanged
 AppDir=""
@@ -20,7 +34,9 @@ if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
 
 Labels=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog "$OldLabels" "$NewLabels"`
 
-mkdir $OpenAtlasHome/Atlases/$Atlas/Changes
+if [ ! -d $OpenAtlasHome/Atlases/$Atlas/Changes ] ; then
+  mkdir $OpenAtlasHome/Atlases/$Atlas/Changes
+fi
 
 # Remove all of the old changes
 (cd $OpenAtlasHome/Atlases/$Atlas/Changes; rm -f *.png)

@@ -35,6 +35,7 @@ Outputs: Adjacency file
 =========================================================================*/
 
 #include "itkImage.h"
+#include "itkNrrdImageIO.h"
 #include "itkImageFileReader.h"
 #include "itkExtractImageFilter.h"
 #include "itkNeighborhoodAlgorithm.h"
