@@ -1,0 +1,28 @@
+#!/bin/bash 
+if [[ $# < 1 || $1 == "--help" ]]
+then
+echo "Usage: ReportAllDisconnectedRegions AtlasName"
+echo "       Reports all models with more than one connected region."
+echo "       Available Atlases are;"
+echo "         `ls -1 @OpenAtlas_SOURCE_DIR@`"
+exit 1
+fi
+
+Prog=ReportDisconnectedRegions
+Atlas=$1
+OpenAtlasHome=@OpenAtlas_SOURCE_DIR@
+if [ ! -d $OpenAtlasHome/Atlases/$Atlas/Models/VTK ] ; then
+  echo "$0 $1 $2 $3: $OpenAtlasHome/Atlases/$Atlas/Models/VTK does not exist"
+  exit 1
+fi
+pushd $OpenAtlasHome/Atlases/$Atlas/Models/VTK
+
+AppDir=""
+if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
+
+files=`ls *.vtk`
+for f in $files; do
+  @OpenAtlas_BINARY_DIR@/$AppDir/$Prog $f
+done
+
+popd
