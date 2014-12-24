@@ -20,9 +20,15 @@ pushd $OpenAtlasHome/Atlases/$Atlas/Models/VTK
 AppDir=""
 if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
 
+status=0
 files=`ls *.vtk`
 for f in $files; do
   @OpenAtlas_BINARY_DIR@/$AppDir/$Prog $f
+  let status=$status+$?
 done
-
+echo $status atlas parts have disconnected regions
 popd
+exit $status
+
+
+
