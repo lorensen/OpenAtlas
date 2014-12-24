@@ -175,9 +175,14 @@ int main (int argc, char *argv[])
     // select the cells for a given label
     selector->ThresholdBetween(i, i);
  
+   if (hasLabels && labels[i] == "")
+     {
+     std::cout << "WARNING: label " << i << " is not in the color table and will not be generated" << std::endl;
+     continue;
+     }
+
     // output the polydata
     std::stringstream ss;
- 
     if (hasLabels)
       {
       ss << labels[i] << "-" << i << ".stl";
