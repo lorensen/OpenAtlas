@@ -1,6 +1,5 @@
 set(ITK_IO_MODULES_USED "ITKIONRRD;ITKIOPNG")
 find_package(ITK COMPONENTS
-  
   ITKCommon
   ITKIOImageBase
   ITKImageGrid
@@ -22,6 +21,9 @@ find_package(VTK COMPONENTS
 )
 include(${VTK_USE_FILE})
  
+message(STATUS "OpenAtlas: ITK VERSION: ${ITK_VERSION}")
+message(STATUS "OpenAtlas: VTK VERSION: ${VTK_VERSION}")
+
 add_library(OpenAtlasUtilities OpenAtlasUtilities.cxx)
 
 include_directories(${OpenAtlas_SOURCE_DIR}/Tools)
