@@ -70,4 +70,4 @@ configure_file(${OpenAtlas_SOURCE_DIR}/Tools/GenerateDiffs.sh.in ${OpenAtlas_BIN
 configure_file(${OpenAtlas_SOURCE_DIR}/Tools/ReportAllDisconnectedRegions.sh.in ${OpenAtlas_BINARY_DIR}/ReportAllDisconnectedRegions.sh)
 
 add_test(NAME ReportAllDisconnectedRegions
-         COMMAND ${OpenAtlas_BINARY_DIR}/ReportAllDisconnectedRegions.sh SPLAtlas)
+         COMMAND ${OpenAtlas_BINARY_DIR}/ReportAllDisconnectedRegions.sh SPLBrainAtlas)
