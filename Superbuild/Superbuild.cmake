@@ -16,7 +16,7 @@ else()
   set(gen "${CMAKE_GENERATOR}" )
 endif()
 
-set( OopenAtlas_DEPENDENCIES )
+set( OpenAtlas_DEPENDENCIES )
 
 set(ep_common_args
     "-DCMAKE_BUILD_TYPE:STRING=Release"
@@ -37,7 +37,7 @@ ExternalProject_Add( OpenAtlas
   CMAKE_ARGS
     ${ep_common_args}
     -DBUILD_SHARED_LIBS:BOOL=FALSE
-    -DBUILD_TESTING:BOOL=FALSE
+    -DBUILD_TESTING:BOOL=TRUE
      # ITK
     -DITK_DIR:PATH=${ITK_DIR}
     # VTK
