@@ -12,6 +12,10 @@ fi
 Prog=GenerateAdjacencies
 Atlas=$1
 OpenAtlasHome=@OpenAtlas_SOURCE_DIR@
+if [ ! -d $OpenAtlasHome/Atlases/$Atlas/Models ] ; then
+  echo "$0 $1: $OpenAtlasHome/Atlases/$Atlas/Models does not exist"
+  exit 1
+fi
 pushd $OpenAtlasHome/Atlases/$Atlas/Models
 
 AppDir=""
