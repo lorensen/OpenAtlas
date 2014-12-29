@@ -59,6 +59,8 @@ Add_executable(ReportDisconnectedRegions MACOSX_BUNDLE ReportDisconnectedRegions
 target_link_libraries(ReportDisconnectedRegions
         ${VTK_LIBRARIES})
 
+Add_executable(GenerateMrmlScene MACOSX_BUNDLE GenerateMrmlScene)
+
 configure_file(${OpenAtlas_SOURCE_DIR}/Tools/GenerateAll.sh.in ${OpenAtlas_BINARY_DIR}/GenerateAll.sh)
 configure_file(${OpenAtlas_SOURCE_DIR}/Tools/DisplayAllAdjacentModels.sh.in ${OpenAtlas_BINARY_DIR}/DisplayAllAdjacentModels.sh)
 configure_file(${OpenAtlas_SOURCE_DIR}/Tools/GenerateCubesFromLabels.sh.in ${OpenAtlas_BINARY_DIR}/GenerateCubesFromLabels.sh)
@@ -71,3 +73,22 @@ configure_file(${OpenAtlas_SOURCE_DIR}/Tools/ReportAllDisconnectedRegions.sh.in 
 
 add_test(NAME ReportAllDisconnectedRegions
          COMMAND ${OpenAtlas_BINARY_DIR}/ReportAllDisconnectedRegions.sh SPLBrainAtlas)
+
+file(GLOB_RECURSE MRML_SCENES ${OpenAtlas_SOURCE_DIR}/Atlases/*.mrml.in)
+message(STATUS "MRML_SCENES ${MRML_SCENES}")
+file(GLOB ATLASES ${OpenAtlas_SOURCE_DIR}/Atlases/*Atlas)
+message(STATUS "ATLASES ${ATLASES}")
+foreach(ATLAS_DIR ${ATLASES})
+  string(REPLACE ${OpenAtlas_SOURCE_DIR}/Atlases/ "" ATLAS_NAME ${ATLASES})
+  message(STATUS "OpenAtlas - Configuring ${ATLAS_NAME}")
+  set(ATLAS_VOLUME ${OpenAtlas_SOURCE_DIR}/Atlases/${ATLAS_NAME}/Atlas/${ATLAS_NAME}Volume.nrrd)
+  set(ATLAS_VOLUME_NAME ${ATLAS_NAME}Volume.nrrd)
+  set(ATLAS_COLOR_TABLE ${OpenAtlas_SOURCE_DIR}/Atlases/${ATLAS_NAME}/Atlas/${ATLAS_NAME}Colors.ctbl)
+  set(ATLAS_COLOR_TABLE_NAME ${ATLAS_NAME}Colors)
+  set(ATLAS_LABELS ${OpenAtlas_SOURCE_DIR}/Atlases/${ATLAS_NAME}/Atlas/${ATLAS_NAME}Labels.nrrd)
+  set(ATLAS_LABELS_NAME ${ATLAS_NAME}Labels)
+  set(MRML_FILENAME ${OpenAtlas_SOURCE_DIR}/Atlases/${ATLAS_NAME}/Atlas/${ATLAS_NAME}.mrml.in)
+  get_filename_component(SCENE_FILE_IN ${MRML_FILENAME} NAME)
+  string(REPLACE ".in" "" SCENE_FILE ${SCENE_FILE_IN})
+  configure_file(${MRML_FILENAME} ${OpenAtlas_BINARY_DIR}/${SCENE_FILE})
+endforeach()
