@@ -23,6 +23,6 @@ if [ ! -f ./adjacencies.txt ] ; then
     exit 1
 fi
 
-@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $Label $OpenAtlasHome/Atlases/$Atlas/Atlas/hncma-atlas-lut.ctbl ./adjacencies.txt 
+@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $Label $OpenAtlasHome/Atlases/$Atlas/Atlas/${Atlas}Colors.ctbl ./adjacencies.txt 
 
 popd

@@ -20,7 +20,7 @@ AppDir=""
 if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
 
 echo "$Prog: Statistics files will be written to $OpenAtlasHome/Atlases/$Atlas/Statistics"
-@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $OpenAtlasHome/Atlases/$Atlas/Atlas/A1_grayT1.nrrd $OpenAtlasHome/Atlases/$Atlas/Atlas/hncma-atlas.nrrd $OpenAtlasHome/Atlases/$Atlas/Atlas/hncma-atlas-lut.ctbl
+@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $OpenAtlasHome/Atlases/$Atlas/Atlas/${Atlas}Volume.nrrd $OpenAtlasHome/Atlases/$Atlas/Atlas/${Atlas}Labels.nrrd $OpenAtlasHome/Atlases/$Atlas/Atlas/${Atlas}Colors.ctbl
 echo "$Prog: Statistics files have been written to $OpenAtlasHome/Atlases/$Atlas/Statistics"
 
 popd

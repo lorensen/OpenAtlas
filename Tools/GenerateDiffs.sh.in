@@ -45,7 +45,7 @@ Prog=LabelDiff
 AppDir=""
 if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
 for label in $Labels; do
-  @OpenAtlas_BINARY_DIR@/$AppDir/$Prog  $label $OldLabels $NewLabels $OpenAtlasHome/Atlases/$Atlas/Atlas/hncma-atlas-lut.ctbl $OpenAtlasHome/Atlases/$Atlas/Changes
+  @OpenAtlas_BINARY_DIR@/$AppDir/$Prog  $label $OldLabels $NewLabels $OpenAtlasHome/Atlases/$Atlas/Atlas/${Atlas}Colors.ctbl $OpenAtlasHome/Atlases/$Atlas/Changes
 done
 # Now commit the diffs
 # Modified

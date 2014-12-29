@@ -30,6 +30,6 @@ if [ ! -f ./adjacencies.txt ] ; then
 fi
 
 for i in $all; do
-@OpenAtlas_BINARY_DIR@/$AppDir/DisplayAdjacentModels $i $OpenAtlasHome/Atlases/$Atlas/Atlas/hncma-atlas-lut.ctbl ./adjacencies.txt $OpenAtlasHome/Atlases/$Atlas/Models/Screenshot/
+@OpenAtlas_BINARY_DIR@/$AppDir/DisplayAdjacentModels $i $OpenAtlasHome/Atlases/$Atlas/Atlas/${Atlas}Colors.ctbl ./adjacencies.txt $OpenAtlasHome/Atlases/$Atlas/Models/Screenshot/
 done
 popd

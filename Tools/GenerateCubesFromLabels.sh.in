@@ -17,7 +17,6 @@ AppDir=""
 if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
 
 echo "$Prog: Cube models will be written to $OpenAtlasHome/Atlases/$Atlas/Models/VTK"
-@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $OpenAtlasHome/Atlases/$Atlas/Atlas/hncma-atlas.nrrd 1 5000 $OpenAtlasHome/Atlases/$Atlas/Atlas/hncma-atlas-lut.ctbl
+@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $OpenAtlasHome/Atlases/$Atlas/Atlas/${Atlas}Labels.nrrd 1 5000 $OpenAtlasHome/Atlases/$Atlas/Atlas/${Atlas}Colors.ctbl
 echo "$Prog: Cube models have been written to $OpenAtlasHome/Atlases/$Atlas/Models/VTK"
-
 popd

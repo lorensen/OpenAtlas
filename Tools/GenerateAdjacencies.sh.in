@@ -1,3 +1,4 @@
+
 #!/bin/bash 
 if [[ $# == 0 || $1 == "--help" ]]
 then
@@ -11,9 +12,10 @@ fi
 
 Prog=GenerateAdjacencies
 Atlas=$1
+
 OpenAtlasHome=@OpenAtlas_SOURCE_DIR@
 if [ ! -d $OpenAtlasHome/Atlases/$Atlas/Models ] ; then
-  echo "$0 $1: $OpenAtlasHome/Atlases/$Atlas/Models does not exist"
+  echo "$0 $Atlas: $OpenAtlasHome/Atlases/$Atlas/Models does not exist"
   exit 1
 fi
 pushd $OpenAtlasHome/Atlases/$Atlas/Models
@@ -21,6 +23,6 @@ pushd $OpenAtlasHome/Atlases/$Atlas/Models
 AppDir=""
 if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
 
-@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $OpenAtlasHome/Atlases/$Atlas/Atlas/hncma-atlas.nrrd adjacencies.txt
+@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $OpenAtlasHome/Atlases/$Atlas/Atlas/${Atlas}Labels.nrrd adjacencies.txt
 
 popd
