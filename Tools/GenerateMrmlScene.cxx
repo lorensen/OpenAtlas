@@ -49,9 +49,16 @@ int main (int argc, char *argv[])
       }
     // Extract label number from filename
     std::string fileName = itksys::SystemTools::GetFilenameWithoutExtension(fullFileName);
-    itksys::RegularExpression re("[^-]*-(.*)");
-    re.find(fileName);
-    std::string labelString = re.match(1);
+    std::string fileExt = itksys::SystemTools::GetFilenameLastExtension(fullFileName);
+
+    // Get the extension (without a dot)
+    itksys::RegularExpression extRe(".(.*)");
+    extRe.find(fileExt);
+    std::string extString = extRe.match(1);
+
+    itksys::RegularExpression labelRe("[^-]*-(.*)");
+    labelRe.find(fileName);
+    std::string labelString = labelRe.match(1);
     int label = atoi(labelString.c_str());
 
     // Get color
@@ -62,22 +69,24 @@ int main (int argc, char *argv[])
 
     // Create ModelStorage, ModelDisplay, and Model nodes
     mout << " <ModelStorage" << std::endl;
-    mout << "  id=\"vtkMRMLModelStorageNode_" << fileName << "\"  name=\"ModelStorage\""
+    mout << "  id=\"vtkMRMLModelStorageNode_" << fileName << "(" << extString << ")"
+         << "\"  name=\"ModelStorage\""
          << " fileName=\""
          << argv[1] << "/" << fullFileName
          << "\">"
          << "</ModelStorage>" << std::endl;
 
     mout << " <ModelDisplay" << std::endl;
-    mout << "  id=\"vtkMRMLModelDisplayNode_" << fileName << "\" name=\"ModelDisplay\""
+    mout << "  id=\"vtkMRMLModelDisplayNode_" << fileName  << "(" << extString << ")"
+         << "\" name=\"ModelDisplay\""
          << " color=\"" << r << " " << g << " " << b << "\">"
          <<"</ModelDisplay>" << std::endl;
 
     mout << " <Model" << std::endl;
-    mout << "  id=\"vtkMRMLModelNode_" << fileName
-         << "\" name=\"" << fileName << "\""
-         << " displayNodeRef=\"vtkMRMLModelDisplayNode_" << fileName << "\""
-         << " storageNodeRef=\"vtkMRMLModelStorageNode_" << fileName << "\">"
+    mout << "  id=\"vtkMRMLModelNode_" << fileName << "(" << extString << ")"
+         << "\" name=\"" << fileName << "(" << extString << ")" << "\""
+         << " displayNodeRef=\"vtkMRMLModelDisplayNode_" << fileName << "(" << extString << ")" << "\""
+         << " storageNodeRef=\"vtkMRMLModelStorageNode_" << fileName << "(" << extString << ")" << "\">"
          << "</Model>" << std::endl;
     }
   // Write trailer
