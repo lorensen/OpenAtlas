@@ -4,8 +4,9 @@
 #include <itksys/Directory.hxx>
 #include <itksys/SystemTools.hxx>
 #include <itksys/RegularExpression.hxx>
-#include <OpenAtlasUtilities.h>
+#include "OpenAtlasUtilities.h"
 
+#include <cstdlib>
 #include <iostream>
 #include <fstream>
 
@@ -64,8 +65,8 @@ int main (int argc, char *argv[])
     // Get color
     float r, g, b;
     r = colors[label][0];
-    b = colors[label][1];
-    g = colors[label][2];
+    g = colors[label][1];
+    b = colors[label][2];
 
     // Create ModelStorage, ModelDisplay, and Model nodes
     mout << " <ModelStorage" << std::endl;
