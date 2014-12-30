@@ -4,7 +4,7 @@ then
 echo "Usage: GenerateCubesFromLabels.sh AtlasName"
 echo "       Generates cube models( .vtk) for each label in the atlas"
 echo "       Available Atlases are;"
-echo "         `ls -1 @OpenAtlas_SOURCE_DIR@`"
+echo "         `ls -1 @OpenAtlas_SOURCE_DIR@/Atlases`"
 exit 1
 fi
 

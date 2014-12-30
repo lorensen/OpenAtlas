@@ -51,13 +51,18 @@ add_executable(LabelDiff MACOSX_BUNDLE LabelDiff)
 target_link_libraries(LabelDiff
         OpenAtlasUtilities ${ITK_LIBRARIES} ${VTK_LIBRARIES})
 
-Add_executable(LabelsChanged MACOSX_BUNDLE LabelsChanged)
+add_executable(LabelsChanged MACOSX_BUNDLE LabelsChanged)
 target_link_libraries(LabelsChanged
         OpenAtlasUtilities ${ITK_LIBRARIES})
 
-Add_executable(ReportDisconnectedRegions MACOSX_BUNDLE ReportDisconnectedRegions)
+add_executable(ReportDisconnectedRegions MACOSX_BUNDLE ReportDisconnectedRegions)
 target_link_libraries(ReportDisconnectedRegions
         ${VTK_LIBRARIES})
+
+add_executable(GenerateMrmlScene MACOSX_BUNDLE GenerateMrmlScene)
+target_link_libraries(GenerateMrmlScene
+        OpenAtlasUtilities
+        ${ITK_LIBRARIES})
 
 configure_file(${OpenAtlas_SOURCE_DIR}/Tools/GenerateAll.sh.in ${OpenAtlas_BINARY_DIR}/GenerateAll.sh @ONLY)
 configure_file(${OpenAtlas_SOURCE_DIR}/Tools/DisplayAllAdjacentModels.sh.in ${OpenAtlas_BINARY_DIR}/DisplayAllAdjacentModels.sh @ONLY)
@@ -68,10 +73,12 @@ configure_file(${OpenAtlas_SOURCE_DIR}/Tools/GenerateAdjacencies.sh.in ${OpenAtl
 configure_file(${OpenAtlas_SOURCE_DIR}/Tools/GenerateStatisticsFromLabels.sh.in ${OpenAtlas_BINARY_DIR}/GenerateStatisticsFromLabels.sh @ONLY)
 configure_file(${OpenAtlas_SOURCE_DIR}/Tools/GenerateDiffs.sh.in ${OpenAtlas_BINARY_DIR}/GenerateDiffs.sh @ONLY)
 configure_file(${OpenAtlas_SOURCE_DIR}/Tools/ReportAllDisconnectedRegions.sh.in ${OpenAtlas_BINARY_DIR}/ReportAllDisconnectedRegions.sh @ONLY)
+configure_file(${OpenAtlas_SOURCE_DIR}/Tools/GenerateMrmlScene.sh.in ${OpenAtlas_BINARY_DIR}/GenerateMrmlScene.sh @ONLY)
 
 add_test(NAME ReportAllDisconnectedRegions
          COMMAND ${OpenAtlas_BINARY_DIR}/ReportAllDisconnectedRegions.sh SPLBrainAtlas)
 
+# For each atlas, generate a Slicer mrml scene containing the volumes and labels
 file(GLOB_RECURSE MRML_SCENES ${OpenAtlas_SOURCE_DIR}/Atlases/*.mrml.in)
 message(STATUS "MRML_SCENES ${MRML_SCENES}")
 file(GLOB ATLASES ${OpenAtlas_SOURCE_DIR}/Atlases/*Atlas)
