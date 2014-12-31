@@ -26,7 +26,7 @@ int ReadLabelFile(const char * filename, std::vector<std::string> &labels)
       isstream >> label >> name;
       if (label >= labels.size())
         {
-        labels.resize((labels.size() + 1) * 2);
+        labels.resize(label * 2);
         }
       labels[label] = name;
       }
