@@ -10,9 +10,14 @@ fi
 
 Atlas=$1
 OpenAtlasHome=@OpenAtlas_SOURCE_DIR@
+
+# Make missing directories
 if [ ! -d $OpenAtlasHome/Atlases/$Atlas/Models ] ; then
-  echo "$0 $1: $OpenAtlasHome/Atlases/$Atlas/Models does not exist"
-  exit 1
+  mkdir -p $OpenAtlasHome/Atlases/$Atlas/Models
+fi
+
+if [ ! -d $OpenAtlasHome/Atlases/$Atlas/Models/Screenshot ] ; then
+  mkdir -p $OpenAtlasHome/Atlases/$Atlas/Models/Screenshot
 fi
 
 pushd $OpenAtlasHome/Atlases/$Atlas/Models

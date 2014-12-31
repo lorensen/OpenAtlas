@@ -75,17 +75,20 @@ configure_file(${OpenAtlas_SOURCE_DIR}/Tools/GenerateDiffs.sh.in ${OpenAtlas_BIN
 configure_file(${OpenAtlas_SOURCE_DIR}/Tools/ReportAllDisconnectedRegions.sh.in ${OpenAtlas_BINARY_DIR}/ReportAllDisconnectedRegions.sh @ONLY)
 configure_file(${OpenAtlas_SOURCE_DIR}/Tools/GenerateMrmlScene.sh.in ${OpenAtlas_BINARY_DIR}/GenerateMrmlScene.sh @ONLY)
 
-add_test(NAME ReportAllDisconnectedRegions
-         COMMAND ${OpenAtlas_BINARY_DIR}/ReportAllDisconnectedRegions.sh SPLBrainAtlas)
 
-# For each atlas, generate a Slicer mrml scene containing the volumes and labels
+# For each atlas:
+# 1) generate a disconnected regions test
+# 2) generate a Slicer mrml scene containing the volumes and labels
+
 file(GLOB_RECURSE MRML_SCENES ${OpenAtlas_SOURCE_DIR}/Atlases/*.mrml.in)
 message(STATUS "MRML_SCENES ${MRML_SCENES}")
 file(GLOB ATLASES ${OpenAtlas_SOURCE_DIR}/Atlases/*Atlas)
 message(STATUS "ATLASES ${ATLASES}")
 foreach(ATLAS_DIR ${ATLASES})
-  string(REPLACE ${OpenAtlas_SOURCE_DIR}/Atlases/ "" ATLAS_NAME ${ATLASES})
+  string(REPLACE ${OpenAtlas_SOURCE_DIR}/Atlases/ "" ATLAS_NAME ${ATLAS_DIR})
   message(STATUS "OpenAtlas - Configuring ${ATLAS_NAME}")
+  add_test(NAME ReportAllDisconnectedRegions-${ATLAS_NAME}
+           COMMAND ${OpenAtlas_BINARY_DIR}/ReportAllDisconnectedRegions.sh ${ATLAS_NAME})
   set(ATLAS_VOLUME ${OpenAtlas_SOURCE_DIR}/Atlases/${ATLAS_NAME}/Atlas/${ATLAS_NAME}Volume.nrrd)
   set(ATLAS_VOLUME_NAME ${ATLAS_NAME}Volume)
   set(ATLAS_COLOR_TABLE ${OpenAtlas_SOURCE_DIR}/Atlases/${ATLAS_NAME}/Atlas/${ATLAS_NAME}Colors.ctbl)
@@ -95,5 +98,7 @@ foreach(ATLAS_DIR ${ATLASES})
   set(MRML_FILENAME ${OpenAtlas_SOURCE_DIR}/Atlases/${ATLAS_NAME}/Atlas/${ATLAS_NAME}.mrml.in)
   get_filename_component(SCENE_FILE_IN ${MRML_FILENAME} NAME)
   string(REPLACE ".in" "" SCENE_FILE ${SCENE_FILE_IN})
-  configure_file(${MRML_FILENAME} ${OpenAtlas_BINARY_DIR}/${SCENE_FILE} @ONLY)
+  if (EXISTS ${MRML_FILENAME})
+    configure_file(${MRML_FILENAME} ${OpenAtlas_BINARY_DIR}/${SCENE_FILE} @ONLY)
+  endif()
 endforeach()

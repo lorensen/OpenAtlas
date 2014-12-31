@@ -11,6 +11,11 @@ fi
 Prog=GenerateCubesFromLabels
 Atlas=$1
 OpenAtlasHome=@OpenAtlas_SOURCE_DIR@
+
+# Make the directory if it does not exist
+if [ ! -d $OpenAtlasHome/Atlases/$Atlas/Models/VTK ] ; then
+  mkdir -p $OpenAtlasHome/Atlases/$Atlas/Models/VTK
+fi
 pushd $OpenAtlasHome/Atlases/$Atlas/Models/VTK
 
 AppDir=""

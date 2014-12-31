@@ -11,6 +11,11 @@ fi
 Prog=GenerateModelsFromLabels
 Atlas=$1
 OpenAtlasHome=@OpenAtlas_SOURCE_DIR@
+
+# Make the directory if it does not exist
+if [ ! -d $OpenAtlasHome/Atlases/$Atlas/Models/STL ] ; then
+  mkdir -p $OpenAtlasHome/Atlases/$Atlas/Models/STL
+fi
 pushd $OpenAtlasHome/Atlases/$Atlas/Models/STL
 
 AppDir=""

@@ -182,7 +182,7 @@ int main (int argc, char *argv[])
    geometry->Update();
    if (hasLabels && labels[i] == "")
      {
-     std::cout << "WARNING: label " << i << " is not in the color table and will not be generated" << std::endl;
+     std::cout << "WARNING: label " << i << " is in the label volume but not in the color table and will not be generated" << std::endl;
      continue;
      }
     // output the polydata

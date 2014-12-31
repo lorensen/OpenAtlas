@@ -11,6 +11,7 @@ fi
 Prog=GenerateStatisticsFromLabels
 Atlas=$1
 OpenAtlasHome=@OpenAtlas_SOURCE_DIR@
+# Make the directory if it does not exist
 if [ ! -d $OpenAtlasHome/Atlases/$Atlas/Statistics ] ; then
   mkdir $OpenAtlasHome/Atlases/$Atlas/Statistics
 fi
