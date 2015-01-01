@@ -80,10 +80,9 @@ configure_file(${OpenAtlas_SOURCE_DIR}/Tools/GenerateMrmlScene.sh.in ${OpenAtlas
 # 1) generate a disconnected regions test
 # 2) generate a Slicer mrml scene containing the volumes and labels
 
-file(GLOB_RECURSE MRML_SCENES ${OpenAtlas_SOURCE_DIR}/Atlases/*.mrml.in)
-message(STATUS "MRML_SCENES ${MRML_SCENES}")
 file(GLOB ATLASES ${OpenAtlas_SOURCE_DIR}/Atlases/*Atlas)
-message(STATUS "ATLASES ${ATLASES}")
+file(GLOB_RECURSE MRML_SCENES ${OpenAtlas_SOURCE_DIR}/Atlases/*.mrml.in)
+
 foreach(ATLAS_DIR ${ATLASES})
   string(REPLACE ${OpenAtlas_SOURCE_DIR}/Atlases/ "" ATLAS_NAME ${ATLAS_DIR})
   message(STATUS "OpenAtlas - Configuring ${ATLAS_NAME}")
