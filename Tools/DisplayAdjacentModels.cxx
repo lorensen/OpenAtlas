@@ -220,6 +220,8 @@ int main (int argc, char *argv[])
     vtkSmartPointer<vtkWindowToImageFilter> windowToImageFilter = 
       vtkSmartPointer<vtkWindowToImageFilter>::New();
     windowToImageFilter->SetInput(renderWindow);
+    windowToImageFilter->ReadFrontBufferOff();
+    windowToImageFilter->Modified();
     windowToImageFilter->Update();
   
     std::ostringstream snapshotFileName;
