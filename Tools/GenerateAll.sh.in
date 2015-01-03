@@ -21,3 +21,7 @@ echo "Done"
 echo -n "Generate Cubes..."
 @OpenAtlas_BINARY_DIR@/GenerateCubesFromLabels.sh $Atlas
 echo "Done"
+echo -n "Generate Mrml Scene..."
+@OpenAtlas_BINARY_DIR@/GenerateMrmlScene.sh $Atlas VTK
+@OpenAtlas_BINARY_DIR@/GenerateMrmlScene.sh $Atlas STL
+echo "Done"

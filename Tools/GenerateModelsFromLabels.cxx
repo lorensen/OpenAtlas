@@ -109,11 +109,17 @@ int main (int argc, char *argv[])
  
   reader->SetFileName(argv[1]);
 
-  orienter->SetDesiredCoordinateOrientation(itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_ALS);
+  // Convert to RAS (note: orientation filter uses a different
+  // notation
+  orienter->SetDesiredCoordinateOrientation(itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_LPI); // RAS
   orienter->SetInput(reader->GetOutput());
+  orienter->UseImageDirectionOn();
+  orienter->Update();
 
   ImageType::PointType origin;
-  origin.Fill(-127.5);
+  origin[0] = -orienter->GetOutput()->GetOrigin()[0];
+  origin[1] = -orienter->GetOutput()->GetOrigin()[1];
+  origin[2] = orienter->GetOutput()->GetOrigin()[2];
   change->SetInput(orienter->GetOutput());
   change->SetOutputOrigin(origin);
   change->ChangeOriginOn();

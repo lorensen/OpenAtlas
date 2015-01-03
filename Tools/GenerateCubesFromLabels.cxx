@@ -27,6 +27,7 @@
 #include <vtkPolyDataWriter.h>
 #include <vtkSmartPointer.h>
  
+#include <vtkMatrix4x4.h>
 #include <vtkCellData.h>
 #include <vtkImageData.h>
 #include <vtkPointData.h>
@@ -96,7 +97,7 @@ int main (int argc, char *argv[])
   std::string filePrefix = "Label";
  
   // Generate models from labels
-  // 1) Read the meta file
+  // 1) Read the volume label file
   // 2) Generate a histogram of the labels
   // 3) Generate models from the labeled volume
   // 4) Smooth the models
@@ -104,11 +105,17 @@ int main (int argc, char *argv[])
  
   reader->SetFileName(argv[1]);
 
-  orienter->SetDesiredCoordinateOrientation(itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_ALS);
+  // Convert to RAS (note: orientation filter uses a different notation
+  orienter->SetDesiredCoordinateOrientation(itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_LPI); // RAS
   orienter->SetInput(reader->GetOutput());
+  orienter->UseImageDirectionOn();
+  orienter->Update();
 
+  // Change origin to RAS
   ImageType::PointType origin;
-  origin.Fill(-127.5);
+  origin[0] = -orienter->GetOutput()->GetOrigin()[0];
+  origin[1] = -orienter->GetOutput()->GetOrigin()[1];
+  origin[2] = orienter->GetOutput()->GetOrigin()[2];
   change->SetInput(orienter->GetOutput());
   change->SetOutputOrigin(origin);
   change->ChangeOriginOn();
@@ -140,10 +147,12 @@ int main (int argc, char *argv[])
                                    vtkDataObject::FIELD_ASSOCIATION_CELLS,
                                    vtkDataSetAttributes::SCALARS);
  
-  // Shift the geometry by 1/2
+  // Shift the geometry by 1/2 pixel
   vtkSmartPointer<vtkTransform> transform =
     vtkSmartPointer<vtkTransform>::New();
-  transform->Translate (-.5, -.5, -.5);
+  transform->Translate (-1.0 * change->GetOutput()->GetSpacing()[0],
+                        -1.0 * change->GetOutput()->GetSpacing()[1],
+                        -1.0 * change->GetOutput()->GetSpacing()[2]);
 
   vtkSmartPointer<vtkTransformFilter> transformModel =
     vtkSmartPointer<vtkTransformFilter>::New();
