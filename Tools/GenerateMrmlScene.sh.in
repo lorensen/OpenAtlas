@@ -14,6 +14,13 @@ Model=$2
 OpenAtlasHome=@OpenAtlas_SOURCE_DIR@
 OpenAtlasBin=@OpenAtlas_BINARY_DIR@
 
+if [ ! -d $OpenAtlasHome/Atlases/$Atlas ] ; then
+  echo "The atlas $Atlas does not exist."
+  echo "Available atlases are:"
+  echo "`ls -1 @OpenAtlas_SOURCE_DIR@/Atlases`"
+  exit 1
+fi
+
 AppDir=""
 if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
 

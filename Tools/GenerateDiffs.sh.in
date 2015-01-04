@@ -8,10 +8,18 @@ echo "       Available Atlases are;"
 echo "         `ls -1 @OpenAtlas_SOURCE_DIR@/Atlases`"
 exit 1
 fi
+
+OpenAtlasHome=@OpenAtlas_SOURCE_DIR@
 Atlas=$1
 OldLabels=$2
 NewLabels=$3
-OpenAtlasHome=@OpenAtlas_SOURCE_DIR@
+
+if [ ! -d $OpenAtlasHome/Atlases/$Atlas ] ; then
+  echo "The atlas $Atlas does not exist."
+  echo "Available atlases are:"
+  echo "`ls -1 @OpenAtlas_SOURCE_DIR@/Atlases`"
+  exit 1
+fi
 
 # Validate inputs
 if [ ! -d $OpenAtlasHome/Atlases/$Atlas/Models ] ; then

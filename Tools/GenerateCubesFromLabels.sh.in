@@ -9,8 +9,15 @@ exit 1
 fi
 
 Prog=GenerateCubesFromLabels
-Atlas=$1
 OpenAtlasHome=@OpenAtlas_SOURCE_DIR@
+Atlas=$1
+
+if [ ! -d $OpenAtlasHome/Atlases/$Atlas ] ; then
+  echo "The atlas $Atlas does not exist."
+  echo "Available atlases are:"
+  echo "`ls -1 @OpenAtlas_SOURCE_DIR@/Atlases`"
+  exit 1
+fi
 
 # Make the directory if it does not exist
 if [ ! -d $OpenAtlasHome/Atlases/$Atlas/Models/VTK ] ; then
