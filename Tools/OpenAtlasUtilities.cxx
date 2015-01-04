@@ -109,5 +109,6 @@ int ReadAdjacenyFile(const char * filename, std::vector<std::set<unsigned int> >
         }
       }
     }
+  file.close();
   return 0;
 }
