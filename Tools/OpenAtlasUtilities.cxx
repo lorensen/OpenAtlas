@@ -54,7 +54,7 @@ int ReadColorFile(const char * filename, std::vector<std::vector<float> > &color
     std::istringstream isstream(line);
     std::string::size_type label = 0;
     std::string name;
-    int r, g, b;
+    int r, g, b, alpha;
     if (line.find("#") == std::string::npos)
       {
       isstream >> label >> name;
@@ -62,11 +62,12 @@ int ReadColorFile(const char * filename, std::vector<std::vector<float> > &color
         {
         colors.resize((label + 1) * 2);
         }
-      isstream >> r >> g >> b;
-      colors[label].resize(3);
+      isstream >> r >> g >> b >> alpha;
+      colors[label].resize(4);
       colors[label][0] = r / 255.0;
       colors[label][1] = g / 255.0;
       colors[label][2] = b / 255.0;
+      colors[label][3] = alpha / 255.0;
       }
     }
   file.close();

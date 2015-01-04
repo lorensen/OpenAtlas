@@ -87,7 +87,7 @@ int main (int argc, char *argv[])
       {
       std::cout << "\t" << labels[*sit] << "(" << *sit << ")" <<std::endl;
       }
-    if ((*sit == 2 || *sit == 41))
+    if (colors[*sit][3] == 0)
       {
       continue;
       }
@@ -125,7 +125,7 @@ int main (int argc, char *argv[])
   for (std::set<unsigned int>::iterator sit = neighbors[ label ].begin();
        sit != neighbors[ label ].end(); ++sit)
     {
-    if (*sit == 2 || *sit == 41)
+    if (colors[*sit][3] == 0)
       {
       continue;
       }
