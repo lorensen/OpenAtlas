@@ -8,7 +8,16 @@ echo "         `ls -1 @OpenAtlas_SOURCE_DIR@/Atlases`"
 exit 1
 fi
 
+OpenAtlasHome=@OpenAtlas_SOURCE_DIR@
 Atlas=$1
+
+if [ ! -d $OpenAtlasHome/Atlases/$Atlas ] ; then
+  echo "The atlas $Atlas does not exist."
+  echo "Available atlases are:"
+  echo "`ls -1 @OpenAtlas_SOURCE_DIR@/Atlases`"
+  exit 1
+fi
+
 echo -n "Generate Adjaciencies..."
 @OpenAtlas_BINARY_DIR@/GenerateAdjacencies.sh $Atlas
 echo "Done"
