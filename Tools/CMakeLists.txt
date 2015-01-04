@@ -64,6 +64,11 @@ target_link_libraries(GenerateMrmlScene
         OpenAtlasUtilities
         ${ITK_LIBRARIES})
 
+add_executable(ReportLeftRightAdjacencies MACOSX_BUNDLE ReportLeftRightAdjacencies)
+target_link_libraries(ReportLeftRightAdjacencies
+        OpenAtlasUtilities
+        ${ITK_LIBRARIES})
+
 configure_file(${OpenAtlas_SOURCE_DIR}/Tools/GenerateAll.sh.in ${OpenAtlas_BINARY_DIR}/GenerateAll.sh @ONLY)
 configure_file(${OpenAtlas_SOURCE_DIR}/Tools/DisplayAllAdjacentModels.sh.in ${OpenAtlas_BINARY_DIR}/DisplayAllAdjacentModels.sh @ONLY)
 configure_file(${OpenAtlas_SOURCE_DIR}/Tools/GenerateCubesFromLabels.sh.in ${OpenAtlas_BINARY_DIR}/GenerateCubesFromLabels.sh @ONLY)
