@@ -113,9 +113,9 @@ int main (int argc, char *argv[])
 
   // Change origin to RAS
   ImageType::PointType origin;
-  origin[0] = -orienter->GetOutput()->GetOrigin()[0];
-  origin[1] = -orienter->GetOutput()->GetOrigin()[1];
-  origin[2] = orienter->GetOutput()->GetOrigin()[2];
+  origin[0] = -orienter->GetOutput()->GetOrigin()[0] - orienter->GetOutput()->GetSpacing()[0] * .5;
+  origin[1] = -orienter->GetOutput()->GetOrigin()[1] - orienter->GetOutput()->GetSpacing()[1] * .5;
+  origin[2] = orienter->GetOutput()->GetOrigin()[2] + orienter->GetOutput()->GetSpacing()[2] * .5;
   change->SetInput(orienter->GetOutput());
   change->SetOutputOrigin(origin);
   change->ChangeOriginOn();
@@ -150,9 +150,9 @@ int main (int argc, char *argv[])
   // Shift the geometry by 1/2 pixel
   vtkSmartPointer<vtkTransform> transform =
     vtkSmartPointer<vtkTransform>::New();
-  transform->Translate (-1.0 * change->GetOutput()->GetSpacing()[0],
-                        -1.0 * change->GetOutput()->GetSpacing()[1],
-                        -1.0 * change->GetOutput()->GetSpacing()[2]);
+  transform->Translate (0.0 * change->GetOutput()->GetSpacing()[0],
+                        0.0 * change->GetOutput()->GetSpacing()[1],
+                        0.0 * change->GetOutput()->GetSpacing()[2]);
 
   vtkSmartPointer<vtkTransformFilter> transformModel =
     vtkSmartPointer<vtkTransformFilter>::New();
