@@ -167,6 +167,7 @@ int main (int argc, char *argv[])
   confilter->SetExtractionModeToLargestRegion();
 
   writer->SetInputConnection(confilter->GetOutputPort());
+  writer->SetInputConnection(geometry->GetOutputPort());
  
   for (unsigned int i = startLabel; i <= endLabel; i++)
     {
