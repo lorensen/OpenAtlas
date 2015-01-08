@@ -19,8 +19,6 @@
 #include <vtkImageAccumulate.h>
 #include <vtkImageWrapPad.h>
 #include <vtkMaskFields.h>
-#include <vtkTransform.h>
-#include <vtkTransformFilter.h>
 #include <vtkThreshold.h>
 #include <vtkGeometryFilter.h>
 #include <vtkWindowToImageFilter.h>
@@ -46,6 +44,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <map>
 
 int main (int argc, char *argv[])
 {
@@ -121,6 +120,9 @@ int main (int argc, char *argv[])
   diffImage->SetRegions(newReader->GetOutput()->GetLargestPossibleRegion());
   diffImage->Allocate();
   diffImage->FillBuffer(0);
+  diffImage->SetOrigin(newReader->GetOutput()->GetOrigin());
+  diffImage->SetSpacing(newReader->GetOutput()->GetSpacing());
+  diffImage->SetDirection(newReader->GetOutput()->GetDirection());
 
   typedef itk::ImageRegionConstIterator< ImageType > ConstIteratorType;
   typedef itk::ImageRegionIterator< ImageType>       IteratorType;
@@ -130,6 +132,12 @@ int main (int argc, char *argv[])
                           newReader->GetOutput()->GetLargestPossibleRegion());
   IteratorType diffIt(diffImage,
                       diffImage->GetLargestPossibleRegion());
+
+  std::map<unsigned int, unsigned int> addedLabels;
+  std::map<unsigned int, unsigned int>::iterator aIt;
+
+  std::map<unsigned int, unsigned int> removedLabels;
+  std::map<unsigned int, unsigned int>::iterator rIt;
 
   while (!oldIt.IsAtEnd())
     {
@@ -142,24 +150,57 @@ int main (int argc, char *argv[])
     else if (oldIt.Get() != label && newIt.Get() == label)
       {
       diffIt.Set(label + 1);
+      aIt = addedLabels.find(oldIt.Get());
+      if (aIt == addedLabels.end())
+        {
+        addedLabels[oldIt.Get()] = 1;
+        }
+      else
+        {
+        addedLabels[oldIt.Get()] = addedLabels[oldIt.Get()] + 1;
+        }
       }
     // removed
     else if (oldIt.Get() == label && newIt.Get() != label)
       {
       diffIt.Set(20000);
+      rIt = removedLabels.find(newIt.Get());
+      if (rIt == removedLabels.end())
+        {
+        removedLabels[newIt.Get()] = 1;
+        }
+      else
+        {
+        removedLabels[newIt.Get()] = removedLabels[newIt.Get()] + 1;        
+        }
       }
     ++oldIt;
     ++newIt;
     ++diffIt;
     }
 
+  std::cout << labels[label] << " changes" << std::endl;
+  for(std::map<unsigned int, unsigned int>::iterator a = addedLabels.begin(); a != addedLabels.end(); ++a)
+    {
+    std::cout << "\t added " << a->second << " voxels from " << (a->first ? labels[a->first] : "background") << std::endl;
+    }
+  for(std::map<unsigned int, unsigned int>::iterator r = removedLabels.begin(); r != removedLabels.end(); ++r)
+    {
+    std::cout << "\t changed " << r->second << " voxels to " << (r->first ? labels[r->first] : "background") << std::endl;
+    }
+
   // Now, convert the point data to cell data
   orienter->SetDesiredCoordinateOrientation(
-    itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_ALS);
+    itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_LPI);
   orienter->SetInput(diffImage);
+  orienter->UseImageDirectionOn();
+  orienter->Update();
 
+  // Change origin to RAS
   ImageType::PointType origin;
-  origin.Fill(-127.5);
+  origin[0] = -orienter->GetOutput()->GetOrigin()[0] - orienter->GetOutput()->GetSpacing()[0] * .5;
+  origin[1] = -orienter->GetOutput()->GetOrigin()[1] - orienter->GetOutput()->GetSpacing()[1] * .5;
+  origin[2] = orienter->GetOutput()->GetOrigin()[2] + orienter->GetOutput()->GetSpacing()[2] * .5;
   change->SetInput(orienter->GetOutput());
   change->SetOutputOrigin(origin);
   change->ChangeOriginOn();
@@ -184,18 +225,9 @@ int main (int argc, char *argv[])
   selector->SetInputArrayToProcess(0, 0, 0,
                                    vtkDataObject::FIELD_ASSOCIATION_CELLS,
                                    vtkDataSetAttributes::SCALARS);
-   // Shift the geometry by 1/2
-  vtkSmartPointer<vtkTransform> transform =
-    vtkSmartPointer<vtkTransform>::New();
-  transform->Translate (-.5, -.5, -.5);
-
-  vtkSmartPointer<vtkTransformFilter> transformModel =
-    vtkSmartPointer<vtkTransformFilter>::New();
-  transformModel->SetTransform(transform);
-  transformModel->SetInputConnection(selector->GetOutputPort());
 
   // Strip the scalars from the output
-  scalarsOff->SetInputConnection(transformModel->GetOutputPort());
+  scalarsOff->SetInputConnection(selector->GetOutputPort());
   scalarsOff->CopyAttributeOff(vtkMaskFields::POINT_DATA,
                                vtkDataSetAttributes::SCALARS);
   scalarsOff->CopyAttributeOff(vtkMaskFields::CELL_DATA,
@@ -352,7 +384,7 @@ int main (int argc, char *argv[])
   
     std::ostringstream snapshotFileName;
     snapshotFileName << argv[5] << "/" << labels[label] << "_diff.png" << std::ends;
-    std::cout << "Writing " << snapshotFileName.str() << std::endl;
+
     vtkSmartPointer<vtkPNGWriter> writer = 
       vtkSmartPointer<vtkPNGWriter>::New();
     writer->SetFileName(snapshotFileName.str().c_str());
