@@ -20,8 +20,6 @@
 #include <vtkImageAccumulate.h>
 #include <vtkImageWrapPad.h>
 #include <vtkMaskFields.h>
-#include <vtkTransform.h>
-#include <vtkTransformFilter.h>
 #include <vtkThreshold.h>
 #include <vtkGeometryFilter.h>
 #include <vtkPolyDataWriter.h>
@@ -147,20 +145,8 @@ int main (int argc, char *argv[])
                                    vtkDataObject::FIELD_ASSOCIATION_CELLS,
                                    vtkDataSetAttributes::SCALARS);
  
-  // Shift the geometry by 1/2 pixel
-  vtkSmartPointer<vtkTransform> transform =
-    vtkSmartPointer<vtkTransform>::New();
-  transform->Translate (0.0 * change->GetOutput()->GetSpacing()[0],
-                        0.0 * change->GetOutput()->GetSpacing()[1],
-                        0.0 * change->GetOutput()->GetSpacing()[2]);
-
-  vtkSmartPointer<vtkTransformFilter> transformModel =
-    vtkSmartPointer<vtkTransformFilter>::New();
-  transformModel->SetTransform(transform);
-  transformModel->SetInputConnection(selector->GetOutputPort());
-
   // Strip the scalars from the output
-  scalarsOff->SetInputConnection(transformModel->GetOutputPort());
+  scalarsOff->SetInputConnection(selector->GetOutputPort());
   scalarsOff->CopyAttributeOff(vtkMaskFields::POINT_DATA,
                                vtkDataSetAttributes::SCALARS);
   scalarsOff->CopyAttributeOff(vtkMaskFields::CELL_DATA,
