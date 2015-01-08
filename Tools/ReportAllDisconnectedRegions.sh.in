@@ -10,6 +10,7 @@ fi
 
 Prog=ReportDisconnectedRegions
 Atlas=$1
+FiducialDirectory=$2
 OpenAtlasHome=@OpenAtlas_SOURCE_DIR@
 if [ ! -d $OpenAtlasHome/Atlases/$Atlas/Models/VTK ] ; then
   echo "$0 $1 $2 $3: $OpenAtlasHome/Atlases/$Atlas/Models/VTK does not exist"
@@ -23,7 +24,7 @@ if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
 status=0
 files=`ls *.vtk`
 for f in $files; do
-  @OpenAtlas_BINARY_DIR@/$AppDir/$Prog $f
+  @OpenAtlas_BINARY_DIR@/$AppDir/$Prog $f $FiducialDirectory
   let status=$status+$?
 done
 echo $status atlas parts have disconnected regions
