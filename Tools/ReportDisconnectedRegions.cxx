@@ -67,6 +67,7 @@ int main (int argc, char *argv[])
       cleaner->Update();
       std::cout << "Region " << i << " has " << cleaner->GetOutput()->GetNumberOfPoints() << " points" << std::endl;
       double centroid[3];
+#if 0
       centroid[0] = centroid[1] = centroid[2] = 0.0;
       for (int j = 0; j < cleaner->GetOutput()->GetNumberOfPoints(); ++j)
         {
@@ -77,6 +78,11 @@ int main (int argc, char *argv[])
       centroid[0] /= cleaner->GetOutput()->GetNumberOfPoints();
       centroid[1] /= cleaner->GetOutput()->GetNumberOfPoints();
       centroid[2] /= cleaner->GetOutput()->GetNumberOfPoints();
+#endif
+      int mid = cleaner->GetOutput()->GetNumberOfPoints() / 2;
+      centroid[0] = cleaner->GetOutput()->GetPoints()->GetPoint(mid)[0];
+      centroid[1] = cleaner->GetOutput()->GetPoints()->GetPoint(mid)[1];
+      centroid[2] = cleaner->GetOutput()->GetPoints()->GetPoint(mid)[2];
       std::stringstream fiducialName;
       fiducialName << vtksys::SystemTools::GetFilenameWithoutExtension(std::string(argv[1]))
                    << "_" << i;
@@ -86,8 +92,8 @@ int main (int argc, char *argv[])
            << "0," // ox
            << "0," // oy
            << "1," // oz
-           << "1," // vis
-           << "0," // sel
+           << "0," // vis
+           << "1," // sel
            << "1," // lock
            << fiducialName.str() << ","
            << "" << "Disconnected region" << "," // description
@@ -95,6 +101,26 @@ int main (int argc, char *argv[])
            << std::endl;
       }
     fout.close();
+    std::stringstream mrmlFileName;
+    mrmlFileName << fiducialDirectory << "/"
+                     << anatomyName
+                     << ".mrml";
+    std::ofstream mout(mrmlFileName.str().c_str());
+    mout << "<MRML  version=\"Slicer4.4.0\" userTags=\"\">" << std::endl;
+    mout << " <MarkupsFiducial";
+    mout << "  id=\"vtkMRMLMarkupsFiducialNode1\"  name=\""
+         << anatomyName
+         << "\"  hideFromEditors=\"false\"  selectable=\"true\"  selected=\"false\"  displayNodeRef=\"vtkMRMLMarkupsDisplayNodeOpenAtlas\"  storageNodeRef=\"vtkMRMLMarkupsFiducialStorageNode1\"  references=\"display:vtkMRMLMarkupsDisplayNodeOpenAtlas;storage:vtkMRMLMarkupsFiducialStorageNode1;\"  userTags=\"\"  locked=\"0\"  markupLabelFormat=\"%N-%d\" ></MarkupsFiducial>" << std::endl;
+    mout << " <MarkupsFiducialStorage";
+    mout << "  id=\"vtkMRMLMarkupsFiducialStorageNode1\""
+         << " name=\""
+         << "MarkupsFiducialStorage" << anatomyName
+         <<"\"  hideFromEditors=\"true\"  selectable=\"true\"  selected=\"false\" "
+         << "fileName=\""
+         << vtksys::SystemTools::GetFilenameName(fiducialFileName.str())
+         << "\"  useCompression=\"1\"  readState=\"0\"  writeState=\"4\"  coordinateSystem=\"0\" ></MarkupsFiducialStorage>" << std::endl;
+    mout << "</MRML>" << std::endl;
+    mout.close();
     return EXIT_FAILURE;
     }
   return EXIT_SUCCESS;
