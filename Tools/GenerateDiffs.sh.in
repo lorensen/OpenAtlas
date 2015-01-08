@@ -57,10 +57,11 @@ for label in $Labels; do
 done
 # Now commit the diffs
 # Modified
-(cd $OpenAtlasHome; git commit -m "AUTO: Label diffs modified." `git status | grep Changes |grep modified: | cut -d":" -f2,2`)
+(cd $OpenAtlasHome/Atlases/$Atlas; git commit -m "AUTO: Label diffs modified." `git status | grep Changes |grep modified: | cut -d":" -f2,2`)
 # Added
 (cd $OpenAtlasHome/Atlases/$Atlas/Changes; find . \*.png -exec git add {} \;)
-git commit -m "AUTO: Label diffs added."
+(cd $OpenAtlasHome/Atlases/$Atlas; git commit -m "AUTO: Label diffs added.")
 # Removed
-git rm `git status | grep Changes | grep deleted: | cut -d":" -f2,2`
-git commit -m "SYNC: Files deleted (or moved) from wiki."
+(cd $OpenAtlasHome/Atlases/$Atlas; git rm `git status | grep Changes | grep deleted: | cut -d":" -f2,2`)
+(cd $OpenAtlasHome/Atlases/$Atlas; git commit -m "SYNC: Files deleted (or moved) from wiki.")
+

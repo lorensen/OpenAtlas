@@ -51,6 +51,11 @@ int main (int argc, char *argv[])
                      << anatomyName
                      << ".csv";
     std::ofstream fout(fiducialFileName.str().c_str());
+    if (fout.fail())
+      {
+      std::cout << "cannot open " << fiducialFileName.str() << std::endl;
+      return EXIT_FAILURE;
+      }
     // header
     fout << "# Markups fiducial file version = 4.4" << std::endl;
     fout << "# CoordinateSystem = 0" << std::endl;

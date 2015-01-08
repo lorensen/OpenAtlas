@@ -16,6 +16,9 @@ if [ ! -d $OpenAtlasHome/Atlases/$Atlas/Models/VTK ] ; then
   echo "$0 $1 $2 $3: $OpenAtlasHome/Atlases/$Atlas/Models/VTK does not exist"
   exit 1
 fi
+if [ ! -d $FiducialDirectory ] ; then
+  mkdir -p $FiducialDirectory
+fi
 pushd $OpenAtlasHome/Atlases/$Atlas/Models/VTK
 
 AppDir=""
