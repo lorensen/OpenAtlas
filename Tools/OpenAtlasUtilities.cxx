@@ -1,6 +1,7 @@
 #include "OpenAtlasUtilities.h"
 #include "itkMacro.h"
 #include <itksys/SystemTools.hxx>
+#include <itksys/RegularExpression.hxx>
 
 int ReadLabelFile(const char * filename, std::vector<std::string> &labels)
 {
@@ -112,4 +113,99 @@ int ReadAdjacenyFile(const char * filename, std::vector<std::set<unsigned int> >
     }
   file.close();
   return 0;
+}
+
+namespace OpenAtlas
+{
+void Configuration::ParseFile(const char *filename)
+{
+  // open the file
+  std::ifstream file;
+  file.open(filename);
+  if (file.fail())
+    {
+    itkGenericExceptionMacro(
+      "The file " << filename <<" cannot be opened for reading!"
+      << std::endl
+      << "Reason: "
+      << itksys::SystemTools::GetLastSystemError() );
+    }
+
+  // read a line
+  std::string line;
+  while (!file.eof())
+    {
+    std::getline(file, line, '\n');
+    if (line.find("#") == std::string::npos)
+      {
+      itksys::RegularExpression re("AtlasName[^:]*:[ ]*([^$]*)");
+      if (re.find(line))
+        {
+        this->m_AtlasName = re.match(1);
+        continue;
+        }
+      re.compile("VolumeFileName[^:]*:[ ]*([^$]*)");
+      if (re.find(line))
+        {
+        this->m_VolumeFileName = re.match(1);
+        continue;
+        }
+      re.compile("LabelFileName[^:]*:[ ]*([^$]*)");
+      if (re.find(line))
+        {
+        this->m_LabelFileName = re.match(1);
+        continue;
+        }
+      re.compile("AdjacenciesFileName[^:]*:[ ]*([^$]*)");
+      if (re.find(line))
+        {
+        this->m_AdjacenciesFileName = re.match(1);
+        continue;
+        }
+      re.compile("ColorTableFileName[^:]*:[ ]*([^$]*)");
+      if (re.find(line))
+        {
+        m_ColorTableFileName = re.match(1);
+        continue;
+        }
+      re.compile("ModelsDirectory[^:]*:[ ]*([^$]*)");
+      if (re.find(line))
+        {
+        m_ModelsDirectory = re.match(1);
+        continue;
+        }
+      re.compile("VTKDirectory[^:]*:[ ]*([^$]*)");
+      if (re.find(line))
+        {
+        m_VTKDirectory = re.match(1);
+        continue;
+        }
+      re.compile("STLDirectory[^:]*:[ ]*([^$]*)");
+      if (re.find(line))
+        {
+        m_STLDirectory = re.match(1);
+        continue;
+        }
+      re.compile("ScreenshotDirectory[^:]*:[ ]*([^$]*)");
+      if (re.find(line))
+        {
+        m_ScreenshotDirectory = re.match(1);
+        continue;
+        }
+      re.compile("StatisticsDirectory[^:]*:[ ]*([^$]*)");
+      if (re.find(line))
+        {
+        m_StatisticsDirectory = re.match(1);
+        continue;
+        }
+      re.compile("MRMLDirectory[^:]*:[ ]*([^$]*)");
+      if (re.find(line))
+        {
+        m_MRMLDirectory = re.match(1);
+        continue;
+        }
+      }
+    }
+  file.close();
+}
 }

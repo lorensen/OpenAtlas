@@ -28,6 +28,10 @@ add_library(OpenAtlasUtilities OpenAtlasUtilities.cxx)
 
 include_directories(${OpenAtlas_SOURCE_DIR}/Tools)
 
+add_executable(TestConfigure MACOSX_BUNDLE TestConfigure)
+target_link_libraries(TestConfigure
+          OpenAtlasUtilities ${ITK_LIBRARIES})
+
 add_executable(GenerateModelsFromLabels MACOSX_BUNDLE GenerateModelsFromLabels)
 target_link_libraries(GenerateModelsFromLabels
           OpenAtlasUtilities ${ITK_LIBRARIES} ${VTK_LIBRARIES})
