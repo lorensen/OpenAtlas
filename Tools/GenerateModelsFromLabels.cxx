@@ -45,6 +45,7 @@ int main (int argc, char *argv[])
     }
  
   OpenAtlas::Configuration config(argv[1]);
+  itksys::SystemTools::MakeDirectory(config.STLDirectory());
 
   std::vector<std::string> labels;
 
@@ -189,7 +190,7 @@ int main (int argc, char *argv[])
 
     // output the polydata
     std::stringstream ss;
-    ss << config.STLDirectory() << "/" << labels[i] << "-" << i << ".vtk";
+    ss << config.STLDirectory() << "/" << labels[i] << "-" << i << ".stl";
     std::cout << itksys::SystemTools::GetFilenameName(argv[0])
               << " writing "
               << ss.str() << std::endl;

@@ -2,34 +2,19 @@
 #!/bin/bash 
 if [[ $# == 0 || $1 == "--help" ]]
 then
-echo "Usage: GenerateAdjacencies.sh AtlasName"
+echo "Usage: GenerateAdjacencies.sh AtlasConfigFileName"
 echo "       Generates a file that lists adjacent labels for each label in the atlas"
-echo "       The generated file is Atlases/AtlasName/Models/adjacencies.txt"
-echo "       Available Atlases are;"
-echo "         `ls -1 @OpenAtlas_SOURCE_DIR@/Atlases`"
 exit 1
 fi
 
 Prog=GenerateAdjacencies
 OpenAtlasHome=@OpenAtlas_SOURCE_DIR@
-Atlas=$1
-
-if [ ! -d $OpenAtlasHome/Atlases/$Atlas ] ; then
-  echo "The atlas $Atlas does not exist."
-  echo "Available atlases are:"
-  echo "`ls -1 @OpenAtlas_SOURCE_DIR@/Atlases`"
-  exit 1
-fi
 
 # Make the directory if it does not exist
 if [ ! -d $OpenAtlasHome/Atlases/$Atlas/Models ] ; then
   mkdir $OpenAtlasHome/Atlases/$Atlas/Models
 fi
-pushd $OpenAtlasHome/Atlases/$Atlas/Models
-
 AppDir=""
 if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
 
-@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $OpenAtlasHome/Atlases/$Atlas/Atlas/${Atlas}Labels.nrrd adjacencies.txt
-
-popd
+@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1

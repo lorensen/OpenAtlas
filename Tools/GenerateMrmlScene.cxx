@@ -53,7 +53,6 @@ int main (int argc, char *argv[])
     std::string fullPathName = modelDir + "/" + fullFileName;
     if (itksys::SystemTools::FileIsDirectory(fullPathName))
       {
-      std::cout << "Skipping directory " << fullPathName << std::endl;
       continue;
       }
     // Extract label number from filename

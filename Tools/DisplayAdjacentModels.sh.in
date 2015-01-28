@@ -1,28 +1,18 @@
 #!/bin/bash 
 if [[ $# < 2 || $1 == "--help" ]]
 then
-echo "Usage: DisplayAdjacentModels.sh AtlasName Label"
+echo "Usage: DisplayAdjacentModels.sh AtlasConfigFile Label"
 echo "       Displays all models adjacent to a given label"
 echo "       Assumes adjacencies.txt has been genenerated by GenerateAdjacencies.sh"
 echo "       Available Atlases are;"
 echo "         `ls -1 @OpenAtlas_SOURCE_DIR@/Atlases`"
 exit 1
 fi
+
 Prog=DisplayAdjacentModels
-Atlas=$1
-Label=$2
 OpenAtlasHome=@OpenAtlas_SOURCE_DIR@
-pushd $OpenAtlasHome/Atlases/$Atlas/Models
 
 AppDir=""
 if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
 
-if [ ! -f ./adjacencies.txt ] ; then
-    echo "$Prog: $OpenAtlasHome/Atlases/$Atlas/Models/adjacencies.txt not found"
-    echo "$Prog: Please run @OpenAtlas_BINARY_DIR@/GenerateAdjacencies.sh"
-    exit 1
-fi
-
-@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $Label $OpenAtlasHome/Atlases/$Atlas/Atlas/${Atlas}Colors.ctbl ./adjacencies.txt 
-
-popd
+@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 $2

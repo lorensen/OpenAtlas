@@ -1,8 +1,8 @@
 //
 // GenerateModelsFromLabels
-//   Usage: GenerateModelsFromLabels ConfigFile Startlabel Endlabel
+//   Usage: GenerateModelsFromLabels AtlasgFile Startlabel Endlabel
 //          where
-//          ConfigFile is an atlas configuration file that defines
+//          AtlasConfigFile is an atlas configuration file that defines
 //            locations of various atlas file
 //          StartLabel is the first label to be processed
 //          EndLabel is the last label to be processed
@@ -46,6 +46,7 @@ int main (int argc, char *argv[])
     }
  
   OpenAtlas::Configuration config(argv[1]);
+  itksys::SystemTools::MakeDirectory(config.VTKDirectory());
 
   std::vector<std::string> labels;
   // Read the label file

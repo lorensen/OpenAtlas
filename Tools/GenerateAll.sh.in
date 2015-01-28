@@ -1,36 +1,24 @@
 #!/bin/bash 
 if [[ $# == 0 || $1 == "--help" ]]
 then
-echo "Usage: GenerateAll.sh AtlasName"
+echo "Usage: GenerateAll.sh AtlasConfigFile"
 echo "       Runs all the generation scripts for the atlas"
-echo "       Available Atlases are;"
-echo "         `ls -1 @OpenAtlas_SOURCE_DIR@/Atlases`"
 exit 1
 fi
 
-OpenAtlasHome=@OpenAtlas_SOURCE_DIR@
-Atlas=$1
-
-if [ ! -d $OpenAtlasHome/Atlases/$Atlas ] ; then
-  echo "The atlas $Atlas does not exist."
-  echo "Available atlases are:"
-  echo "`ls -1 @OpenAtlas_SOURCE_DIR@/Atlases`"
-  exit 1
-fi
-
 echo -n "Generate Adjaciencies..."
-@OpenAtlas_BINARY_DIR@/GenerateAdjacencies.sh $Atlas
+@OpenAtlas_BINARY_DIR@/GenerateAdjacencies.sh $1
 echo "Done"
 echo -n "Generate Statistics..."
-@OpenAtlas_BINARY_DIR@/GenerateStatisticsFromLabels.sh $Atlas
+@OpenAtlas_BINARY_DIR@/GenerateStatisticsFromLabels.sh $1
 echo "Done"
 echo -n "Generate STL Models..."
-@OpenAtlas_BINARY_DIR@/GenerateModelsFromLabels.sh $Atlas
+@OpenAtlas_BINARY_DIR@/GenerateModelsFromLabels.sh $1
 echo "Done"
 echo -n "Generate Cubes..."
-@OpenAtlas_BINARY_DIR@/GenerateCubesFromLabels.sh $Atlas
+@OpenAtlas_BINARY_DIR@/GenerateCubesFromLabels.sh $1
 echo "Done"
 echo -n "Generate Mrml Scene..."
-@OpenAtlas_BINARY_DIR@/GenerateMrmlScene.sh $Atlas VTK
-@OpenAtlas_BINARY_DIR@/GenerateMrmlScene.sh $Atlas STL
+@OpenAtlas_BINARY_DIR@/GenerateMrmlScene.sh $1 VTK
+@OpenAtlas_BINARY_DIR@/GenerateMrmlScene.sh $1 STL
 echo "Done"

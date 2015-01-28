@@ -15,5 +15,3 @@ AppDir=""
 if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
 
 @OpenAtlas_BINARY_DIR@/$AppDir/$Prog $AtlasConfig
-
-popd
