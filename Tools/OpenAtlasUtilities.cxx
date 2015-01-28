@@ -3,10 +3,10 @@
 #include <itksys/SystemTools.hxx>
 #include <itksys/RegularExpression.hxx>
 
-int ReadLabelFile(const char * filename, std::vector<std::string> &labels)
+int ReadLabelFile(std::string filename, std::vector<std::string> &labels)
 {
   std::ifstream file;
-  file.open(filename);
+  file.open(filename.c_str());
   if (file.fail())
     {
     itkGenericExceptionMacro(
@@ -36,10 +36,10 @@ int ReadLabelFile(const char * filename, std::vector<std::string> &labels)
   return 0;
 }
 
-int ReadColorFile(const char * filename, std::vector<std::vector<float> > &colors)
+int ReadColorFile(std::string filename, std::vector<std::vector<float> > &colors)
 {
   std::ifstream file;
-  file.open(filename);
+  file.open(filename.c_str());
   if (file.fail())
     {
     itkGenericExceptionMacro(
@@ -75,10 +75,10 @@ int ReadColorFile(const char * filename, std::vector<std::vector<float> > &color
   return 0;
 }
 
-int ReadAdjacenyFile(const char * filename, std::vector<std::set<unsigned int> > &adjacencies)
+int ReadAdjacenyFile(std::string filename, std::vector<std::set<unsigned int> > &adjacencies)
 {
   std::ifstream file;
-  file.open(filename);
+  file.open(filename.c_str());
   if (file.fail())
     {
     itkGenericExceptionMacro(
@@ -117,11 +117,11 @@ int ReadAdjacenyFile(const char * filename, std::vector<std::set<unsigned int> >
 
 namespace OpenAtlas
 {
-void Configuration::ParseFile(const char *filename)
+void Configuration::ParseFile(std::string filename)
 {
   // open the file
   std::ifstream file;
-  file.open(filename);
+  file.open(filename.c_str());
   if (file.fail())
     {
     itkGenericExceptionMacro(
@@ -192,6 +192,12 @@ void Configuration::ParseFile(const char *filename)
         m_ScreenshotDirectory = re.match(1);
         continue;
         }
+      re.compile("ChangesDirectory[^:]*:[ ]*([^$]*)");
+      if (re.find(line))
+        {
+        m_ChangesDirectory = re.match(1);
+        continue;
+        }
       re.compile("StatisticsDirectory[^:]*:[ ]*([^$]*)");
       if (re.find(line))
         {
@@ -202,6 +208,12 @@ void Configuration::ParseFile(const char *filename)
       if (re.find(line))
         {
         m_MRMLDirectory = re.match(1);
+        continue;
+        }
+      re.compile("GitDirectory[^:]*:[ ]*([^$]*)");
+      if (re.find(line))
+        {
+        m_GitDirectory = re.match(1);
         continue;
         }
       }

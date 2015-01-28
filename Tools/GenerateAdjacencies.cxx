@@ -40,6 +40,7 @@ Outputs: Adjacency file
 #include "itkExtractImageFilter.h"
 #include "itkNeighborhoodAlgorithm.h"
 #include "itkConstNeighborhoodIterator.h"
+#include "OpenAtlasUtilities.h"
 
 #include <fstream>
 #include <iostream>
@@ -51,15 +52,14 @@ int main( int argc, char *argv[] )
 {
   if (argc < 2)
     {
-    std::cout << "Usage: inputImageName adjacencyFile" << std::endl;
+    std::cout << "Usage: " << argv[0] << " AtlasConfigFile" << std::endl;
     return EXIT_FAILURE;
     }  
 
-  char * fileName = argv[1];
-  char * adjacencyFile = argv[2];
+  OpenAtlas::Configuration config(argv[1]);
 
   // Test the output file
-  std::ofstream fout ( adjacencyFile );
+  std::ofstream fout ( config.AdjacenciesFileName().c_str() );
   if (!fout)
     {
     std::cout << "Could not open Adjacency Mapping File" << std::endl;
@@ -78,7 +78,7 @@ int main( int argc, char *argv[] )
     Image2DType > FaceCalculatorType;
   
   ReaderType::Pointer reader = ReaderType::New();
-  reader->SetFileName(fileName);
+  reader->SetFileName(config.LabelFileName().c_str());
   reader->Update();
 
   Image3DType::RegionType inputRegion =

@@ -23,23 +23,24 @@
 
 int main (int argc, char *argv[])
 {
-  if (argc < 4)
+  if (argc < 3)
     {
     std::cout << "Usage: " << argv[0]
-              << " label anatomyFile adjacencyFile [snapshot dir]"
+              << " AtlasConfigFile label [snapshot]"
               << std::endl;
     return EXIT_FAILURE;
     }
-  unsigned int label = atoi(argv[1]);
-  char *anatomyFile = argv[2];
-  char *adjacencyFile = argv[3];
+  unsigned int label = atoi(argv[2]);
+
   std::vector<std::string> labels;
   std::vector<std::set<unsigned int> > neighbors;
   std::vector<std::vector<float> > colors;
 
-  ReadLabelFile(anatomyFile, labels);
-  ReadAdjacenyFile(adjacencyFile, neighbors);
-  ReadColorFile(anatomyFile, colors);
+  OpenAtlas::Configuration config(argv[1]);
+
+  ReadLabelFile(config.ColorTableFileName(), labels);
+  ReadAdjacenyFile(config.AdjacenciesFileName(), neighbors);
+  ReadColorFile(config.ColorTableFileName(), colors);
 
   // Define viewport ranges
   // (xmin, ymin, xmax, ymax)
@@ -94,7 +95,7 @@ int main (int argc, char *argv[])
     vtkSmartPointer<vtkSTLReader> reader = 
       vtkSmartPointer<vtkSTLReader>::New();
     std::ostringstream fileName;
-    fileName << "STL/" << labels[*sit] << "-" << *sit << ".stl" << std::ends;
+    fileName << config.STLDirectory() << "/" << labels[*sit] << "-" << *sit << ".stl" << std::ends;
     reader->SetFileName(fileName.str().c_str());
     vtkSmartPointer<vtkPolyDataMapper> mapper = 
       vtkSmartPointer<vtkPolyDataMapper>::New();
@@ -132,7 +133,7 @@ int main (int argc, char *argv[])
     vtkSmartPointer<vtkPolyDataReader> reader = 
       vtkSmartPointer<vtkPolyDataReader>::New();
     std::ostringstream fileName;
-    fileName << "VTK/" << labels[*sit] << "-" << *sit << ".vtk" << std::ends;
+    fileName << config.VTKDirectory() << "/" << labels[*sit] << "-" << *sit << ".vtk" << std::ends;
     reader->SetFileName(fileName.str().c_str());
     vtkSmartPointer<vtkPolyDataMapper> mapper = 
       vtkSmartPointer<vtkPolyDataMapper>::New();
@@ -209,7 +210,7 @@ int main (int argc, char *argv[])
   renderWindow->Render();
 
   // Begin mouse interaction
-  if (argc < 5)
+  if (argc < 4)
     {
     renderWindowInteractor->Initialize();
     renderWindowInteractor->Start();
@@ -225,7 +226,7 @@ int main (int argc, char *argv[])
     windowToImageFilter->Update();
   
     std::ostringstream snapshotFileName;
-    snapshotFileName << argv[4] << "/" << labels[label] << ".png" << std::ends;
+    snapshotFileName << config.ScreenshotDirectory() << "/" << labels[label] << ".png" << std::ends;
     vtkSmartPointer<vtkPNGWriter> writer = 
       vtkSmartPointer<vtkPNGWriter>::New();
     writer->SetFileName(snapshotFileName.str().c_str());

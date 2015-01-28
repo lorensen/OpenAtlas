@@ -26,27 +26,26 @@
 
 int main (int argc, char *argv[])
 {
-  if (argc < 3)
+  if (argc < 2)
     {
-    std::cout << "Usage: " << argv[0] << " InputVolume InputLabelVolume [labels]" << std::endl;
+    std::cout << "Usage: " << argv[0] << " ConfigFile" << std::endl;
     return EXIT_FAILURE;
     }
  
-  bool hasLabels = argc > 3;
+
+  OpenAtlas::Configuration config(argv[1]);
+
   std::vector<std::string> labels;
 
-  if (hasLabels)
+  // Read the label file
+  try
     {
-    // Read the label file
-    try
-      {
-      ReadLabelFile(argv[3], labels);
-      }
-    catch (itk::ExceptionObject& e)
-      {
-      std::cerr << "Exception detected reading label file "  << e;
-      return EXIT_FAILURE;
-      }
+    ReadLabelFile(config.ColorTableFileName(), labels);
+    }
+  catch (itk::ExceptionObject& e)
+    {
+    std::cerr << "Exception detected reading label file "  << e;
+    return EXIT_FAILURE;
     }
 
   // Create all of the classes we will need
@@ -77,7 +76,7 @@ int main (int argc, char *argv[])
     LabelStatisticsImageFilterType::New();
 
   // Read the grayscale volume
-  imageReader->SetFileName(argv[1]);
+  imageReader->SetFileName(config.VolumeFileName());
   try
     {
     imageReader->Update();
@@ -89,7 +88,7 @@ int main (int argc, char *argv[])
     }
 
   // Read the label volume
-  labelReader->SetFileName(argv[2]);
+  labelReader->SetFileName(config.LabelFileName().c_str());
   try
     {
     labelReader->Update();
@@ -142,22 +141,15 @@ int main (int argc, char *argv[])
       {
       LabelPixelType labelValue = *vIt;
       std::stringstream ss;
-      if (hasLabels)
+      if (labels[labelValue] == "")
         {
-        if (labels[labelValue] == "")
-          {
-          continue;
-          }
-        ss << labels[labelValue] << "-" << labelValue << ".txt";
+        continue;
         }
-      else
-        {
-        ss << filePrefix << labelValue << ".txt";
-        }
+      ss << config.StatisticsDirectory() << "/" << labels[labelValue] << "-" << labelValue << ".txt";
       std::ofstream fout(ss.str().c_str());
       if (!fout)
         {
-        std::cout << "Could not open Statistics file" << std::endl;
+        std::cout << "Could not open Statistics file " << ss.str() << std::endl;
         return EXIT_FAILURE;
         }
     

@@ -1,9 +1,9 @@
 //
 // GenerateModelsFromLabels
-//   Usage: GenerateModelsFromLabels InputVolume Startlabel Endlabel
+//   Usage: GenerateModelsFromLabels ConfigFile Startlabel Endlabel
 //          where
-//          InputVolume is a nrrd file containing a 3D volume of
-//            discrete labels.
+//          ConfigFile is an atlas configuration file that defines
+//            locations of various atlas file
 //          StartLabel is the first label to be processed
 //          EndLabel is the last label to be processed
 //          NOTE: There can be gaps in the labeling. If a label does
@@ -41,25 +41,22 @@ int main (int argc, char *argv[])
 {
   if (argc < 4)
     {
-    std::cout << "Usage: " << argv[0] << " InputVolume StartLabel EndLabel [labels]" << std::endl;
+    std::cout << "Usage: " << argv[0] << " ConfigFile StartLabel EndLabel" << std::endl;
     return EXIT_FAILURE;
     }
  
-  bool hasLabels = argc > 4;
-  std::vector<std::string> labels;
+  OpenAtlas::Configuration config(argv[1]);
 
-  if (hasLabels)
+  std::vector<std::string> labels;
+  // Read the label file
+  try
     {
-    // Read the label file
-    try
-      {
-      ReadLabelFile(argv[4], labels);
-      }
-    catch (itk::ExceptionObject& e)
-      {
-      std::cerr << "Exception detected: "  << e;
-      return EXIT_FAILURE;
-      }
+    ReadLabelFile(config.ColorTableFileName(), labels);
+    }
+  catch (itk::ExceptionObject& e)
+    {
+    std::cerr << "Exception detected: "  << e;
+    return EXIT_FAILURE;
     }
 
   // Create all of the classes we will need
@@ -101,7 +98,7 @@ int main (int argc, char *argv[])
   // 4) Smooth the models
   // 5) Output each model into a separate file
  
-  reader->SetFileName(argv[1]);
+  reader->SetFileName(config.LabelFileName());
 
   // Convert to RAS (note: orientation filter uses a different notation
   orienter->SetDesiredCoordinateOrientation(itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_LPI); // RAS
@@ -175,23 +172,18 @@ int main (int argc, char *argv[])
     selector->ThresholdBetween(i, i);
  
    geometry->Update();
-   if (hasLabels && labels[i] == "")
+   if (labels[i] == "")
      {
-     std::cout << "WARNING: label " << i << " is in the label volume but not in the color table and will not be generated" << std::endl;
+     std::cout << "WARNING: label " << i
+               << " is in the label volume but not in the color table and will not be generated" << std::endl;
      continue;
      }
     // output the polydata
     std::stringstream ss;
-    if (hasLabels)
-      {
-      ss << labels[i] << "-" << i << ".vtk";
-      }
-    else
-      {
-      ss << filePrefix << i << ".vtk";
-      }
-
-    std::cout << argv[0] << " writing " << ss.str() << std::endl;
+    ss << config.VTKDirectory() << "/" << labels[i] << "-" << i << ".vtk";
+    std::cout << itksys::SystemTools::GetFilenameName(argv[0])
+              << " writing "
+              << ss.str() << std::endl;
  
     writer->SetFileTypeToBinary();
     writer->SetFileName(ss.str().c_str());

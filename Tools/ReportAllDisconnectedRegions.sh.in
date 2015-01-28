@@ -1,7 +1,7 @@
 #!/bin/bash 
 if [[ $# < 1 || $1 == "--help" ]]
 then
-echo "Usage: ReportAllDisconnectedRegions AtlasName"
+echo "Usage: ReportAllDisconnectedRegions AtlasName FiducialDirectory"
 echo "       Reports all models with more than one connected region."
 echo "       Available Atlases are;"
 echo "         `ls -1 @OpenAtlas_SOURCE_DIR@/Atlases`"
@@ -19,6 +19,8 @@ fi
 if [ ! -d $FiducialDirectory ] ; then
   mkdir -p $FiducialDirectory
 fi
+rm $FiducialDirectory/*.mrml
+rm $FiducialDirectory/*.csv
 pushd $OpenAtlasHome/Atlases/$Atlas/Models/VTK
 
 AppDir=""

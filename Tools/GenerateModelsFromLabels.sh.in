@@ -1,35 +1,15 @@
 #!/bin/bash 
 if [[ $# < 1 || $1 == "--help" ]]
 then
-echo "Usage: GenerateModelsFromLabels.sh AtlasName"
+echo "Usage: GenerateModelsFromLabels.sh AtlasConfigFile"
 echo "       Generates STL models( .stl) for each label in the atlas"
-echo "       Available Atlases are;"
-echo "         `ls -1 @OpenAtlas_SOURCE_DIR@/Atlases`"
 exit 1
 fi
 
 Prog=GenerateModelsFromLabels
-OpenAtlasHome=@OpenAtlas_SOURCE_DIR@
-Atlas=$1
-
-if [ ! -d $OpenAtlasHome/Atlases/$Atlas ] ; then
-  echo "The atlas $Atlas does not exist."
-  echo "Available atlases are:"
-  echo "`ls -1 @OpenAtlas_SOURCE_DIR@/Atlases`"
-  exit 1
-fi
-
-# Make the directory if it does not exist
-if [ ! -d $OpenAtlasHome/Atlases/$Atlas/Models/STL ] ; then
-  mkdir -p $OpenAtlasHome/Atlases/$Atlas/Models/STL
-fi
-pushd $OpenAtlasHome/Atlases/$Atlas/Models/STL
+AtlasConfig=$1
 
 AppDir=""
 if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
 
-echo "$Prog: STL models will be written to $OpenAtlasHome/Atlases/$Atlas/Models/STL"
-@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $OpenAtlasHome/Atlases/$Atlas/Atlas/${Atlas}Labels.nrrd 1 5000 $OpenAtlasHome/Atlases/$Atlas/Atlas/${Atlas}Colors.ctbl
-echo "$Prog: STL models have been written to $OpenAtlasHome/Atlases/$Atlas/Models/STL"
-
-popd
+@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $AtlasConfig 1 5000

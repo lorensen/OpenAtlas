@@ -4,9 +4,9 @@
 #include <string>
 #include <fstream>
 
-int ReadLabelFile(const char *, std::vector<std::string> &);
-int ReadColorFile(const char *, std::vector<std::vector<float> >&);
-int ReadAdjacenyFile(const char *, std::vector<std::set<unsigned int> > &);
+int ReadLabelFile(std::string, std::vector<std::string> &);
+int ReadColorFile(std::string, std::vector<std::vector<float> >&);
+int ReadAdjacenyFile(std::string, std::vector<std::set<unsigned int> > &);
 namespace OpenAtlas
 {
 class Configuration
@@ -25,12 +25,14 @@ public:
   const std::string &VTKDirectory() {return m_VTKDirectory;}
   const std::string &STLDirectory() {return m_STLDirectory;}
   const std::string &ScreenshotDirectory() {return m_ScreenshotDirectory;}
+  const std::string &ChangesDirectory() {return m_ChangesDirectory;}
   const std::string &StatisticsDirectory() {return m_StatisticsDirectory;}
   const std::string &MRMLDirectory() {return m_MRMLDirectory;}
+  const std::string &GitDirectory() {return m_GitDirectory;}
 
 protected:
   Configuration() {}
-  void ParseFile(const char *);
+  void ParseFile(std::string);
 
 private:
   std::string m_AtlasName;
@@ -42,8 +44,10 @@ private:
   std::string m_VTKDirectory;
   std::string m_STLDirectory;
   std::string m_ScreenshotDirectory;
+  std::string m_ChangesDirectory;
   std::string m_StatisticsDirectory;
   std::string m_MRMLDirectory;
+  std::string m_GitDirectory;
 };
 }
 

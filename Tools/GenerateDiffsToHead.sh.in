@@ -1,7 +1,7 @@
 #!/bin/bash
 if [[ $# == 0 || $1 == "--help" ]]
 then
-echo "Usage: GenerateDiffsToHead.sh Atlas NewLabels
+echo "Usage: GenerateDiffsToHead.sh AtlasConfigFile
 echo "       Generates images of the differences for any labels that have changed
 echo "       The generated images are Atlases/AtlasName/Differences"
 echo "       Available Atlases are;"
@@ -9,21 +9,18 @@ echo "         `ls -1 @OpenAtlas_SOURCE_DIR@/Atlases`"
 exit 1
 fi
 
-OpenAtlasHome=@OpenAtlas_SOURCE_DIR@
-Atlas=$1
-NewLabels=@OpenAtlas_SOURCE_DIR@/Atlases/$Atlas/Atlas/${Atlas}Labels.nrrd
-
-if [ ! -d $OpenAtlasHome/Atlases/$Atlas ] ; then
-  echo "The atlas $Atlas does not exist."
-  echo "Available atlases are:"
-  echo "`ls -1 @OpenAtlas_SOURCE_DIR@/Atlases`"
-  exit 1
-fi
+Prog=GetAtlasAttribute
+AppDir=""
+if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
+Atlas=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 AtlasName`
+NewLabels=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 LabelFileName`
+GitDir=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 GitDirectory`
+ChangesDir=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 ChangesDirectory`
+Colors=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 ColorTableFileName`
 
 # Put a copy of the HEAD in a tmp directory
 file=${Atlas}Labels.nrrd
-echo $file
-(cd @OpenAtlas_SOURCE_DIR@/Atlases/${Atlas}/Atlas/; REV=HEAD; git cat-file -p $(git ls-tree $REV $file | cut -d " " -f 3 | cut -f 1) >$TMPDIR/$file)
+(cd $GitDir; REV=HEAD; git cat-file -p $(git ls-tree $REV $NewLabels | cut -d " " -f 3 | cut -f 1) >$TMPDIR/$file)
 
 # First generate a list of all labels that have changes
 Prog=LabelsChanged
@@ -32,16 +29,12 @@ if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
 
 Labels=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog "$TMPDIR/$file" "$NewLabels"`
 
-if [ ! -d $OpenAtlasHome/Atlases/$Atlas/Changes ] ; then
-  mkdir $OpenAtlasHome/Atlases/$Atlas/Changes
-fi
-
 # Generate images of each label that has changed
 Prog=LabelDiff
 AppDir=""
 if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
 for label in $Labels; do
-  @OpenAtlas_BINARY_DIR@/$AppDir/$Prog  $label $TMPDIR/$file $NewLabels $OpenAtlasHome/Atlases/$Atlas/Atlas/${Atlas}Colors.ctbl $OpenAtlasHome/Atlases/$Atlas/Changes
+  @OpenAtlas_BINARY_DIR@/$AppDir/$Prog  $label $TMPDIR/$file $NewLabels $Colors $ChangesDir
 done
 
 # Remove the copy of HEAD

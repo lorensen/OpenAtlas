@@ -32,6 +32,10 @@ add_executable(TestConfigure MACOSX_BUNDLE TestConfigure)
 target_link_libraries(TestConfigure
           OpenAtlasUtilities ${ITK_LIBRARIES})
 
+add_executable(GetAtlasAttribute MACOSX_BUNDLE GetAtlasAttribute)
+target_link_libraries(GetAtlasAttribute
+          OpenAtlasUtilities ${ITK_LIBRARIES})
+
 add_executable(GenerateModelsFromLabels MACOSX_BUNDLE GenerateModelsFromLabels)
 target_link_libraries(GenerateModelsFromLabels
           OpenAtlasUtilities ${ITK_LIBRARIES} ${VTK_LIBRARIES})
@@ -41,7 +45,7 @@ target_link_libraries(GenerateCubesFromLabels
         OpenAtlasUtilities ${ITK_LIBRARIES} ${VTK_LIBRARIES})
 
 add_executable(GenerateAdjacencies MACOSX_BUNDLE GenerateAdjacencies)
-target_link_libraries(GenerateAdjacencies ${ITK_LIBRARIES} ${VTK_LIBRARIES})
+target_link_libraries(GenerateAdjacencies OpenAtlasUtilities ${ITK_LIBRARIES} ${VTK_LIBRARIES})
 
 add_executable(GenerateStatisticsFromLabels MACOSX_BUNDLE GenerateStatisticsFromLabels)
 target_link_libraries(GenerateStatisticsFromLabels

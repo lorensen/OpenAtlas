@@ -16,8 +16,10 @@ int main (int argc, char *argv[])
   std::cout << "VTKDirectory: " << config.VTKDirectory() << std::endl;
   std::cout << "STLDirectory: " << config.STLDirectory() << std::endl;
   std::cout << "ScreenshotDirectory: " << config.ScreenshotDirectory() << std::endl;
+  std::cout << "ChangesDirectory: " << config.ChangesDirectory() << std::endl;
   std::cout << "StatisticsDirectory: " << config.StatisticsDirectory() << std::endl;
   std::cout << "MRMLDirectory: " << config.MRMLDirectory() << std::endl;
+  std::cout << "GitDirectory: " << config.GitDirectory() << std::endl;
 
   return EXIT_SUCCESS;
 }
