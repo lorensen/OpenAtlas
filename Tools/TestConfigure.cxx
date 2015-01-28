@@ -20,6 +20,7 @@ int main (int argc, char *argv[])
   std::cout << "StatisticsDirectory: " << config.StatisticsDirectory() << std::endl;
   std::cout << "MRMLDirectory: " << config.MRMLDirectory() << std::endl;
   std::cout << "GitDirectory: " << config.GitDirectory() << std::endl;
+  std::cout << "FiducialsDirectory: " << config.FiducialsDirectory() << std::endl;
 
   return EXIT_SUCCESS;
 }

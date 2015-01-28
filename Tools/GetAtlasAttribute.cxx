@@ -59,5 +59,9 @@ int main (int argc, char *argv[])
     {
     std::cout << config.GitDirectory() << std::endl;
     }
+  else if (name == "FiducialsDirectory")
+    {
+    std::cout << config.FiducialsDirectory() << std::endl;
+    }
   return EXIT_SUCCESS;
 }

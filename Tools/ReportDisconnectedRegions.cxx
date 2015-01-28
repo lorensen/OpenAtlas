@@ -26,6 +26,8 @@ int main (int argc, char *argv[])
     }
  
   std::string fiducialDirectory(argv[2]);
+  vtksys::SystemTools::MakeDirectory(argv[2]);
+
   // Create all of the classes we will need
   vtkSmartPointer<vtkPolyDataReader> reader =
     vtkSmartPointer<vtkPolyDataReader>::New();

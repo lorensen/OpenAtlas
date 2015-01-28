@@ -12,21 +12,27 @@
 
 int main (int argc, char *argv[])
 {
-  if (argc < 4)
+  if (argc < 3)
     {
-    std::cout << "Usage: " << argv[0] << "ModelDirectory ColorFile MrmlScene" << std::endl;
+    std::cout << "Usage: " << argv[0] << "AtlasConfigFile Model(VTK or STL)" << std::endl;
     return EXIT_FAILURE;
     }
 
+  OpenAtlas::Configuration config(argv[1]);
+
   std::vector<std::vector<float> > colors;
   // Read the color file
-  ReadColorFile(argv[2], colors);
+  ReadColorFile(config.ColorTableFileName(), colors);
 
   // Open mrml file and write header
-  std::ofstream mout(argv[3]);
+  itksys::SystemTools::MakeDirectory(config.MRMLDirectory());
+
+  std::string mrmlFile;
+  mrmlFile = config.MRMLDirectory() + "/" + config.AtlasName() + argv[2] + ".mrml";
+  std::ofstream mout(mrmlFile.c_str());
   if (!mout)
     {
-    std::cerr << argv[0] << ": Could not open Mrml file " << argv[3] << " for output" << std::endl;
+    std::cerr << argv[0] << ": Could not open Mrml file " << mrmlFile << " for output" << std::endl;
     perror(argv[0]);
     return EXIT_FAILURE;
     }
@@ -34,15 +40,17 @@ int main (int argc, char *argv[])
  
   // Get the names of each model in the directory
   itksys::Directory dir;
-  std::cout << "Loading directory: " << argv[1] << std::endl;
+  std::string modelDir;
+  modelDir = config.ModelsDirectory() + "/" + argv[2];
+  std::cout << "Loading directory: " << modelDir << std::endl;
 
-  dir.Load(argv[1]);
+  dir.Load(modelDir.c_str());
   std::cout << "Number of files is: " <<   dir.GetNumberOfFiles() << std::endl;
 
   for (unsigned long i = 0; i < dir.GetNumberOfFiles(); ++i)
     {
     const char *fullFileName = dir.GetFile(i);
-    std::string fullPathName = std::string(argv[1]) + "/" + fullFileName;
+    std::string fullPathName = modelDir + "/" + fullFileName;
     if (itksys::SystemTools::FileIsDirectory(fullPathName))
       {
       std::cout << "Skipping directory " << fullPathName << std::endl;
@@ -73,7 +81,7 @@ int main (int argc, char *argv[])
     mout << "  id=\"vtkMRMLModelStorageNode_" << fileName << "(" << extString << ")"
          << "\"  name=\"ModelStorage\""
          << " fileName=\""
-         << argv[1] << "/" << fullFileName
+         << config.ModelsDirectory() << "/" << argv[2] << "/" << fullFileName
          << "\">"
          << "</ModelStorage>" << std::endl;
 
