@@ -2,9 +2,8 @@
 # Get and build VTK
 #
 #-----------------------------------------------------------------------------
-# December 26, 2014
-set( VTK_TAG "5ec3a52453e0cee64e83053e796d586fa9019cb4" )
-
+# January 29, 2015
+set( VTK_TAG "6a100d345e48bf9c3654ddc9103977f82b61599e")
 ExternalProject_Add(VTK
   GIT_REPOSITORY "${git_protocol}://vtk.org/VTK.git"
   GIT_TAG "${VTK_TAG}"
