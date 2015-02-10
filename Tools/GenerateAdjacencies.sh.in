@@ -7,13 +7,18 @@ echo "       Generates a file that lists adjacent labels for each label in the a
 exit 1
 fi
 
-Prog=GenerateAdjacencies
-OpenAtlasHome=@OpenAtlas_SOURCE_DIR@
+Prog=GetAtlasAttribute
+AppDir=""
+if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
+Atlas=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 AtlasName`
+ModelsDirectory=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 ModelsDirectory`
 
 # Make the directory if it does not exist
-if [ ! -d $OpenAtlasHome/Atlases/$Atlas/Models ] ; then
-  mkdir -p $OpenAtlasHome/Atlases/$Atlas/Models
+if [ ! -d $ModelsDirectory ] ; then
+  mkdir -p $ModelsDirectory
 fi
+
+Prog=GenerateAdjacencies
 AppDir=""
 if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
 
