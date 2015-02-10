@@ -4,13 +4,11 @@ then
 echo "Usage: DisplayAdjacentModels.sh AtlasConfigFile Label"
 echo "       Displays all models adjacent to a given label"
 echo "       Assumes adjacencies.txt has been genenerated by GenerateAdjacencies.sh"
-echo "       Available Atlases are;"
-echo "         `ls -1 @OpenAtlas_SOURCE_DIR@/Atlases`"
 exit 1
 fi
 
 Prog=DisplayAdjacentModels
-OpenAtlasHome=@OpenAtlas_SOURCE_DIR@
+AtlasConfig=$1
 
 AppDir=""
 if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
