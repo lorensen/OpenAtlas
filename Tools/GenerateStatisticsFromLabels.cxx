@@ -34,6 +34,7 @@ int main (int argc, char *argv[])
  
 
   OpenAtlas::Configuration config(argv[1]);
+  itksys::SystemTools::MakeDirectory(config.StatisticsDirectory());
 
   std::vector<std::string> labels;
 
