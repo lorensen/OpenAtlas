@@ -6,9 +6,16 @@ echo "       Generates  a mrml scene of all models"
 exit 1
 fi
 
+Prog=GetAtlasAttribute
+AppDir=""
+if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
+Atlas=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 AtlasName`
+MRMLDirectory=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 MRMLDirectory`
+Model=$2
+
 Prog=GenerateMrmlScene
 AppDir=""
 if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
 
-echo "$Prog: Mrmlscene will be written to $OpenAtlasBin/${Atlas}${Model}.mrml"
+echo "$Prog: Mrmlscene will be written to $MRMLDirectory/${Atlas}${Model}.mrml"
 @OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 $2
