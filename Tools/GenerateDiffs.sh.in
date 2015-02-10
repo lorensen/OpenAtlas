@@ -1,31 +1,21 @@
 #!/bin/bash
 if [[ $# == 0 || $1 == "--help" ]]
 then
-echo "Usage: GenerateDiffs.sh Atlas OldLabels NewLabels
+echo "Usage: GenerateDiffs.sh AtlasConfigFile OldLabels NewLabels
 echo "       Generates images of the differences for any labels that have changed
-echo "       The generated images are Atlases/AtlasName/Differences"
-echo "       Available Atlases are;"
-echo "         `ls -1 @OpenAtlas_SOURCE_DIR@/Atlases`"
 exit 1
 fi
 
-OpenAtlasHome=@OpenAtlas_SOURCE_DIR@
-Atlas=$1
 OldLabels=$2
 NewLabels=$3
 
-if [ ! -d $OpenAtlasHome/Atlases/$Atlas ] ; then
-  echo "The atlas $Atlas does not exist."
-  echo "Available atlases are:"
-  echo "`ls -1 @OpenAtlas_SOURCE_DIR@/Atlases`"
-  exit 1
-fi
+Prog=GetAtlasAttribute
+AppDir=""
+if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
+Atlas=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 AtlasName`
+ChangesDir=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 ChangesDirectory`
+Colors=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 ColorTableFileName`
 
-# Validate inputs
-if [ ! -d $OpenAtlasHome/Atlases/$Atlas/Models ] ; then
-  echo "$0 $1 $2 $3: $OpenAtlasHome/Atlases/$Atlas/Models does not exist"
-  exit 1
-fi
 if [ ! -f $OldLabels ] ; then
   echo "$0: $OldLabels does not exist"
   exit 1
@@ -42,26 +32,22 @@ if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
 
 Labels=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog "$OldLabels" "$NewLabels"`
 
-if [ ! -d $OpenAtlasHome/Atlases/$Atlas/Changes ] ; then
-  mkdir $OpenAtlasHome/Atlases/$Atlas/Changes
-fi
-
 # Remove all of the old changes
-(cd $OpenAtlasHome/Atlases/$Atlas/Changes; rm -f *.png)
+(cd $ChangeDir; rm -f *.png)
 # Generate images of each label that has changed
 Prog=LabelDiff
 AppDir=""
 if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
 for label in $Labels; do
-  @OpenAtlas_BINARY_DIR@/$AppDir/$Prog  $label $OldLabels $NewLabels $OpenAtlasHome/Atlases/$Atlas/Atlas/${Atlas}Colors.ctbl $OpenAtlasHome/Atlases/$Atlas/Changes
+  @OpenAtlas_BINARY_DIR@/$AppDir/$Prog  $label $OldLabels $NewLabels $Colors $ChangesDir
 done
 # Now commit the diffs
 # Modified
-(cd $OpenAtlasHome/Atlases/$Atlas; git commit -m "AUTO: Label diffs modified." `git status | grep Changes |grep modified: | cut -d":" -f2,2`)
+#(cd $ChangesDir; git commit -m "AUTO: Label diffs modified." `git status | grep Changes |grep modified: | cut -d":" -f2,2`)
 # Added
-(cd $OpenAtlasHome/Atlases/$Atlas/Changes; find . \*.png -exec git add {} \;)
-(cd $OpenAtlasHome/Atlases/$Atlas; git commit -m "AUTO: Label diffs added.")
+#(cd $ChangesDir; find . \*.png -exec git add {} \;)
+#(cd $ChangesDir; git commit -m "AUTO: Label diffs added.")
 # Removed
-(cd $OpenAtlasHome/Atlases/$Atlas; git rm `git status | grep Changes | grep deleted: | cut -d":" -f2,2`)
-(cd $OpenAtlasHome/Atlases/$Atlas; git commit -m "SYNC: Files deleted (or moved) from wiki.")
+#(cd $ChangesDir; git rm `git status | grep Changes | grep deleted: | cut -d":" -f2,2`)
+#(cd $ChangesDir; git commit -m "SYNC: Files deleted (or moved) from wiki.")
 
