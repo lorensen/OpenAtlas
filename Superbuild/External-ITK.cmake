@@ -24,6 +24,7 @@ ExternalProject_Add( ITK
     -DModule_ITKVtkGlue:BOOL=ON
     -DModule_ITKIONRRD:BOOL=ON
     -DModule_ITKIOPNG:BOOL=ON
+    -DModule_ITKIONIFTI:BOOL=ON
     -DVTK_DIR:PATH=${VTK_DIR}
   INSTALL_COMMAND ""
 )
