@@ -1,8 +1,9 @@
 #!/bin/bash 
 if [[ $# < 1 || $1 == "--help" ]]
 then
-echo "Usage: ReportAllDisconnectedRegions AtlasName"
+echo "Usage: ReportAllDisconnectedRegions AtlasConfigFile"
 echo "       Reports all models with more than one connected region."
+echo "       Generates fiducials that locate disconnected regions. "
 exit 1
 fi
 
@@ -30,6 +31,3 @@ done
 echo $status atlas parts have disconnected regions
 popd
 exit $status
-
-
-
