@@ -18,6 +18,9 @@ echo "Done"
 echo -n "Generate Cubes..."
 @OpenAtlas_BINARY_DIR@/GenerateCubesFromLabels.sh $1
 echo "Done"
+echo -n "Display all adjacent models..."
+@OpenAtlas_BINARY_DIR@/DisplayAllAdjacentModels.sh $1
+echo "Done"
 echo -n "Generate Mrml Scene..."
 @OpenAtlas_BINARY_DIR@/GenerateMrmlScene.sh $1 VTK
 @OpenAtlas_BINARY_DIR@/GenerateMrmlScene.sh $1 STL

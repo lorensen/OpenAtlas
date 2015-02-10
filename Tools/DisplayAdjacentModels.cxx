@@ -18,6 +18,7 @@
 #include <vtkSmartPointer.h>
 #include <vtkTextMapper.h>
 #include <vtkTextProperty.h>
+#include <vtksys/SystemTools.hxx>
 
 #include <sstream>
 
@@ -37,6 +38,10 @@ int main (int argc, char *argv[])
   std::vector<std::vector<float> > colors;
 
   OpenAtlas::Configuration config(argv[1]);
+  if (argc > 3)
+    {
+    vtksys::SystemTools::MakeDirectory(config.ScreenshotDirectory());
+    }
 
   ReadLabelFile(config.ColorTableFileName(), labels);
   ReadAdjacenyFile(config.AdjacenciesFileName(), neighbors);
@@ -84,10 +89,16 @@ int main (int argc, char *argv[])
   for (std::set<unsigned int>::iterator sit = neighbors[ label ].begin();
        sit != neighbors[ label ].end(); ++sit)
     {
+    // Skip labels that are not listed in color table file
+    if (labels[*sit] == "")
+      {
+      continue;
+      }
     if (labels[*sit] != labels[label])
       {
       std::cout << "\t" << labels[*sit] << "(" << *sit << ")" <<std::endl;
       }
+    // Skip displaying models that have a zero opacity
     if (colors[*sit][3] == 0)
       {
       continue;
