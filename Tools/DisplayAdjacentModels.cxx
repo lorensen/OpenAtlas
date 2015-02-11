@@ -137,6 +137,10 @@ int main (int argc, char *argv[])
   for (std::set<unsigned int>::iterator sit = neighbors[ label ].begin();
        sit != neighbors[ label ].end(); ++sit)
     {
+    if (labels[*sit] == "")
+      {
+      continue;
+      }
     if (colors[*sit][3] == 0)
       {
       continue;
