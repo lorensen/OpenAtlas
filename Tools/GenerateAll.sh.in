@@ -25,3 +25,6 @@ echo -n "Generate Mrml Scene..."
 @OpenAtlas_BINARY_DIR@/GenerateMrmlScene.sh $1 VTK
 @OpenAtlas_BINARY_DIR@/GenerateMrmlScene.sh $1 STL
 echo "Done"
+echo -n "Report Disconnected Regions..."
+@OpenAtlas_BINARY_DIR@/ReportAllDisconnectedRegions.sh $1
+echo "Done"
