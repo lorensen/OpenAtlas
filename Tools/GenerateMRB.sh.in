@@ -30,5 +30,7 @@ echo "</MRML>" >> ${Atlas}Combined.mrml
 
 zip $MRBFile ${Atlas}Combined.mrml
 rm ${Atlas}Combined.mrml
-echo $SceneDir/${MRBFile}
 popd
+echo "----------------------------------------"
+echo "Run Slicer with the following argument:"
+echo `pwd`/$SceneDir/${MRBFile}
