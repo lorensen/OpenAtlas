@@ -124,7 +124,7 @@ int main (int argc, char *argv[])
          << "MarkupsFiducialStorage" << anatomyName
          <<"\"  hideFromEditors=\"true\"  selectable=\"true\"  selected=\"false\" "
          << "fileName=\""
-         << vtksys::SystemTools::GetFilenameName(fiducialFileName.str())
+         << fiducialFileName.str()
          << "\"  useCompression=\"1\"  readState=\"0\"  writeState=\"4\"  coordinateSystem=\"0\" ></MarkupsFiducialStorage>" << std::endl;
     mout << "</MRML>" << std::endl;
     mout.close();
