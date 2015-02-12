@@ -88,6 +88,7 @@ configure_file(${OpenAtlas_SOURCE_DIR}/Tools/GenerateDiffs.sh.in ${OpenAtlas_BIN
 configure_file(${OpenAtlas_SOURCE_DIR}/Tools/GenerateDiffsToHead.sh.in ${OpenAtlas_BINARY_DIR}/GenerateDiffsToHead.sh @ONLY)
 configure_file(${OpenAtlas_SOURCE_DIR}/Tools/ReportAllDisconnectedRegions.sh.in ${OpenAtlas_BINARY_DIR}/ReportAllDisconnectedRegions.sh @ONLY)
 configure_file(${OpenAtlas_SOURCE_DIR}/Tools/GenerateMrmlScene.sh.in ${OpenAtlas_BINARY_DIR}/GenerateMrmlScene.sh @ONLY)
+configure_file(${OpenAtlas_SOURCE_DIR}/Tools/GenerateMRB.sh.in ${OpenAtlas_BINARY_DIR}/GenerateMRBScene.sh @ONLY)
 
 
 # For each atlas:

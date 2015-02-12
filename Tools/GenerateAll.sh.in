@@ -28,3 +28,6 @@ echo "Done"
 echo -n "Report Disconnected Regions..."
 @OpenAtlas_BINARY_DIR@/ReportAllDisconnectedRegions.sh $1
 echo "Done"
+echo -n "Generate MRB file..."
+@OpenAtlas_BINARY_DIR@/GenerateMRB.sh $1
+echo "Done"
