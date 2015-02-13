@@ -23,9 +23,8 @@ MRBFile=${Atlas}Portable.mrb
 AtlasDir=`dirname ${LabelFileName}`
 
 echo "$Prog: MRB file will be written to ${SceneDir}/${MRBFile}"
-
 # Create a temporary directory to hold all of the required files
-TempDir=${TMPDIR}${Atlas}
+TempDir=`mktemp -d`
 mkdir -p ${TempDir}
 
 pushd ${SceneDir}
@@ -60,7 +59,6 @@ done
 echo "zipping ${TempDir}/${Atlas}.mrml into $MRBFile"
 pushd ${TempDir}
 rm ${Atlas}Combined.tmp
-pwd
 zip  -r $MRBFile ${Atlas}.mrml Data
 popd
 pushd ${SceneDir}
