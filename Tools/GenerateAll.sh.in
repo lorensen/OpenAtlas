@@ -6,28 +6,35 @@ echo "       Runs all the generation scripts for the atlas"
 exit 1
 fi
 
-echo -n "Generate Adjaciencies..."
-@OpenAtlas_BINARY_DIR@/GenerateAdjacencies.sh $1
-echo "Done"
-echo -n "Generate Statistics..."
-@OpenAtlas_BINARY_DIR@/GenerateStatisticsFromLabels.sh $1
-echo "Done"
-echo -n "Generate STL Models..."
-@OpenAtlas_BINARY_DIR@/GenerateModelsFromLabels.sh $1
-echo "Done"
-echo -n "Generate Cubes..."
-@OpenAtlas_BINARY_DIR@/GenerateCubesFromLabels.sh $1
-echo "Done"
-echo -n "Display all adjacent models..."
-@OpenAtlas_BINARY_DIR@/DisplayAllAdjacentModels.sh $1
-echo "Done"
-echo -n "Generate Mrml Scene..."
-@OpenAtlas_BINARY_DIR@/GenerateMrmlScene.sh $1 VTK
-@OpenAtlas_BINARY_DIR@/GenerateMrmlScene.sh $1 STL
-echo "Done"
-echo -n "Report Disconnected Regions..."
-@OpenAtlas_BINARY_DIR@/ReportAllDisconnectedRegions.sh $1
-echo "Done"
-echo -n "Generate MRB file..."
-@OpenAtlas_BINARY_DIR@/GenerateMRB.sh $1
-echo "Done"
+Prog=GetAtlasAttribute
+AppDir=""
+if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
+Atlas=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 AtlasName`
+LogFile=${Atlas}.log
+
+echo -n "Generate Adjaciencies for ${Atlas}..." | tee ${LogFile}
+@OpenAtlas_BINARY_DIR@/GenerateAdjacencies.sh $1 | tee -a ${LogFile}
+echo "Done" | tee -a ${LogFile}
+echo -n "Generate Statistics for ${Atlas}..." | tee -a ${LogFile}
+@OpenAtlas_BINARY_DIR@/GenerateStatisticsFromLabels.sh $1 | tee -a ${LogFile}
+echo "Done" | tee -a ${LogFile}
+echo -n "Generate STL Models for ${Atlas}..." | tee -a ${LogFile}
+@OpenAtlas_BINARY_DIR@/GenerateModelsFromLabels.sh $1 | tee -a ${LogFile}
+echo "Done" | tee -a ${LogFile}
+echo -n "Generate Cubes for ${Atlas}..." | tee -a ${LogFile}
+@OpenAtlas_BINARY_DIR@/GenerateCubesFromLabels.sh $1 | tee -a ${LogFile}
+echo "Done" | tee -a ${LogFile}
+echo -n "Display all adjacent models for ${Atlas}..." | tee -a ${LogFile}
+@OpenAtlas_BINARY_DIR@/DisplayAllAdjacentModels.sh $1 | tee -a ${LogFile}
+echo "Done" | tee -a ${LogFile}
+echo -n "Generate Mrml Scene for ${Atlas}..." | tee -a ${LogFile}
+@OpenAtlas_BINARY_DIR@/GenerateMrmlScene.sh $1 VTK | tee -a ${LogFile}
+@OpenAtlas_BINARY_DIR@/GenerateMrmlScene.sh $1 STL | tee -a ${LogFile}
+echo "Done" | tee -a ${LogFile}
+echo -n "Report Disconnected Regions for ${Atlas}..." | tee -a ${LogFile}
+@OpenAtlas_BINARY_DIR@/ReportAllDisconnectedRegions.sh $1 | tee -a ${LogFile}
+echo "Done" | tee -a ${LogFile}
+echo -n "Generate MRB file for ${Atlas}..." | tee -a ${LogFile}
+@OpenAtlas_BINARY_DIR@/GenerateMRB.sh $1 | tee -a ${LogFile}
+echo "Done" | tee -a ${LogFile}
+echo "Log filefor ${Atlas} is in: ${LogFile}" | tee -a ${LogFile}
