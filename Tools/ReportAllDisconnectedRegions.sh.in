@@ -14,8 +14,11 @@ Atlas=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 AtlasName`
 FiducialDirectory=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 FiducialsDirectory`
 VTKDirectory=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 VTKDirectory`
 
+# Clean the old fiducials
 rm $FiducialDirectory/*.mrml
 rm $FiducialDirectory/*.csv
+
+# Run from the VTK model directory
 pushd $VTKDirectory
 
 Prog=ReportDisconnectedRegions
@@ -23,7 +26,7 @@ AppDir=""
 if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
 
 status=0
-files=`ls *.vtk`
+files=`ls -1 *.vtk`
 for f in $files; do
   @OpenAtlas_BINARY_DIR@/$AppDir/$Prog $f $FiducialDirectory
   let status=$status+$?
