@@ -66,6 +66,7 @@ int main (int argc, char *argv[])
     vtkSmartPointer<vtkCleanPolyData> cleaner =
       vtkSmartPointer<vtkCleanPolyData>::New();
     cleaner->SetInputConnection( confilter->GetOutputPort());
+    // Skip the first region
     for (int i = 1; i < confilter->GetNumberOfExtractedRegions(); ++i)
       {
       confilter->SetExtractionModeToSpecifiedRegions();
@@ -93,9 +94,9 @@ int main (int argc, char *argv[])
       std::stringstream fiducialName;
       fiducialName << vtksys::SystemTools::GetFilenameWithoutExtension(std::string(argv[1]))
                    << "_" << i;
-      fout << "vtkMRMLMarkupsFiducialNode," // id
+      fout << "vtkMRMLMarkupsFiducialNode_" << anatomyName << "," // id
            << centroid[0] << "," << centroid[1] << "," << centroid[2] << "," // x,y,z
-           << "0," // ow
+           << "0," // ows
            << "0," // ox
            << "0," // oy
            << "1," // oz
@@ -115,17 +116,18 @@ int main (int argc, char *argv[])
     std::ofstream mout(mrmlFileName.str().c_str());
     mout << "<MRML  version=\"Slicer4.4.0\" userTags=\"\">" << std::endl;
     mout << " <MarkupsFiducial";
-    mout << "  id=\"vtkMRMLMarkupsFiducialNode1\"  name=\""
-         << anatomyName
-         << "\"  hideFromEditors=\"false\"  selectable=\"true\"  selected=\"false\"  displayNodeRef=\"vtkMRMLMarkupsDisplayNodeOpenAtlas\"  storageNodeRef=\"vtkMRMLMarkupsFiducialStorageNode1\"  references=\"display:vtkMRMLMarkupsDisplayNodeOpenAtlas;storage:vtkMRMLMarkupsFiducialStorageNode1;\"  userTags=\"\"  locked=\"0\"  markupLabelFormat=\"%N-%d\" ></MarkupsFiducial>" << std::endl;
+    mout << " id=\"vtkMRMLMarkupsFiducialNode_" << anatomyName << "\""
+         << " name=\"" << anatomyName << "\""
+         << " hideFromEditors=\"false\"  selectable=\"true\"  selected=\"false\"  displayNodeRef=\"vtkMRMLMarkupsDisplayNodeOpenAtlas\""
+         << " storageNodeRef=\"vtkMRMLMarkupsFiducialStorageNode_" << anatomyName << "\""
+         << " userTags=\"\"  locked=\"0\"  markupLabelFormat=\"%N-%d\" ></MarkupsFiducial>" << std::endl;
     mout << " <MarkupsFiducialStorage";
-    mout << "  id=\"vtkMRMLMarkupsFiducialStorageNode1\""
-         << " name=\""
-         << "MarkupsFiducialStorage" << anatomyName
-         <<"\"  hideFromEditors=\"true\"  selectable=\"true\"  selected=\"false\" "
-         << "fileName=\""
-         << fiducialFileName.str()
-         << "\"  useCompression=\"1\"  readState=\"0\"  writeState=\"4\"  coordinateSystem=\"0\" ></MarkupsFiducialStorage>" << std::endl;
+    mout << " id=\"vtkMRMLMarkupsFiducialStorageNode_" << anatomyName << "\""
+         << " name=\"" << "MarkupsFiducialStorage_" << anatomyName << "\""
+         << " hideFromEditors=\"true\"  selectable=\"true\"  selected=\"false\" "
+         << " fileName=\"" << fiducialFileName.str() << "\""
+         << " useCompression=\"1\" readState=\"0\" writeState=\"4\" coordinateSystem=\"0\" >"
+         << "</MarkupsFiducialStorage>" << std::endl;
     mout << "</MRML>" << std::endl;
     mout.close();
     return EXIT_FAILURE;
