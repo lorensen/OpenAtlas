@@ -50,3 +50,14 @@ To start, you may want to clone the SPLBrainAtlas. It has all of the required fi
    cd SPLBrainAtlas-build  
    cmake ../SPLBrainAtlas  
 3. The SPLBrainAtlas-build directory will contain a file SPLBrainAtlas.config
+4. Now, go to your OpenAtlas-Superbuild/OpenAtlas-build directory
+   ./GenerateAll.sh "your SPLBrainAtlas-build/SPLBrainAtlas.config
+5. If you have Slicer, you can see the atlas volume, atals labels, cuberille models and markup work lists by sunning:
+   Slicer SPLBrainAtlas/SPLbrainAtlas.mrb
+
+## Other atlases
+The following atlases also can be configured for Open Atlas tools.
+
+1. [SPL Abdominal Atlas](https://github.com/lorensen/SPLAbdominalAtlas)
+2. [SPL Head and Neck Atlas](https://github.com/lorensen/SPLHeadNeckAtlas)
+3. [SPL Knee Atlas](https://github.com/lorensen/SPLKneeAtlas)
