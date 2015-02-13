@@ -1,0 +1,76 @@
+#!/bin/bash 
+if [[ $# < 1 || $1 == "--help" ]]
+then
+echo "Usage: GeneratePortableMRB.sh AtlasConfigFile"
+echo "       Generates an mrb bundle of mrml files for the atlas."
+echo "       This mrb bundle is self-contained. It can be moved and shared."
+exit 1
+fi
+
+# Get the attributes we need form the atlas config file
+Prog=GetAtlasAttribute
+AppDir=""
+if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
+Atlas=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 AtlasName`
+MRMLDirectory=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 MRMLDirectory`
+VolumeFileName=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 VolumeFileName`
+LabelFileName=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 LabelFileName`
+ColorTableFileName=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 ColorTableFileName`
+FiducialsDirectory=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 FiducialsDirectory`
+VTKDirectory=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 VTKDirectory`
+SceneDir=`dirname $1`
+MRBFile=${Atlas}Portable.mrb
+AtlasDir=`dirname ${LabelFileName}`
+
+echo "$Prog: MRB file will be written to ${SceneDir}/${MRBFile}"
+
+# Create a temporary directory to hold all of the required files
+TempDir=${TMPDIR}${Atlas}
+mkdir -p ${TempDir}
+
+pushd ${SceneDir}
+
+# Create a combined scene file
+# Strip first and last line of each mrml file (except the first file)
+sed \$d ${Atlas}.mrml >${TempDir}/${Atlas}Combined.tmp
+sed 1d MRML/${Atlas}VTK.mrml | sed \$d >>${TempDir}/${Atlas}Combined.tmp
+files=`ls -1 ${FiducialsDirectory}/*.mrml`
+for file in $files; do
+  sed 1d $file | sed \$d >>${TempDir}/${Atlas}Combined.tmp
+done
+echo "</MRML>" >> ${TempDir}/${Atlas}Combined.tmp
+popd
+
+# Replace full paths with relative paths
+echo "Replacing ${AtlasDir}, ${VTKDirectory} and ${FiducialsDirectory} with Data/"
+sed s:${AtlasDir}/:Data/:g ${TempDir}/${Atlas}Combined.tmp | sed s:${VTKDirectory}/:Data/:g | sed s:${FiducialsDirectory}:Data/:g >${TempDir}/${Atlas}.mrml
+
+# Copy all required file to a temporary directory
+echo "Adding all required files to $TempDir/Data"
+mkdir $TempDir/Data
+cp ${VolumeFileName} ${TempDir}/Data
+cp ${LabelFileName} ${TempDir}/Data
+cp ${ColorTableFileName} ${TempDir}/Data
+cp ${VTKDirectory}/* ${TempDir}/Data
+files=`ls -1 ${FiducialsDirectory}/*.csv`
+for file in $files; do
+  sed s:${FiducialsDirectory}/:Data/:g $file > ${TempDir}/Data/`basename $file`
+done
+
+echo "zipping ${TempDir}/${Atlas}.mrml into $MRBFile"
+pushd ${TempDir}
+rm ${Atlas}Combined.tmp
+pwd
+zip  -r $MRBFile ${Atlas}.mrml Data
+popd
+pushd ${SceneDir}
+# Move the mrb bundle
+mv $TempDir/$MRBFile $MRBFile
+popd
+
+# Cleanup
+rm -rf $TempDir
+
+echo "----------------------------------------"
+echo "Run Slicer with the following argument:"
+echo `pwd`/$SceneDir/${MRBFile}
