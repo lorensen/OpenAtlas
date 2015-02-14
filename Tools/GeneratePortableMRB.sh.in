@@ -20,7 +20,9 @@ FiducialsDirectory=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 FiducialsDirectory`
 VTKDirectory=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 VTKDirectory`
 SceneDir=`dirname $1`
 MRBFile=${Atlas}Portable.mrb
-AtlasDir=`dirname ${LabelFileName}`
+AtlasLabelDir=`dirname ${LabelFileName}`
+AtlasVolumeDir=`dirname ${VolumeFileName}`
+AtlasColorTableDir=`dirname ${ColorTableFileName}`
 
 echo "$Prog: MRB file will be written to ${SceneDir}/${MRBFile}"
 # Create a temporary directory to hold all of the required files
@@ -41,25 +43,29 @@ echo "</MRML>" >> ${TempDir}/${Atlas}Combined.tmp
 popd
 
 # Replace full paths with relative paths
-echo "Replacing ${AtlasDir}, ${VTKDirectory} and ${FiducialsDirectory} with Data/"
-sed s:${AtlasDir}/:Data/:g ${TempDir}/${Atlas}Combined.tmp | sed s:${VTKDirectory}/:Data/:g | sed s:${FiducialsDirectory}:Data/:g >${TempDir}/${Atlas}.mrml
+sed s:${AtlasLabelDir}/:Atlas/:g ${TempDir}/${Atlas}Combined.tmp |\
+sed s:${AtlasVolumeDir}/:Atlas/:g |\
+sed s:${AtlasColorTableDir}/:Atlas/:g |\
+sed s:${VTKDirectory}/:Models/:g |\
+sed s:${FiducialsDirectory}:Fiducials/:g >${TempDir}/${Atlas}.mrml
 
 # Copy all required file to a temporary directory
-echo "Adding all required files to $TempDir/Data"
-mkdir $TempDir/Data
-cp ${VolumeFileName} ${TempDir}/Data
-cp ${LabelFileName} ${TempDir}/Data
-cp ${ColorTableFileName} ${TempDir}/Data
-cp ${VTKDirectory}/* ${TempDir}/Data
+mkdir $TempDir/Atlas
+mkdir $TempDir/Models
+mkdir $TempDir/Fiducials
+cp ${VolumeFileName} ${TempDir}/Atlas
+cp ${LabelFileName} ${TempDir}/Atlas
+cp ${ColorTableFileName} ${TempDir}/Atlas
+cp ${VTKDirectory}/* ${TempDir}/Models
 files=`ls -1 ${FiducialsDirectory}/*.csv`
 for file in $files; do
-  sed s:${FiducialsDirectory}/:Data/:g $file > ${TempDir}/Data/`basename $file`
+  sed s:${FiducialsDirectory}/:Fiducials/:g $file > ${TempDir}/Fiducials/`basename $file`
 done
 
 echo "zipping ${TempDir}/${Atlas}.mrml into $MRBFile"
 pushd ${TempDir}
 rm ${Atlas}Combined.tmp
-zip  -r $MRBFile ${Atlas}.mrml Data
+zip  -r $MRBFile ${Atlas}.mrml Models Fiducials Atlas
 popd
 pushd ${SceneDir}
 # Move the mrb bundle
