@@ -3,9 +3,7 @@ if [[ $# == 0 || $1 == "--help" ]]
 then
 echo "Usage: GenerateDiffsToHead.sh AtlasConfigFile
 echo "       Generates images of the differences for any labels that have changed
-echo "       The generated images are Atlases/AtlasName/Differences"
-echo "       Available Atlases are;"
-echo "         `ls -1 @OpenAtlas_SOURCE_DIR@/Atlases`"
+echo "       The generated images are AtlasName/Differences"
 exit 1
 fi
 
@@ -19,23 +17,25 @@ ChangesDir=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 ChangesDirectory`
 Colors=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 ColorTableFileName`
 
 # Put a copy of the HEAD in a tmp directory
+TempDir=`mktemp -d -t ${Atlas}.XXX`
+mkdir -p ${TempDir}
 file=${Atlas}Labels.nrrd
-(cd $GitDir; REV=HEAD; git cat-file -p $(git ls-tree $REV $NewLabels | cut -d " " -f 3 | cut -f 1) >$TMPDIR/$file)
+(cd $GitDir; REV=HEAD; git cat-file -p $(git ls-tree $REV $NewLabels | cut -d " " -f 3 | cut -f 1) >$TempDir/$file)
 
 # First generate a list of all labels that have changes
 Prog=LabelsChanged
 AppDir=""
 if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
 
-Labels=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog "$TMPDIR/$file" "$NewLabels"`
+Labels=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog "$TempDir/$file" "$NewLabels"`
 
 # Generate images of each label that has changed
 Prog=LabelDiff
 AppDir=""
 if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
 for label in $Labels; do
-  @OpenAtlas_BINARY_DIR@/$AppDir/$Prog  $label $TMPDIR/$file $NewLabels $Colors $ChangesDir
+  @OpenAtlas_BINARY_DIR@/$AppDir/$Prog  $label $TempDir/$file $NewLabels $Colors $ChangesDir
 done
 
-# Remove the copy of HEAD
-rm $TMPDIR/$file
+# Cleanup
+rm -rf $TempDir
