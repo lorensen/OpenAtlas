@@ -13,7 +13,7 @@
 #include <itkOrientImageFilter.h>
 #include <itkChangeInformationImageFilter.h>
 #include <itkImageToVTKImageFilter.h>
-#include <itksys/SystemTools.hxx>
+#include <vtksys/SystemTools.hxx>
 
 #include <vtkSmartPointer.h>
 #include <vtkImageAccumulate.h>
@@ -382,6 +382,7 @@ int main (int argc, char *argv[])
     windowToImageFilter->SetInput(renderWindow);
     windowToImageFilter->Update();
   
+    vtksys::SystemTools::MakeDirectory(argv[5]);
     std::ostringstream snapshotFileName;
     snapshotFileName << argv[5] << "/" << labels[label] << "_diff.png" << std::ends;
 
