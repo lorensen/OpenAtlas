@@ -75,19 +75,8 @@ int main (int argc, char *argv[])
       cleaner->Update();
       std::cout << "Region " << i << " has " << cleaner->GetOutput()->GetNumberOfPoints() << " points" << std::endl;
       double centroid[3];
-#if 0
-      centroid[0] = centroid[1] = centroid[2] = 0.0;
-      for (int j = 0; j < cleaner->GetOutput()->GetNumberOfPoints(); ++j)
-        {
-        centroid[0] += cleaner->GetOutput()->GetPoints()->GetPoint(j)[0];
-        centroid[1] += cleaner->GetOutput()->GetPoints()->GetPoint(j)[1];
-        centroid[2] += cleaner->GetOutput()->GetPoints()->GetPoint(j)[2];
-        }
-      centroid[0] /= cleaner->GetOutput()->GetNumberOfPoints();
-      centroid[1] /= cleaner->GetOutput()->GetNumberOfPoints();
-      centroid[2] /= cleaner->GetOutput()->GetNumberOfPoints();
-#endif
       int mid = cleaner->GetOutput()->GetNumberOfPoints() / 2;
+      mid = 0;
       centroid[0] = cleaner->GetOutput()->GetPoints()->GetPoint(mid)[0];
       centroid[1] = cleaner->GetOutput()->GetPoints()->GetPoint(mid)[1];
       centroid[2] = cleaner->GetOutput()->GetPoints()->GetPoint(mid)[2];
