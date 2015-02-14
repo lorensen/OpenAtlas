@@ -216,6 +216,12 @@ void Configuration::ParseFile(std::string filename)
         m_GitDirectory = re.match(1);
         continue;
         }
+      re.compile("GitWikiDirectory[^:]*:[ ]*([^$]*)");
+      if (re.find(line))
+        {
+        m_GitWikiDirectory = re.match(1);
+        continue;
+        }
       re.compile("FiducialsDirectory[^:]*:[ ]*([^$]*)");
       if (re.find(line))
         {

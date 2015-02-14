@@ -29,6 +29,7 @@ public:
   const std::string &StatisticsDirectory() {return m_StatisticsDirectory;}
   const std::string &MRMLDirectory() {return m_MRMLDirectory;}
   const std::string &GitDirectory() {return m_GitDirectory;}
+  const std::string &GitWikiDirectory() {return m_GitWikiDirectory;}
   const std::string &FiducialsDirectory() {return m_FiducialsDirectory;}
 
 protected:
@@ -49,6 +50,7 @@ private:
   std::string m_StatisticsDirectory;
   std::string m_MRMLDirectory;
   std::string m_GitDirectory;
+  std::string m_GitWikiDirectory;
   std::string m_FiducialsDirectory;
 };
 }
