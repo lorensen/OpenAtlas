@@ -1,0 +1,65 @@
+#!/bin/bash
+if [[ $# == 0 || $1 == "--help" ]]
+then
+echo "Usage: GenerateDiffsBetweenLastTwo.sh AtlasConfigFile"
+echo "       Generates images of the differences between the last two"
+echo "         checked in versions of the label file."
+echo "       The generated images are placed in AtlasName/Differences"
+exit 1
+fi
+
+Prog=GetAtlasAttribute
+AppDir=""
+if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
+Atlas=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 AtlasName`
+LabelFile=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 LabelFileName`
+GitDir=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 GitDirectory`
+ChangesDir=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 ChangesDirectory`
+ColorsFile=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 ColorTableFileName`
+
+# Get the id's for the last two commits of the label file
+shas=`(cd $GitDir; git log -2 $LabelFile | grep commit | cut -d" " -f2,2)`
+revArray=($shas)
+LastRev=${revArray[0]}
+PreviousRev=${revArray[1]}
+
+ChangesDir=${ChangesDir}/${PreviousRev}To${LastRev}
+# Put a copy of the two rev's in a tmp directory
+TempDir=`mktemp -d -t ${Atlas}.XXX`
+mkdir -p ${TempDir}
+
+LastLabelsFile=${Atlas}LabelsLastRev.nrrd
+PreviousLabelsFile=${Atlas}LabelsPreviousRev.nrrd
+
+(cd $GitDir; REV=${LastRev}; git cat-file -p $(git ls-tree $REV $LabelFile | cut -d " " -f 3 | cut -f 1) >$TempDir/$LastLabelsFile)
+(cd $GitDir; REV=${PreviousRev}; git cat-file -p $(git ls-tree $REV $LabelFile | cut -d " " -f 3 | cut -f 1) >$TempDir/$PreviousLabelsFile)
+
+# First generate a list of all labels that have changes
+Prog=LabelsChanged
+AppDir=""
+if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
+
+Labels=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog "$TempDir/$PreviousLabelsFile" "$TempDir/$LastLabelsFile"`
+
+# Generate images of each label that has changed
+Prog=LabelDiff
+AppDir=""
+if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
+
+# Create a file to contain the changes
+ChangeLog="Changes_as_of_`date +"%b_%d_%Y"`.md"
+count=`echo ${Labels} | wc -w`
+
+echo "On `date +"%b %d,%Y"`, comparing the last two revs of `basename ${LabelFile}`, ${count} labels have changed.  " | tee -a ${TempDir}/${ChangeLog}
+
+echo "The last revision was commited on `(cd ${GitDir}; git show -s  --format=%ci ${LastRev})` by `(cd ${GitDir}; git show -s --format=%aN ${LastRev})`  "
+
+echo "The previous revision was commited on `(cd ${GitDir}; git show -s  --format=%ci ${PreviousRev})` by `(cd ${GitDir}; git show -s --format=%aN ${PreviousRev})`  "
+
+for label in $Labels; do
+  @OpenAtlas_BINARY_DIR@/$AppDir/$Prog  $label $TempDir/$PreviousLabelsFile $TempDir/$LastLabelsFile  $ColorsFile $ChangesDir | tee -a ${TempDir}/${ChangeLog}
+done
+echo "----------------------------"
+cat ${TempDir}/${ChangeLog}
+# Cleanup
+rm -rf $TempDir

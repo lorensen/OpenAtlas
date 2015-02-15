@@ -86,6 +86,7 @@ configure_file(${OpenAtlas_SOURCE_DIR}/Tools/GenerateAdjacencies.sh.in ${OpenAtl
 configure_file(${OpenAtlas_SOURCE_DIR}/Tools/GenerateStatisticsFromLabels.sh.in ${OpenAtlas_BINARY_DIR}/GenerateStatisticsFromLabels.sh @ONLY)
 configure_file(${OpenAtlas_SOURCE_DIR}/Tools/GenerateDiffs.sh.in ${OpenAtlas_BINARY_DIR}/GenerateDiffs.sh @ONLY)
 configure_file(${OpenAtlas_SOURCE_DIR}/Tools/GenerateDiffsToHead.sh.in ${OpenAtlas_BINARY_DIR}/GenerateDiffsToHead.sh @ONLY)
+configure_file(${OpenAtlas_SOURCE_DIR}/Tools/GenerateDiffsBetweenLastTwo.sh.in ${OpenAtlas_BINARY_DIR}/GenerateDiffsBetweenLastTwo.sh @ONLY)
 configure_file(${OpenAtlas_SOURCE_DIR}/Tools/ReportAllDisconnectedRegions.sh.in ${OpenAtlas_BINARY_DIR}/ReportAllDisconnectedRegions.sh @ONLY)
 configure_file(${OpenAtlas_SOURCE_DIR}/Tools/GenerateMrmlScene.sh.in ${OpenAtlas_BINARY_DIR}/GenerateMrmlScene.sh @ONLY)
 configure_file(${OpenAtlas_SOURCE_DIR}/Tools/GenerateMRB.sh.in ${OpenAtlas_BINARY_DIR}/GenerateMRB.sh @ONLY)

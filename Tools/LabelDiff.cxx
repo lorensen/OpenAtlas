@@ -179,14 +179,15 @@ int main (int argc, char *argv[])
     ++diffIt;
     }
 
-  std::cout << labels[label] << " changes" << std::endl;
+  // Output is in markdown format
+  std::cout << "* " << labels[label] << "  " << std::endl;
   for(std::map<unsigned int, unsigned int>::iterator a = addedLabels.begin(); a != addedLabels.end(); ++a)
     {
-    std::cout << "\t added " << a->second << " voxels from " << (a->first ? labels[a->first] : "background") << std::endl;
+    std::cout << "     added " << a->second << " voxel(s) from " << (a->first ? labels[a->first] : "background") << "  " << std::endl;
     }
   for(std::map<unsigned int, unsigned int>::iterator r = removedLabels.begin(); r != removedLabels.end(); ++r)
     {
-    std::cout << "\t changed " << r->second << " voxels to " << (r->first ? labels[r->first] : "background") << std::endl;
+    std::cout << "     changed " << r->second << " voxel(s) to " << (r->first ? labels[r->first] : "background") << "  " << std::endl;
     }
 
   // Now, convert the point data to cell data
