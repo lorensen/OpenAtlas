@@ -50,11 +50,11 @@ if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
 ChangeLog="Changes_as_of_`date +"%b_%d_%Y"`.md"
 count=`echo ${Labels} | wc -w`
 
-echo "On `date +"%b %d,%Y"`, comparing the last two revs of `basename ${LabelFile}`, ${count} labels have changed.  " | tee -a ${TempDir}/${ChangeLog}
+echo "On `date +"%b %d,%Y"`, comparing the last two revs of `basename ${LabelFile}`, **${count}** labels have changed.  " > ${TempDir}/${ChangeLog}
 
-echo "The last revision was commited on `(cd ${GitDir}; git show -s  --format=%ci ${LastRev})` by `(cd ${GitDir}; git show -s --format=%aN ${LastRev})`  "
+echo "The last revision was commited on `(cd ${GitDir}; git show -s  --format=%ci ${LastRev})` by *`(cd ${GitDir}; git show -s --format=%aN ${LastRev})`*  " >>${TempDir}/${ChangeLog}
 
-echo "The previous revision was commited on `(cd ${GitDir}; git show -s  --format=%ci ${PreviousRev})` by `(cd ${GitDir}; git show -s --format=%aN ${PreviousRev})`  "
+echo "The previous revision was commited on `(cd ${GitDir}; git show -s  --format=%ci ${PreviousRev})` by *`(cd ${GitDir}; git show -s --format=%aN ${PreviousRev})`*  " >>${TempDir}/${ChangeLog}
 
 for label in $Labels; do
   @OpenAtlas_BINARY_DIR@/$AppDir/$Prog  $label $TempDir/$PreviousLabelsFile $TempDir/$LastLabelsFile  $ColorsFile $ChangesDir | tee -a ${TempDir}/${ChangeLog}
