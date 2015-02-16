@@ -66,6 +66,9 @@ int main (int argc, char *argv[])
     vtkSmartPointer<vtkCleanPolyData> cleaner =
       vtkSmartPointer<vtkCleanPolyData>::New();
     cleaner->SetInputConnection( confilter->GetOutputPort());
+    cleaner->Update();
+    int sizeOfLargestRegion = cleaner->GetOutput()->GetNumberOfPoints();
+
     // Skip the first region
     for (int i = 1; i < confilter->GetNumberOfExtractedRegions(); ++i)
       {
@@ -73,10 +76,32 @@ int main (int argc, char *argv[])
       confilter->InitializeSpecifiedRegionList();
       confilter->AddSpecifiedRegion(i);
       cleaner->Update();
-      std::cout << "Region " << i << " has " << cleaner->GetOutput()->GetNumberOfPoints() << " points" << std::endl;
+      int sizeOfThisRegion = cleaner->GetOutput()->GetNumberOfPoints();
+      std::cout << "Region " << i << " has " << sizeOfThisRegion << " points" << std::endl;
+
+      // Mark regions that are within 50% of the size of the largest region
+      std::string description;
+      float percentOfLargest = (float) sizeOfThisRegion / (float) sizeOfLargestRegion;
+      if (percentOfLargest > 0.50)
+        {
+        std::cout << "Region " << i
+                  << " is large. Size is " <<  percentOfLargest * 100.0 << " percent of largest." << std::endl;
+        std::stringstream percentDescription;
+        percentDescription << "Large disconnected region(" << percentOfLargest * 100.0 << "%)";
+        description = percentDescription.str();
+        }
+      else if (sizeOfThisRegion == 8)
+        {
+        description = "Single disconnected voxel";
+        }
+      else
+        {
+        std::stringstream percentDescription;
+        percentDescription << "Disconnected region(" << percentOfLargest * 100.0 << "%)";
+        description = percentDescription.str();
+        }
       double centroid[3];
-      int mid = cleaner->GetOutput()->GetNumberOfPoints() / 2;
-      mid = 0;
+      int mid = 0;
       centroid[0] = cleaner->GetOutput()->GetPoints()->GetPoint(mid)[0];
       centroid[1] = cleaner->GetOutput()->GetPoints()->GetPoint(mid)[1];
       centroid[2] = cleaner->GetOutput()->GetPoints()->GetPoint(mid)[2];
@@ -93,7 +118,7 @@ int main (int argc, char *argv[])
            << "1," // sel
            << "1," // lock
            << fiducialName.str() << ","
-           << "" << "Disconnected region" << "," // description
+           << "" << description << "," // description
            << "vtkMRMLScalarVolumeNode2"
            << std::endl;
       }
