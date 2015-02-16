@@ -3,18 +3,31 @@ if [[ $# == 0 || $1 == "--help" ]]
 then
 echo "Usage: GenerateDiffsToHead.sh AtlasConfigFile
 echo "       Generates images of the differences for any labels that have changed
-echo "       The generated images are AtlasName/Differences"
+echo "       The generated diff images are the AtlasConfig directory"
 exit 1
+fi
+
+# Check for existance of the file
+if [ ! -e $1 ]; then
+  echo "GenerateDiffsToHead: $1 does not exist"
+  exit 1
 fi
 
 Prog=GetAtlasAttribute
 AppDir=""
 if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
+# Check for a valid Atlas config file
 Atlas=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 AtlasName`
+if [ -z "$Atlas" ]; then
+    echo "GenerateDiffsToHead: $1 is not a valid Atlas config file"
+    exit 1
+fi
+# Get the attributes needed in this script
 NewLabels=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 LabelFileName`
 GitDir=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 GitDirectory`
 ChangesDir=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 ChangesDirectory`
 Colors=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 ColorTableFileName`
+ConfigDir=`dirname $1`
 
 # Put a copy of the HEAD in a tmp directory
 TempDir=`mktemp -d -t ${Atlas}.XXX`
@@ -22,20 +35,30 @@ mkdir -p ${TempDir}
 file=${Atlas}Labels.nrrd
 (cd $GitDir; REV=HEAD; git cat-file -p $(git ls-tree $REV $NewLabels | cut -d " " -f 3 | cut -f 1) >$TempDir/$file)
 
+# See if we have anything to do
+changes=`diff $NewLabels $TempDir/$file`
+if [ -z "$changes" ]; then
+    echo "GenerateDiffsToHead: No differences between HEAD and $file"
+    exit
+fi
+
 # First generate a list of all labels that have changes
 Prog=LabelsChanged
 AppDir=""
 if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
-
 Labels=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog "$TempDir/$file" "$NewLabels"`
 
 # Generate images of each label that has changed
 Prog=LabelDiff
 AppDir=""
 if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
+
+pushd $ConfigDir
+rm Differences/*.png 2>/dev/null
 for label in $Labels; do
-  @OpenAtlas_BINARY_DIR@/$AppDir/$Prog  $label $TempDir/$file $NewLabels $Colors $ChangesDir
+  @OpenAtlas_BINARY_DIR@/$AppDir/$Prog  $label $TempDir/$file $NewLabels $Colors Differences
 done
+popd
 
 # Cleanup
 rm -rf $TempDir
