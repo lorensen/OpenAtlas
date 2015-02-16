@@ -7,16 +7,29 @@ echo "       Generates fiducials that locate disconnected regions. "
 exit 1
 fi
 
+# Check for existance of the files
+if [ ! -e $1 ]; then
+  echo "ReportAllDisconnectedRegions: $1 does not exist"
+  exit 1
+fi
+
 Prog=GetAtlasAttribute
 AppDir=""
 if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
+# Check for a valid Atlas config file
 Atlas=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 AtlasName`
+if [ -z "$Atlas" ]; then
+    echo "ReportAllDisconnectedRegions: $1 is not a valid Atlas config file"
+    exit 1
+fi
+
 FiducialDirectory=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 FiducialsDirectory`
 VTKDirectory=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 VTKDirectory`
 
 # Clean the old fiducials
-rm $FiducialDirectory/*.mrml
-rm $FiducialDirectory/*.csv
+mkdir -p $FiducialDirectory
+rm $FiducialDirectory/*.mrml 2>/dev/null
+rm $FiducialDirectory/*.csv 2>/dev/null
 
 # Run from the VTK model directory
 pushd $VTKDirectory

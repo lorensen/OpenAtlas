@@ -6,12 +6,24 @@ echo "       Displays all models (.vtk and .stl) for each label in an atlas"
 exit 1
 fi
 
+# Check for existance of the files
+if [ ! -e $1 ]; then
+  echo "DisplayAllAdjacentModels: $1 does not exist"
+  exit 1
+fi
+
 Prog=GetAtlasAttribute
 AppDir=""
 if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
 
-# Get the attributes required for this script
+# Check for a valid Atlas config file
 Atlas=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 AtlasName`
+if [ -z "$Atlas" ]; then
+    echo "GenerateModelsFromLabels: $1 is not a valid Atlas config file"
+    exit 1
+fi
+
+# Get the attributes required for this script
 ModelsDirectory=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 ModelsDirectory`
 pushd $ModelsDirectory
 

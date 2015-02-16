@@ -6,10 +6,22 @@ echo "       Generates an mrb bundle of mrml files for the atlass"
 exit 1
 fi
 
+# Check for existance of the files
+if [ ! -e $1 ]; then
+  echo "GenerateMRB: $1 does not exist"
+  exit 1
+fi
+
 Prog=GetAtlasAttribute
 AppDir=""
 if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
+# Check for a valid Atlas config file
 Atlas=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 AtlasName`
+if [ -z "$Atlas" ]; then
+    echo "GenerateMRB: $1 is not a valid Atlas config file"
+    exit 1
+fi
+
 MRMLDirectory=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 MRMLDirectory`
 FiducialsDirectory=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 FiducialsDirectory`
 SceneDir=`dirname $1`

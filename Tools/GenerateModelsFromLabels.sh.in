@@ -6,9 +6,24 @@ echo "       Generates STL models( .stl) for each label in the atlas"
 exit 1
 fi
 
-Prog=GenerateModelsFromLabels
+# Check for existance of the files
+if [ ! -e $1 ]; then
+  echo "GenerateModelsFromLabels: $1 does not exist"
+  exit 1
+fi
+
+# Check for a valid Atlas config file
+Prog=GetAtlasAttribute
+AppDir=""
+if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
+Atlas=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 AtlasName`
+if [ -z "$Atlas" ]; then
+    echo "GenerateModelsFromLabels: $1 is not a valid Atlas config file"
+    exit 1
+fi
 AtlasConfig=$1
 
+Prog=GenerateModelsFromLabels
 AppDir=""
 if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
 

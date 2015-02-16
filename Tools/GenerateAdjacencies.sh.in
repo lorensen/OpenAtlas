@@ -7,10 +7,22 @@ echo "       Generates a file that lists adjacent labels for each label in the a
 exit 1
 fi
 
+# Check for existance of the files
+if [ ! -e $1 ]; then
+  echo "GenerateAdjacencies: $1 does not exist"
+  exit 1
+fi
+
 Prog=GetAtlasAttribute
 AppDir=""
 if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
+# Check for a valid Atlas config file
+# Check for a valid Atlas config file
 Atlas=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 AtlasName`
+if [ -z "$Atlas" ]; then
+    echo "GenerateAdjacencies: $1 is not a valid Atlas config file"
+    exit 1
+fi
 ModelsDirectory=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 ModelsDirectory`
 
 # Make the directory if it does not exist

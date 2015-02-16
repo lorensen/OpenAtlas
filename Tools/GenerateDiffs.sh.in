@@ -1,9 +1,23 @@
 #!/bin/bash
-if [[ $# == 0 || $1 == "--help" ]]
+if [[ $# != 3 || $1 == "--help" ]]
 then
-echo "Usage: GenerateDiffs.sh AtlasConfigFile OldLabels NewLabels
-echo "       Generates images of the differences for any labels that have changed
+echo "Usage: GenerateDiffs.sh AtlasConfigFile OldLabels NewLabels"
+echo "       Generates images of the differences between two label files"
 exit 1
+fi
+
+# Check for existance of the files
+if [ ! -e $1 ]; then
+  echo "GenerateDiffs: $1 does not exist"
+  exit 1
+fi
+if [ ! -e $2 ]; then
+  echo "GenerateDiffs: $2 does not exist"
+  exit 1
+fi
+if [ ! -e $3 ]; then
+  echo "GenerateDiffsToHead: $3 does not exist"
+  exit 1
 fi
 
 OldLabels=$2
@@ -12,7 +26,13 @@ NewLabels=$3
 Prog=GetAtlasAttribute
 AppDir=""
 if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
+# Check for a valid Atlas config file
 Atlas=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 AtlasName`
+if [ -z "$Atlas" ]; then
+    echo "GenerateDiffs: $1 is not a valid Atlas config file"
+    exit 1
+fi
+# Get the attributes needed in this script
 ChangesDir=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 ChangesDirectory`
 Colors=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 ColorTableFileName`
 
@@ -31,9 +51,12 @@ AppDir=""
 if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
 
 Labels=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog "$OldLabels" "$NewLabels"`
+ConfigDir=`dirname $1`
 
 # Remove all of the old changes
-(cd $ChangeDir; rm -f *.png)
+pushd $ConfigDir
+rm Differences/*.png 2>/dev/null
+
 # Generate images of each label that has changed
 Prog=LabelDiff
 AppDir=""
@@ -41,6 +64,8 @@ if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
 for label in $Labels; do
   @OpenAtlas_BINARY_DIR@/$AppDir/$Prog  $label $OldLabels $NewLabels $Colors $ChangesDir
 done
+popd
+
 # Now commit the diffs
 # Modified
 #(cd $ChangesDir; git commit -m "AUTO: Label diffs modified." `git status | grep Changes |grep modified: | cut -d":" -f2,2`)
@@ -50,4 +75,3 @@ done
 # Removed
 #(cd $ChangesDir; git rm `git status | grep Changes | grep deleted: | cut -d":" -f2,2`)
 #(cd $ChangesDir; git commit -m "SYNC: Files deleted (or moved) from wiki.")
-

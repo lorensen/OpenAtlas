@@ -7,11 +7,22 @@ echo "       This mrb bundle is self-contained. It can be moved and shared."
 exit 1
 fi
 
+# Check for existance of the files
+if [ ! -e $1 ]; then
+  echo "GeneratePortableMRB: $1 does not exist"
+  exit 1
+fi
+
 # Get the attributes we need form the atlas config file
 Prog=GetAtlasAttribute
 AppDir=""
 if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
+# Check for a valid Atlas config file
 Atlas=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 AtlasName`
+if [ -z "$Atlas" ]; then
+    echo "GenerateMrmlScene: $1 is not a valid Atlas config file"
+    exit 1
+fi
 MRMLDirectory=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 MRMLDirectory`
 VolumeFileName=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 VolumeFileName`
 LabelFileName=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 LabelFileName`

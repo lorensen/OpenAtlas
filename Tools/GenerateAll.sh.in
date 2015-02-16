@@ -6,10 +6,21 @@ echo "       Runs all the generation scripts for the atlas"
 exit 1
 fi
 
+# Check for existance of the files
+if [ ! -e $1 ]; then
+  echo "GenerateAll: $1 does not exist"
+  exit 1
+fi
+
 Prog=GetAtlasAttribute
 AppDir=""
 if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
+# Check for a valid Atlas config file
 Atlas=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 AtlasName`
+if [ -z "$Atlas" ]; then
+    echo "GenerateAll: $1 is not a valid Atlas config file"
+    exit 1
+fi
 LogFile=${Atlas}.log
 
 echo -n "Generate Adjaciencies for ${Atlas}..." | tee ${LogFile}
@@ -37,4 +48,4 @@ echo "Done" | tee -a ${LogFile}
 echo -n "Generate MRB file for ${Atlas}..." | tee -a ${LogFile}
 @OpenAtlas_BINARY_DIR@/GenerateMRB.sh $1 | tee -a ${LogFile}
 echo "Done" | tee -a ${LogFile}
-echo "Log filefor ${Atlas} is in: ${LogFile}" | tee -a ${LogFile}
+echo "Log file for ${Atlas} is in: ${LogFile}" | tee -a ${LogFile}
