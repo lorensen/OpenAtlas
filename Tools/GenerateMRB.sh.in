@@ -26,13 +26,13 @@ MRMLDirectory=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 MRMLDirectory`
 FiducialsDirectory=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 FiducialsDirectory`
 SceneDir="$(cd "$(dirname "$1")" && pwd -P)"
 MRBFile=${Atlas}.mrb
-echo "$Prog: MRB file will be written to $MRBFile"
+echo "GenerateMRB: MRB file will be written to ${SceneDir}/$MRBFile"
 pushd $SceneDir
 rm $MRBFile
 # Create a combined scene file
 # Strip first and last line of each mrml file (except the first file)
-sed \$d ${Atlas}.mrml >${Atlas}Combined.mrml
-sed 1d MRML/${Atlas}VTK.mrml | sed \$d >>${Atlas}Combined.mrml
+sed \$d ${SceneDir}/${Atlas}.mrml >${Atlas}Combined.mrml
+sed 1d ${MRMLDirectory}/${Atlas}VTK.mrml | sed \$d >>${Atlas}Combined.mrml
 files=`ls -1 ${FiducialsDirectory}/*.mrml`
 for file in $files; do
   sed 1d $file | sed \$d >>${Atlas}Combined.mrml

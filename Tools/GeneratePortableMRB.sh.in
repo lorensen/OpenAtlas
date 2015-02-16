@@ -35,7 +35,7 @@ AtlasLabelDir=`dirname ${LabelFileName}`
 AtlasVolumeDir=`dirname ${VolumeFileName}`
 AtlasColorTableDir=`dirname ${ColorTableFileName}`
 
-echo "$Prog: MRB file will be written to ${SceneDir}/${MRBFile}"
+echo "GeneratePortableMRB: MRB file will be written to ${SceneDir}/${MRBFile}"
 # Create a temporary directory to hold all of the required files
 TempDir=`mktemp -d -t ${Atlas}.XXX`
 mkdir -p ${TempDir}
@@ -44,8 +44,8 @@ pushd ${SceneDir}
 
 # Create a combined scene file
 # Strip first and last line of each mrml file (except the first file)
-sed \$d ${Atlas}.mrml >${TempDir}/${Atlas}Combined.tmp
-sed 1d MRML/${Atlas}VTK.mrml | sed \$d >>${TempDir}/${Atlas}Combined.tmp
+sed \$d ${SceneDir}/${Atlas}.mrml >${TempDir}/${Atlas}Combined.tmp
+sed 1d ${MRMLDirectory}/${Atlas}VTK.mrml | sed \$d >>${TempDir}/${Atlas}Combined.tmp
 files=`ls -1 ${FiducialsDirectory}/*.mrml`
 for file in $files; do
   sed 1d $file | sed \$d >>${TempDir}/${Atlas}Combined.tmp
