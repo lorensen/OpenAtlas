@@ -16,6 +16,8 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <vector>
+#include <algorithm>
 
 int main (int argc, char *argv[])
 {
@@ -69,9 +71,28 @@ int main (int argc, char *argv[])
     cleaner->Update();
     int sizeOfLargestRegion = cleaner->GetOutput()->GetNumberOfPoints();
 
-    // Skip the first region
+    // Make a pass through all of the regions to get the number of
+    // points in each region
+    std::vector<std::pair<int,int> > regions;
+
     for (int i = 1; i < confilter->GetNumberOfExtractedRegions(); ++i)
       {
+      confilter->SetExtractionModeToSpecifiedRegions();
+      confilter->InitializeSpecifiedRegionList();
+      confilter->AddSpecifiedRegion(i);
+      cleaner->Update();
+      int sizeOfThisRegion = cleaner->GetOutput()->GetNumberOfPoints();
+      std::pair<int,int> regionPair(sizeOfThisRegion, i);
+      regions.push_back(regionPair);
+      }
+
+    // Sort the regions by size of region
+    std::sort(regions.begin(), regions.end());
+    
+    // Skip the first region
+    for (size_t r = 0; r < regions.size(); ++r)
+      {
+      int i = regions[r].second;
       confilter->SetExtractionModeToSpecifiedRegions();
       confilter->InitializeSpecifiedRegionList();
       confilter->AddSpecifiedRegion(i);
