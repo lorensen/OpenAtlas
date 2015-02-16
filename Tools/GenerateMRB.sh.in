@@ -45,4 +45,5 @@ rm ${Atlas}Combined.mrml
 popd
 echo "----------------------------------------"
 echo "Run Slicer with the following argument:"
-echo `realpath $SceneDir/${MRBFile}`
+realdir="$(cd "$(dirname "$SceneDir/${MRBFile}")" && pwd -P)"
+echo ${realdir}/${MRBFile}
