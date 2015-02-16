@@ -29,7 +29,7 @@ LabelFileName=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 LabelFileName`
 ColorTableFileName=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 ColorTableFileName`
 FiducialsDirectory=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 FiducialsDirectory`
 VTKDirectory=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 VTKDirectory`
-SceneDir=`dirname $1`
+SceneDir="$(cd "$(dirname "$1")" && pwd -P)"
 MRBFile=${Atlas}Portable.mrb
 AtlasLabelDir=`dirname ${LabelFileName}`
 AtlasVolumeDir=`dirname ${VolumeFileName}`
@@ -88,5 +88,5 @@ rm -rf $TempDir
 
 echo "----------------------------------------"
 echo "Run Slicer with the following argument:"
-realdir="$(cd "$(dirname "$SceneDir/${MRBFile}")" && pwd -P)"
-echo ${realdir}/${MRBFile}
+echo ${SceneDir}/${MRBFile}
+

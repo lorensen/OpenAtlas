@@ -24,7 +24,7 @@ fi
 
 MRMLDirectory=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 MRMLDirectory`
 FiducialsDirectory=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 FiducialsDirectory`
-SceneDir=`dirname $1`
+SceneDir="$(cd "$(dirname "$1")" && pwd -P)"
 MRBFile=${Atlas}.mrb
 echo "$Prog: MRB file will be written to $MRBFile"
 pushd $SceneDir
@@ -45,5 +45,4 @@ rm ${Atlas}Combined.mrml
 popd
 echo "----------------------------------------"
 echo "Run Slicer with the following argument:"
-realdir="$(cd "$(dirname "$SceneDir/${MRBFile}")" && pwd -P)"
-echo ${realdir}/${MRBFile}
+echo ${SceneDir}/${MRBFile}
