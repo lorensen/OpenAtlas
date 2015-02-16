@@ -88,4 +88,4 @@ rm -rf $TempDir
 
 echo "----------------------------------------"
 echo "Run Slicer with the following argument:"
-echo `pwd`/$SceneDir/${MRBFile}
+echo `realpath $SceneDir/${MRBFile}`
