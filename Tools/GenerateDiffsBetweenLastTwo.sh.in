@@ -46,9 +46,14 @@ Prog=LabelDiff
 AppDir=""
 if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
 
-# Create a file to contain the changes
+# Create a file to contain the changes (NOTE: Mac date command is diffrent than linux version)
 LastRevDate=`(cd ${GitDir}; git show -s  --format=%ci ${LastRev})`
-ChangeLog="Changes-as-of-`date --date="${LastRevDate}" +"%b-%d-%Y@%R(%Z)"`.md"
+if [ `uname` == "Darwin" ]
+  then NewDate=`date -j -f %F "${LastRevDate}" +"%b-%d-%Y@%R(%Z)" 2>/dev/null`
+  else NewDate=`date --date="${LastRevDate}" +"%b-%d-%Y@%R(%Z)"`
+fi
+
+ChangeLog="Changes-as-of-${NewDate}.md"
 
 count=`echo ${Labels} | wc -w`
 
