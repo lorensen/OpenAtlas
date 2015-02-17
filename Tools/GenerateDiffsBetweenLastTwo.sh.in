@@ -13,9 +13,11 @@ AppDir=""
 if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
 Atlas=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 AtlasName`
 LabelFile=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 LabelFileName`
-GitDir=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 GitDirectory`
 ChangesDir=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 ChangesDirectory`
 ColorsFile=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 ColorTableFileName`
+GitDir=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 GitDirectory`
+GitWikiDir=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 GitWikiDirectory`
+GitURL=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 GitURL`
 
 # Get the id's for the last two commits of the label file
 shas=`(cd $GitDir; git log -2 $LabelFile | grep commit | cut -d" " -f2,2)`
@@ -23,7 +25,6 @@ revArray=($shas)
 LastRev=${revArray[0]}
 PreviousRev=${revArray[1]}
 
-ChangesDir=${ChangesDir}/${PreviousRev}To${LastRev}
 # Put a copy of the two rev's in a tmp directory
 TempDir=`mktemp -d -t ${Atlas}.XXX`
 mkdir -p ${TempDir}
@@ -49,24 +50,26 @@ if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
 # Create a file to contain the changes (NOTE: Mac date command is diffrent than linux version)
 LastRevDate=`(cd ${GitDir}; git show -s  --format=%ci ${LastRev})`
 if [ `uname` == "Darwin" ]
-  then NewDate=`date -j -f %F "${LastRevDate}" +"%b-%d-%Y@%R(%Z)" 2>/dev/null`
-  else NewDate=`date --date="${LastRevDate}" +"%b-%d-%Y@%R(%Z)"`
+  then NewDate=`date -j -f %F "${LastRevDate}" +"%b-%d-%Y@%H%M(%Z)" 2>/dev/null`
+  else NewDate=`date --date="${LastRevDate}" +"%b-%d-%Y@%H%M(%Z)"`
 fi
 
 ChangeLog="Changes-as-of-${NewDate}.md"
-
+URLRegEx="s#\*[ ]*\([^ $]*\)#\* \[\1\]\(${GitURL}/blob/${LastRev}/Changes/\1_diff.png\)  #"
 count=`echo ${Labels} | wc -w`
 
-echo "Comparing the last two revs of `basename ${LabelFile}`, **${count}** labels have changed.  " > "${TempDir}/${ChangeLog}"
+echo "Comparing the last two revs of `basename ${LabelFile}`, __${count}__ labels have changed.  " > "${TempDir}/${ChangeLog}"
+echo "The last revision was commited on ${LastRevDate} by _`(cd ${GitDir}; git show -s --format=%aN ${LastRev})`_  " >>"${TempDir}/${ChangeLog}"
+echo "The previous revision was commited on `(cd ${GitDir}; git show -s  --format=%ci ${PreviousRev})` by _`(cd ${GitDir}; git show -s --format=%aN ${PreviousRev})`_  " >>"${TempDir}/${ChangeLog}"
 
-echo "The last revision was commited on ${LastRevDate} by *`(cd ${GitDir}; git show -s --format=%aN ${LastRev})`*  " >>"${TempDir}/${ChangeLog}"
-
-echo "The previous revision was commited on `(cd ${GitDir}; git show -s  --format=%ci ${PreviousRev})` by *`(cd ${GitDir}; git show -s --format=%aN ${PreviousRev})`*  " >>"${TempDir}/${ChangeLog}"
-
+mkdir -p ${ChangesDir}
+rm ${ChangesDir}/*
 for label in $Labels; do
   @OpenAtlas_BINARY_DIR@/$AppDir/$Prog  $label $TempDir/$PreviousLabelsFile $TempDir/$LastLabelsFile  $ColorsFile $ChangesDir | tee -a "${TempDir}/${ChangeLog}"
 done
-echo "----------------------------"
-cat "${TempDir}/${ChangeLog}"
+# Insert url's into the change page
+echo "Creating ${GitWikiDir}/Changes/${ChangeLog}"
+mkdir -p ${GitWikiDir}/Changes
+sed "${URLRegEx}" "${TempDir}/${ChangeLog}" > ${GitWikiDir}/Changes/${ChangeLog}
 # Cleanup
 rm -rf $TempDir

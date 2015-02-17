@@ -54,9 +54,13 @@ AppDir=""
 if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
 
 pushd $ConfigDir
-rm Differences/*.png 2>/dev/null
+echo ${ChangesDir}
+
+(cd ${GitDir}; rm ${ChangesDir}/*.png)
+
+mkdir -p ${ChangesDir}
 for label in $Labels; do
-  @OpenAtlas_BINARY_DIR@/$AppDir/$Prog  $label $TempDir/$file $NewLabels $Colors Differences
+  @OpenAtlas_BINARY_DIR@/$AppDir/$Prog  $label $TempDir/$file $NewLabels $Colors ${ChangesDir}
 done
 popd
 

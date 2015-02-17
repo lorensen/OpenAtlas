@@ -59,6 +59,10 @@ int main (int argc, char *argv[])
     {
     std::cout << config.GitDirectory() << std::endl;
     }
+  else if (name == "GitURL")
+    {
+    std::cout << config.GitURL() << std::endl;
+    }
   else if (name == "GitWikiDirectory")
     {
     std::cout << config.GitWikiDirectory() << std::endl;
