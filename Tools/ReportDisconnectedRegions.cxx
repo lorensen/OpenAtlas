@@ -12,6 +12,9 @@
 #include <vtkPolyDataReader.h>
 #include <vtkCleanPolyData.h>
 #include <vtkSmartPointer.h>
+#include <vtkTriangleFilter.h>
+#include <vtkMassProperties.h>
+#include <vtkFieldData.h>
 
 #include <fstream>
 #include <sstream>
@@ -37,7 +40,20 @@ int main (int argc, char *argv[])
     vtkSmartPointer<vtkPolyDataConnectivityFilter>::New();
 
   reader->SetFileName(argv[1]);
- 
+  reader->Update();
+  double voxelVolume = 1.0;
+  double hasSpacing = false; // does the polydata field data define spacing
+
+  if (reader->GetOutput()->GetFieldData())
+    {
+    if (reader->GetOutput()->GetFieldData()->GetArray("Spacing"))
+      {
+      double spacing[3];
+      reader->GetOutput()->GetFieldData()->GetArray("Spacing")->GetTuple(0, spacing);
+      voxelVolume = spacing[0] * spacing[1] * spacing[2];
+      hasSpacing = true;
+      }
+    }
   confilter->SetInputConnection(reader->GetOutputPort());
   confilter->SetExtractionModeToLargestRegion();
   confilter->Update();
@@ -71,6 +87,13 @@ int main (int argc, char *argv[])
     cleaner->Update();
     int sizeOfLargestRegion = cleaner->GetOutput()->GetNumberOfPoints();
 
+    vtkSmartPointer<vtkTriangleFilter> triangles =
+      vtkSmartPointer<vtkTriangleFilter>::New();
+    triangles->SetInputConnection(cleaner->GetOutputPort());
+    vtkSmartPointer<vtkMassProperties> massProp =
+      vtkSmartPointer<vtkMassProperties>::New();
+    massProp->SetInputConnection(triangles->GetOutputPort());
+
     // Make a pass through all of the regions to get the number of
     // points in each region
     std::vector<std::pair<int,int> > regions;
@@ -81,8 +104,17 @@ int main (int argc, char *argv[])
       confilter->InitializeSpecifiedRegionList();
       confilter->AddSpecifiedRegion(i);
       cleaner->Update();
+      double volume = massProp->GetVolume();
       int sizeOfThisRegion = cleaner->GetOutput()->GetNumberOfPoints();
-      std::pair<int,int> regionPair(sizeOfThisRegion, i);
+      std::pair<int,int> regionPair;
+      if (hasSpacing)
+        {
+        regionPair = std::make_pair(volume / voxelVolume, i);
+        }
+      else
+        {
+        regionPair = std::make_pair(sizeOfThisRegion, i);
+        }
       regions.push_back(regionPair);
       }
 
@@ -98,7 +130,14 @@ int main (int argc, char *argv[])
       confilter->AddSpecifiedRegion(i);
       cleaner->Update();
       int sizeOfThisRegion = cleaner->GetOutput()->GetNumberOfPoints();
-      std::cout << "Region " << i << " has " << sizeOfThisRegion << " points" << std::endl;
+      if (hasSpacing)
+        {
+        std::cout << "Region " << i << " has " << regions[r].first << " voxels" << std::endl;
+        }
+      else
+        {
+        std::cout << "Region " << i << " has " << sizeOfThisRegion << " points" << std::endl;
+        }
 
       // Mark regions that are within 50% of the size of the largest region
       std::string description;
@@ -118,7 +157,14 @@ int main (int argc, char *argv[])
       else
         {
         std::stringstream percentDescription;
-        percentDescription << "Disconnected region(" << percentOfLargest * 100.0 << "%)";
+        if (hasSpacing)
+          {
+          percentDescription << "Disconnected region(" << regions[r].first << " voxels)";
+          }
+        else
+          {
+          percentDescription << "Disconnected region(" << percentOfLargest * 100.0 << "%)";
+          }
         description = percentDescription.str();
         }
       double centroid[3];

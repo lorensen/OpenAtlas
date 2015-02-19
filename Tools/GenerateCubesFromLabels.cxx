@@ -25,6 +25,8 @@
 #include <vtkPolyDataWriter.h>
 #include <vtkSmartPointer.h>
  
+#include <vtkFieldData.h>
+#include <vtkDoubleArray.h>
 #include <vtkMatrix4x4.h>
 #include <vtkCellData.h>
 #include <vtkImageData.h>
@@ -158,7 +160,7 @@ int main (int argc, char *argv[])
   confilter->SetExtractionModeToLargestRegion();
 
   writer->SetInputConnection(geometry->GetOutputPort());
- 
+  
   for (unsigned int i = startLabel; i <= endLabel; i++)
     {
     // see if the label exists, if not skip it
@@ -186,6 +188,31 @@ int main (int argc, char *argv[])
               << " writing "
               << ss.str() << std::endl;
  
+    
+    // Store some info from the volume in the field data
+    vtkSmartPointer<vtkDoubleArray> spacingArray = 
+      vtkSmartPointer<vtkDoubleArray>::New();
+    double spacingValue[3];
+    spacingValue[0] = change->GetOutput()->GetSpacing()[0];
+    spacingValue[1] = change->GetOutput()->GetSpacing()[1];
+    spacingValue[2] = change->GetOutput()->GetSpacing()[2];
+    spacingArray->SetNumberOfComponents(3);
+    spacingArray->SetName("Spacing");
+    spacingArray->InsertNextTuple(spacingValue);
+
+    vtkSmartPointer<vtkDoubleArray> originArray = 
+      vtkSmartPointer<vtkDoubleArray>::New();
+    double originValue[3];
+    originValue[0] = change->GetOutput()->GetOrigin()[0];
+    originValue[1] = change->GetOutput()->GetOrigin()[1];
+    originValue[2] = change->GetOutput()->GetOrigin()[2];
+    originArray->SetNumberOfComponents(3);
+    originArray->SetName("Origin");
+    originArray->InsertNextTuple(originValue);
+
+    geometry->GetOutput()->GetFieldData()->AddArray(spacingArray);
+    geometry->GetOutput()->GetFieldData()->AddArray(originArray);
+
     writer->SetFileTypeToBinary();
     writer->SetFileName(ss.str().c_str());
     writer->Write();
