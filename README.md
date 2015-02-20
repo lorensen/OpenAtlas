@@ -20,6 +20,8 @@ In 2007, Lorensen retired from GE Research and became an unpaid intern in BillsB
 
 __At last, the Open Atlas Program is funded by Noware!__
 
+Some additional progress was made at the 2015 [NA-MIC](na-mic.org) [Project Week](http://www.na-mic.org/Wiki/index.php/2015_Winter_Project_Week:OpenAtlas).
+
 ## Building the tools
 The OpenAtlas Project uses [cmake](http://cmake.org) to configure the tools. We recommend using the cmake Superbuild to build [vtk](vtk.org), [itk](itk.org) and the openatlas tools
 
@@ -40,12 +42,12 @@ The OpenAtlas Project uses [cmake](http://cmake.org) to configure the tools. We 
    
 ## Configuring an Atlas
 The Atlas configuration is defined with an atlas config file. Keywords are separated by colons.  
-   *ColorTableFileName*: The file containing the color table.    
-   *AdjacenciesFileName*: The file containing adjacencies. This file is generated.  
    *VolumeFileName*: The file containing the volume data associated with the atlas.  
    *LabelFileName*: The file containing the atlas labels.  
+   *ColorTableFileName*: The file containing the color table.    
+   *AdjacenciesFileName*: The file containing adjacencies. This file is generated.  
    *ModelsDirectory*: The directory holding the generated models.  
-   *VTKDirectory*: The directory cojntaing the generated cuberille files.  
+   *VTKDirectory*: The directory contaning the generated cuberille files.  
    *STLDirectory*: The directory containing the generated STL files.  
    *ScreenshotDirectory*: The directory containing the generated screenshots.  
    *ChangesDirectory*: The directory containing the generated diff screenshots.  
@@ -62,14 +64,16 @@ To start, you may want to clone the [SPL Brain Atlas](http://www.spl.harvard.edu
    git clone https://github.com/lorensen/SPLBrainAtlas.git  
 
 2. configure the atlas
-
+   
    mkdir SPLBrainAtlas-build  
    cd SPLBrainAtlas-build  
    cmake ../SPLBrainAtlas  
 3. The SPLBrainAtlas-build directory will contain a file SPLBrainAtlas.config
 4. Now, go to your OpenAtlas-Superbuild/OpenAtlas-build directory
+
    ./GenerateAll.sh "your SPLBrainAtlas-build"/SPLBrainAtlas.config
 5. If you have [Slicer](http://slicer.org/), you can see the atlas volume, atlas labels, cube models and fiducial work lists by running:
+
    Slicer SPLBrainAtlas/SPLBrainAtlas.mrb
 
 ## Other atlases
