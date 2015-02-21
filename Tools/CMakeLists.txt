@@ -72,6 +72,11 @@ target_link_libraries(GenerateMrmlScene
         OpenAtlasUtilities
         ${ITK_LIBRARIES})
 
+add_executable(GenerateAtlasSummary MACOSX_BUNDLE GenerateAtlasSummary)
+target_link_libraries(GenerateAtlasSummary
+        OpenAtlasUtilities
+        ${ITK_LIBRARIES})
+
 add_executable(ReportLeftRightAdjacencies MACOSX_BUNDLE ReportLeftRightAdjacencies)
 target_link_libraries(ReportLeftRightAdjacencies
         OpenAtlasUtilities
