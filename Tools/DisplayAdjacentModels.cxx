@@ -207,7 +207,16 @@ int main (int argc, char *argv[])
 
   leftRenderer->ResetCamera();
   leftRenderer->ResetCameraClippingRange();
-  camera->Azimuth(30);
+
+  if (labels[label].find("right") != std::string::npos ||
+      labels[label].find("Right") != std::string::npos)
+    {
+    camera->Azimuth(-30);
+    }
+  else
+    {
+    camera->Azimuth(30);
+    }
   camera->Elevation(30);
 
   // Render
