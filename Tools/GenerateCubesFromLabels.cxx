@@ -26,6 +26,7 @@
 #include <vtkSmartPointer.h>
  
 #include <vtkFieldData.h>
+#include <vtkFloatArray.h>
 #include <vtkDoubleArray.h>
 #include <vtkMatrix4x4.h>
 #include <vtkCellData.h>
@@ -51,10 +52,13 @@ int main (int argc, char *argv[])
   itksys::SystemTools::MakeDirectory(config.VTKDirectory());
 
   std::vector<std::string> labels;
-  // Read the label file
+  std::vector<std::vector<float> > colors;
+
+  // Read the label and color file
   try
     {
     ReadLabelFile(config.ColorTableFileName(), labels);
+    ReadColorFile(config.ColorTableFileName(), colors);
     }
   catch (itk::ExceptionObject& e)
     {
@@ -92,18 +96,16 @@ int main (int argc, char *argv[])
   // Define all of the variables
   unsigned int startLabel = atoi(argv[2]);
   unsigned int endLabel = atoi(argv[3]);
-  std::string filePrefix = "Label";
  
   // Generate models from labels
   // 1) Read the volume label file
   // 2) Generate a histogram of the labels
   // 3) Generate models from the labeled volume
-  // 4) Smooth the models
-  // 5) Output each model into a separate file
+  // 4) Output each model into a separate file
  
   reader->SetFileName(config.LabelFileName());
 
-  // Convert to RAS (note: orientation filter uses a different notation
+  // Convert to RAS (note: orientation filter uses a different notation)
   orienter->SetDesiredCoordinateOrientation(itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_LPI); // RAS
   orienter->SetInput(reader->GetOutput());
   orienter->UseImageDirectionOn();
@@ -210,8 +212,19 @@ int main (int argc, char *argv[])
     originArray->SetName("Origin");
     originArray->InsertNextTuple(originValue);
 
+    vtkSmartPointer<vtkFloatArray> colorArray = 
+      vtkSmartPointer<vtkFloatArray>::New();
+    double colorValue[3];
+    colorValue[0] = colors[i][0];
+    colorValue[1] = colors[i][1];
+    colorValue[2] = colors[i][2];
+    colorArray->SetNumberOfComponents(3);
+    colorArray->SetName("Color");
+    colorArray->InsertNextTuple(colorValue);
+
     geometry->GetOutput()->GetFieldData()->AddArray(spacingArray);
     geometry->GetOutput()->GetFieldData()->AddArray(originArray);
+    geometry->GetOutput()->GetFieldData()->AddArray(colorArray);
 
     writer->SetFileTypeToBinary();
     writer->SetFileName(ss.str().c_str());
