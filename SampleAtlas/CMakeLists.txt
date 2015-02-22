@@ -1,9 +1,10 @@
 cmake_minimum_required(VERSION 2.8)
- 
+
 project(SampleAtlas)
 
 configure_file(${SampleAtlas_SOURCE_DIR}/SampleAtlas.config.in  ${SampleAtlas_BINARY_DIR}/SampleAtlas.config @ONLY)
 
+# These are used to customize the SampleAtlas.mrml file
 set(ATLAS_NAME SampleAtlas)
 set(ATLAS_VOLUME ${SampleAtlas_SOURCE_DIR}/Atlas/${ATLAS_NAME}Volume.nrrd)
 set(ATLAS_VOLUME_NAME ${ATLAS_NAME}Volume)
