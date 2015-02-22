@@ -94,22 +94,22 @@ int main (int argc, char *argv[])
       vtkSmartPointer<vtkMassProperties>::New();
     massProp->SetInputConnection(triangles->GetOutputPort());
 
-    // Make a pass through all of the regions to get the number of
-    // points in each region
+    // Make a pass through all of the regions but the first to get the
+    // number of points (or voxels) in each region
     std::vector<std::pair<int,int> > regions;
-
     for (int i = 1; i < confilter->GetNumberOfExtractedRegions(); ++i)
       {
       confilter->SetExtractionModeToSpecifiedRegions();
       confilter->InitializeSpecifiedRegionList();
       confilter->AddSpecifiedRegion(i);
       cleaner->Update();
-      double volume = massProp->GetVolume();
+
       int sizeOfThisRegion = cleaner->GetOutput()->GetNumberOfPoints();
       std::pair<int,int> regionPair;
       if (hasSpacing)
         {
-        regionPair = std::make_pair(volume / voxelVolume, i);
+        double volume = massProp->GetVolume();
+        regionPair = std::make_pair(static_cast<int>(volume / voxelVolume + .1 * voxelVolume), i);
         }
       else
         {
@@ -121,7 +121,7 @@ int main (int argc, char *argv[])
     // Sort the regions by size of region
     std::sort(regions.begin(), regions.end());
     
-    // Skip the first region
+    // Process each region
     for (size_t r = 0; r < regions.size(); ++r)
       {
       int i = regions[r].second;
@@ -147,7 +147,14 @@ int main (int argc, char *argv[])
         std::cout << "Region " << i
                   << " is large. Size is " <<  percentOfLargest * 100.0 << " percent of largest." << std::endl;
         std::stringstream percentDescription;
-        percentDescription << "Large disconnected region(" << percentOfLargest * 100.0 << "%)";
+        if (hasSpacing)
+          {
+          percentDescription << "Large disconnected region(" << regions[r].first << " voxels)";
+          }
+        else
+          {
+          percentDescription << "Large disconnected region(" << percentOfLargest * 100.0 << "%)";
+          }
         description = percentDescription.str();
         }
       else if (sizeOfThisRegion == 8)
