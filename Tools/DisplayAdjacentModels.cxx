@@ -7,6 +7,7 @@
 #include <vtkBalloonRepresentation.h>
 #include <vtkBalloonWidget.h>
 #include <vtkCamera.h>
+#include <vtkCubeSource.h>
 #include <vtkOrientationMarkerWidget.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkPolyDataReader.h>
@@ -21,6 +22,8 @@
 #include <vtksys/SystemTools.hxx>
 
 #include <sstream>
+
+void Room (vtkSmartPointer<vtkRenderer> &renderer, double bounds[6], bool fromRight);
 
 int main (int argc, char *argv[])
 {
@@ -84,6 +87,14 @@ int main (int argc, char *argv[])
     vtkSmartPointer<vtkActor>::New();
   iconActor->SetMapper(iconMapper);
 
+  double bounds[6];
+  bounds[0] = VTK_DOUBLE_MAX;
+  bounds[1] = VTK_DOUBLE_MIN;
+  bounds[2] = VTK_DOUBLE_MAX;
+  bounds[3] = VTK_DOUBLE_MIN;
+  bounds[4] = VTK_DOUBLE_MAX;
+  bounds[5] = VTK_DOUBLE_MIN;
+
   std::cout << labels[label] << "(" << label << ")" << " is connected to" << std::endl;
   neighbors[label].insert(label);
   for (std::set<unsigned int>::iterator sit = neighbors[ label ].begin();
@@ -108,6 +119,20 @@ int main (int argc, char *argv[])
     std::ostringstream fileName;
     fileName << config.STLDirectory() << "/" << labels[*sit] << "-" << *sit << ".stl" << std::ends;
     reader->SetFileName(fileName.str().c_str());
+    reader->Update();
+    double actorBounds[6];
+    reader->GetOutput()->GetBounds(actorBounds);
+    for (int b = 0; b < 6; b += 2)
+      {
+      if (actorBounds[b] < bounds[b])
+        {
+        bounds[b] = actorBounds[b];
+        }
+      if (actorBounds[b + 1] > bounds[b + 1])
+        {
+        bounds[b + 1] = actorBounds[b + 1];
+        }
+      }
     vtkSmartPointer<vtkPolyDataMapper> mapper = 
       vtkSmartPointer<vtkPolyDataMapper>::New();
     mapper->SetInputConnection(reader->GetOutputPort());
@@ -132,6 +157,13 @@ int main (int argc, char *argv[])
     std::stringstream anatomyLabel;
     anatomyLabel << labels[*sit] << "(" << *sit << ")";
     balloonWidget->AddBalloon(actor, anatomyLabel.str().c_str(), NULL);
+    }
+  
+  // Adjust bounds
+  for (int b = 0; b < 6; b += 2)
+    {
+    bounds[b] = bounds[b] - (bounds[b + 1] - bounds[b]) * .1;
+    bounds[b + 1] = bounds[b + 1] + (bounds[b + 1] - bounds[b]) * .1;
     }
 
   for (std::set<unsigned int>::iterator sit = neighbors[ label ].begin();
@@ -201,23 +233,29 @@ int main (int argc, char *argv[])
   camera->SetViewUp(0, 0, 1);
   camera->SetFocalPoint(0, 0, 0);
   camera->SetPosition(0, 1, 0);
+  camera->Elevation(30);
   
+  if (labels[label].find("right") != std::string::npos ||
+      labels[label].find("Right") != std::string::npos)
+    {
+    camera->Azimuth(-30);
+    Room(rightRenderer, bounds, false);
+    Room(leftRenderer, bounds, false);
+    }
+  else
+    {
+    camera->Azimuth(30);
+    Room(rightRenderer, bounds, true);
+    Room(leftRenderer, bounds, true);
+    }
+
   leftRenderer->SetActiveCamera(camera);
   rightRenderer->SetActiveCamera(camera);
 
   leftRenderer->ResetCamera();
   leftRenderer->ResetCameraClippingRange();
+  rightRenderer->ResetCameraClippingRange();
 
-  if (labels[label].find("right") != std::string::npos ||
-      labels[label].find("Right") != std::string::npos)
-    {
-    camera->Azimuth(-30);
-    }
-  else
-    {
-    camera->Azimuth(30);
-    }
-  camera->Elevation(30);
 
   // Render
   renderWindow->Render();
@@ -258,4 +296,85 @@ int main (int argc, char *argv[])
     writer->Write();
     }    
   return EXIT_SUCCESS;
+}
+void Room (vtkSmartPointer<vtkRenderer> &renderer, double bounds[6], bool fromRight)
+{
+#define THICKNESS 0.0
+#define OPACITY .2
+  vtkSmartPointer<vtkCubeSource> basePlane =
+    vtkSmartPointer<vtkCubeSource>::New();
+  basePlane->SetCenter((bounds[1] + bounds[0]) / 2.0,
+                       bounds[2] + THICKNESS / 2.0,
+                       (bounds[5] + bounds[4]) / 2.0);
+  basePlane->SetXLength(bounds[1] - bounds[0]);
+  basePlane->SetYLength(THICKNESS);
+  basePlane->SetZLength(bounds[5] - bounds[4]);
+  vtkSmartPointer<vtkPolyDataMapper> baseMapper =
+    vtkSmartPointer<vtkPolyDataMapper>::New();
+  baseMapper->SetInputConnection(basePlane->GetOutputPort());
+  vtkSmartPointer<vtkActor> base =
+    vtkSmartPointer<vtkActor>::New();
+  base->SetMapper(baseMapper);
+  base->GetProperty()->SetOpacity(OPACITY);
+  base->GetProperty()->EdgeVisibilityOn();
+  renderer->AddActor(base);
+
+  vtkSmartPointer<vtkCubeSource> backPlane =
+    vtkSmartPointer<vtkCubeSource>::New();
+  backPlane->SetCenter((bounds[1] + bounds[0]) / 2.0,
+                       (bounds[3] + bounds[2]) / 2.0,
+                       bounds[4] + THICKNESS / 2.0);
+  backPlane->SetXLength(bounds[1] - bounds[0]);
+  backPlane->SetYLength(bounds[3] - bounds[2]);
+  backPlane->SetZLength(THICKNESS);
+  vtkSmartPointer<vtkPolyDataMapper> backMapper =
+    vtkSmartPointer<vtkPolyDataMapper>::New();
+  backMapper->SetInputConnection(backPlane->GetOutputPort());
+  vtkSmartPointer<vtkActor> back =
+    vtkSmartPointer<vtkActor>::New();
+  back->SetMapper(backMapper);
+  back->GetProperty()->SetOpacity(OPACITY);
+  back->GetProperty()->EdgeVisibilityOn();
+  renderer->AddActor(back);
+
+  if (fromRight)
+    {
+    vtkSmartPointer<vtkCubeSource> leftPlane =
+      vtkSmartPointer<vtkCubeSource>::New();
+    leftPlane->SetCenter(bounds[1] - THICKNESS / 2.0,
+                         (bounds[3] + bounds[2]) / 2.0,
+                         (bounds[5] + bounds[4]) / 2.0);
+    leftPlane->SetXLength(THICKNESS);
+    leftPlane->SetYLength(bounds[3] - bounds[2]);
+    leftPlane->SetZLength(bounds[5] - bounds[4]);
+    vtkSmartPointer<vtkPolyDataMapper> leftMapper =
+      vtkSmartPointer<vtkPolyDataMapper>::New();
+    leftMapper->SetInputConnection(leftPlane->GetOutputPort());
+    vtkSmartPointer<vtkActor> left =
+      vtkSmartPointer<vtkActor>::New();
+    left->SetMapper(leftMapper);
+    left->GetProperty()->SetOpacity(OPACITY);
+    left->GetProperty()->EdgeVisibilityOn();
+    renderer->AddActor(left);
+    }
+  else
+    {
+    vtkSmartPointer<vtkCubeSource> rightPlane =
+      vtkSmartPointer<vtkCubeSource>::New();
+    rightPlane->SetCenter(bounds[0] + THICKNESS / 2.0,
+                          (bounds[3] + bounds[2]) / 2.0,
+                          (bounds[5] + bounds[4]) / 2.0);
+    rightPlane->SetXLength(THICKNESS);
+    rightPlane->SetYLength(bounds[3] - bounds[2]);
+    rightPlane->SetZLength(bounds[5] - bounds[4]);
+    vtkSmartPointer<vtkPolyDataMapper> rightMapper =
+      vtkSmartPointer<vtkPolyDataMapper>::New();
+    rightMapper->SetInputConnection(rightPlane->GetOutputPort());
+    vtkSmartPointer<vtkActor> right =
+      vtkSmartPointer<vtkActor>::New();
+    right->SetMapper(rightMapper);
+    right->GetProperty()->SetOpacity(OPACITY);
+    right->GetProperty()->EdgeVisibilityOn();
+    renderer->AddActor(right);
+    }
 }
