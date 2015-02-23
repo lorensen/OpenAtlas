@@ -33,8 +33,9 @@ if [ -z "$Atlas" ]; then
     exit 1
 fi
 # Get the attributes needed in this script
-ChangesDir=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 ChangesDirectory`
 Colors=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 ColorTableFileName`
+
+ChangesDir=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 ChangesDirectory`
 
 if [ ! -f $OldLabels ] ; then
   echo "$0: $OldLabels does not exist"
@@ -65,13 +66,3 @@ for label in $Labels; do
   @OpenAtlas_BINARY_DIR@/$AppDir/$Prog  $label $OldLabels $NewLabels $Colors $ChangesDir
 done
 popd
-
-# Now commit the diffs
-# Modified
-#(cd $ChangesDir; git commit -m "AUTO: Label diffs modified." `git status | grep Changes |grep modified: | cut -d":" -f2,2`)
-# Added
-#(cd $ChangesDir; find . \*.png -exec git add {} \;)
-#(cd $ChangesDir; git commit -m "AUTO: Label diffs added.")
-# Removed
-#(cd $ChangesDir; git rm `git status | grep Changes | grep deleted: | cut -d":" -f2,2`)
-#(cd $ChangesDir; git commit -m "SYNC: Files deleted (or moved) from wiki.")
