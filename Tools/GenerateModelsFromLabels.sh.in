@@ -27,4 +27,4 @@ Prog=GenerateModelsFromLabels
 AppDir=""
 if [ `uname` == "Darwin" ]; then AppDir=$Prog.app/Contents/MacOS/ ; fi
 
-@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $AtlasConfig 1 5000
+@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $AtlasConfig 1 15000
