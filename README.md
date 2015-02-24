@@ -8,7 +8,7 @@ In December 2005, [DARPA](http://www.darpa.mil/default.aspx) sponsored a Virtual
 
 At that time, GE Research was involved in another DARPA Program called [Virtual Soldier](http://www.virtualsoldier.us/). GE's role was to support anatomy modelling and visualization for the project. Brigham and Women's [Surgical Planning Laboratory](http://www.spl.harvard.edu/) was a GE subcontractor. GE and BWH used the Visible Human segmented Thorax data as a base for modeling the chest of military combatants. A number of software tools were created to process this data.
 
-After the Virtual Face Meeting, Bill Lorensen and Tim Kelliher, both from GE Research, brainstormed about creating a face atlas for the project. The meeting took place at the Rock Bottom Brewery in Arlington, VA. No facial atlas existed, but they came up with the notion of using the world community to create and maintain such an atlas. They would use an "Extreme Testing" approach that GE Research pioneered for VTK and ITK. The approach would adapt the nightly build/test dashboard techniques that GE had developed.
+After the Virtual Face Meeting, Bill Lorensen and Tim Kelliher, both from GE Research, brainstormed about creating a face atlas for the project. The meeting took place at the Rock Bottom Brewery in Arlington, VA. No facial atlas existed, but they came up with the notion of using the world community to create and maintain such an atlas. They would use an "Extreme Testing" approach that [GE Research pioneered for VTK and ITK](http://marchingcubes.org/images/9/90/VTKExtremeTesting.pdf). The approach would adapt the nightly build/test dashboard techniques that GE had developed.
 
 _Unfortunately, the Virtual Face Program was never funded by DARPA._
 
@@ -16,7 +16,7 @@ In January 2007, Terry Yoo (the father of [ITK](http://itk.org)) at the [Nationa
 
 _Unfortunately, the program was never funded by NLM._
 
-In 2007, Lorensen retired from GE Research and became an unpaid intern in BillsBasement at _Noware_. Fighting the winter blues, he revived, modified and extended many of the original Virtual Soldier atlas processing tools. He applied these tools to the Brigham and Womens [SPL Brain Atlas](http://www.spl.harvard.edu/publications/item/view/1265). _Noware_ graciously provided funding and the Open Atlas project was born. Additional funding provied by the _Social Security Adminstration_ and the _GE Pension Fund_.
+In 2007, Lorensen retired from GE Research and became an unpaid intern in BillsBasement at _Noware_. Fighting the winter blues, he revived, modified and extended many of the [original Virtual Soldier atlas processing tools](https://gitorious.org/virtualsoldier). He applied these tools to the Brigham and Womens [SPL Brain Atlas](http://www.spl.harvard.edu/publications/item/view/1265). _Noware_ graciously provided funding and the Open Atlas project was born. Additional funding provied by the _Social Security Adminstration_ and the _GE Pension Fund_.
 
 __At last, the Open Atlas Program is funded by Noware!__
 
