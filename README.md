@@ -83,3 +83,4 @@ The following atlases can also be configured for Open Atlas tools.
 2. [SPL Head and Neck Atlas](https://github.com/lorensen/SPLHeadNeckAtlas)
 3. [SPL Knee Atlas](https://github.com/lorensen/SPLKneeAtlas)
 4. [ICBM Brain Template](https://github.com/lorensen/ICBMBrainAtlas)
+5. [FreeSurfer Sample Atlas](https://github.com/lorensen/FreeSurferSampleAtlas)
