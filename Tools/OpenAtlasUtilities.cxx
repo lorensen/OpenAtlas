@@ -3,6 +3,8 @@
 #include <itksys/SystemTools.hxx>
 #include <itksys/RegularExpression.hxx>
 
+#include <algorithm>
+
 int ReadLabelFile(std::string filename, std::vector<std::string> &labels)
 {
   std::ifstream file;
@@ -29,6 +31,7 @@ int ReadLabelFile(std::string filename, std::vector<std::string> &labels)
         {
         labels.resize((label + 1) * 2);
         }
+      std::replace( name.begin(), name.end(), '-', '_');
       labels[label] = name;
       }
     }
