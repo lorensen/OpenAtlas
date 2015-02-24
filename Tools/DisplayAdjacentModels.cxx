@@ -108,8 +108,8 @@ int main (int argc, char *argv[])
     if (labels[*sit] != labels[label])
       {
       std::cout << "\t" << labels[*sit] << "(" << *sit << ")" <<std::endl;
-     // Skip displaying adjacent models that have a zero opacity
-     if (colors[*sit][3] == 0)
+     // Skip displaying adjacent models that have some transparency
+     if (colors[*sit][3] != 1.0)
        {
        continue;
        }
@@ -154,6 +154,10 @@ int main (int argc, char *argv[])
         actor->GetProperty()->SetOpacity(.4);
         actor->GetProperty()->EdgeVisibilityOff();
         }
+      else if (colors[*sit][3] != 1.0)
+        {
+        actor->GetProperty()->EdgeVisibilityOff();
+        }
       iconMapper->SetInputConnection(reader->GetOutputPort());
       iconActor->GetProperty()->SetColor(colors[*sit][0],
                                          colors[*sit][1],
@@ -180,7 +184,7 @@ int main (int argc, char *argv[])
       {
       continue;
       }
-    if (colors[*sit][3] == 0)
+    if (labels[*sit] != labels[label] && colors[*sit][3] != 1.0)
       {
       continue;
       }
