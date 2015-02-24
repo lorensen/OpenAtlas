@@ -108,11 +108,11 @@ int main (int argc, char *argv[])
     if (labels[*sit] != labels[label])
       {
       std::cout << "\t" << labels[*sit] << "(" << *sit << ")" <<std::endl;
-      }
-    // Skip displaying models that have a zero opacity
-    if (colors[*sit][3] == 0)
-      {
-      continue;
+     // Skip displaying adjacent models that have a zero opacity
+     if (colors[*sit][3] == 0)
+       {
+       continue;
+       }
       }
     vtkSmartPointer<vtkSTLReader> reader = 
       vtkSmartPointer<vtkSTLReader>::New();
@@ -139,6 +139,7 @@ int main (int argc, char *argv[])
     vtkSmartPointer<vtkActor> actor = 
       vtkSmartPointer<vtkActor>::New();
     actor->SetMapper(mapper);
+    actor->GetProperty()->SetOpacity(colors[*sit][3]);
     actor->GetProperty()->SetColor(colors[*sit][0],
                                    colors[*sit][1],
                                    colors[*sit][2]);
@@ -148,10 +149,16 @@ int main (int argc, char *argv[])
       actor->GetProperty()->SetEdgeColor(colors[*sit][0] * .4,
                                          colors[*sit][1] * .4,
                                          colors[*sit][2] * .4);
+      if (colors[*sit][3] == 0.0)
+        {
+        actor->GetProperty()->SetOpacity(.4);
+        actor->GetProperty()->EdgeVisibilityOff();
+        }
       iconMapper->SetInputConnection(reader->GetOutputPort());
       iconActor->GetProperty()->SetColor(colors[*sit][0],
                                          colors[*sit][1],
                                          colors[*sit][2]);
+      iconActor->GetProperty()->SetOpacity(1.0);
       }
     leftRenderer->AddActor(actor);
     std::stringstream anatomyLabel;
