@@ -136,6 +136,9 @@ int main (int argc, char *argv[])
   std::map<unsigned int, unsigned int> addedLabels;
   std::map<unsigned int, unsigned int>::iterator aIt;
 
+  std::map<unsigned int, unsigned int> addedFromBackgroundLabels;
+  std::map<unsigned int, unsigned int>::iterator abIt;
+
   std::map<unsigned int, unsigned int> removedLabels;
   std::map<unsigned int, unsigned int>::iterator rIt;
 
@@ -146,7 +149,21 @@ int main (int argc, char *argv[])
       {
       diffIt.Set(label);
       }
-    // added
+    // added from background
+    else if (oldIt.Get() != label && newIt.Get() == label && oldIt.Get() == 0)
+      {
+      diffIt.Set(label + 2);
+      abIt = addedFromBackgroundLabels.find(oldIt.Get());
+      if (abIt == addedFromBackgroundLabels.end())
+        {
+        addedFromBackgroundLabels[oldIt.Get()] = 1;
+        }
+      else
+        {
+        addedFromBackgroundLabels[oldIt.Get()] = addedFromBackgroundLabels[oldIt.Get()] + 1;
+        }
+      }
+    // added from another label
     else if (oldIt.Get() != label && newIt.Get() == label)
       {
       diffIt.Set(label + 1);
@@ -184,6 +201,10 @@ int main (int argc, char *argv[])
   for(std::map<unsigned int, unsigned int>::iterator a = addedLabels.begin(); a != addedLabels.end(); ++a)
     {
     std::cout << "     added " << a->second << " voxel(s) from " << (a->first ? labels[a->first] : "background") << "  " << std::endl;
+    }
+  for(std::map<unsigned int, unsigned int>::iterator ab = addedFromBackgroundLabels.begin(); ab != addedFromBackgroundLabels.end(); ++ab)
+    {
+    std::cout << "     added " << ab->second << " voxel(s) from background" << "  " << std::endl;
     }
   for(std::map<unsigned int, unsigned int>::iterator r = removedLabels.begin(); r != removedLabels.end(); ++r)
     {
@@ -264,7 +285,7 @@ int main (int argc, char *argv[])
 
   vtkSmartPointer<vtkPolyData> newPD =
     vtkSmartPointer<vtkPolyData>::New();
-  selector->ThresholdBetween(label, label + 1);
+  selector->ThresholdBetween(label, label + 2);
   geometry->Update();
   newPD->DeepCopy(geometry->GetOutput());
 
@@ -279,6 +300,12 @@ int main (int argc, char *argv[])
   selector->ThresholdBetween(label + 1, label + 1);
   geometry->Update();
   added->DeepCopy(geometry->GetOutput());
+
+  vtkSmartPointer<vtkPolyData> addedFromBackground =
+    vtkSmartPointer<vtkPolyData>::New();
+  selector->ThresholdBetween(label + 2, label + 2);
+  geometry->Update();
+  addedFromBackground->DeepCopy(geometry->GetOutput());
 
   // Define viewport ranges
   // (xmin, ymin, xmax, ymax)
@@ -307,6 +334,7 @@ int main (int argc, char *argv[])
   vtkSmartPointer<vtkActor> originalActor = 
     vtkSmartPointer<vtkActor>::New();
   originalActor->SetMapper(originalMapper);
+  // Color original label color
   originalActor->GetProperty()->SetColor(colors[label][0],
                                  colors[label][1],
                                  colors[label][2]);
@@ -318,6 +346,7 @@ int main (int argc, char *argv[])
   vtkSmartPointer<vtkActor> newActor = 
     vtkSmartPointer<vtkActor>::New();
   newActor->SetMapper(newMapper);
+  // Color original label color
   newActor->GetProperty()->SetColor(colors[label][0],
                                  colors[label][1],
                                  colors[label][2]);
@@ -328,6 +357,7 @@ int main (int argc, char *argv[])
   vtkSmartPointer<vtkActor> removedActor = 
     vtkSmartPointer<vtkActor>::New();
   removedActor->SetMapper(removedMapper);
+  // Color red
   removedActor->GetProperty()->SetColor(1.0,
                                         0.0,
                                         0.0);
@@ -338,13 +368,26 @@ int main (int argc, char *argv[])
   vtkSmartPointer<vtkActor> addedActor = 
     vtkSmartPointer<vtkActor>::New();
   addedActor->SetMapper(addedMapper);
+  // Color green
   addedActor->GetProperty()->SetColor(0.0,
                                       1.0,
                                       0.0);
 
+  vtkSmartPointer<vtkPolyDataMapper> addedFromBackgroundMapper = 
+    vtkSmartPointer<vtkPolyDataMapper>::New();
+  addedFromBackgroundMapper->SetInputData(addedFromBackground);
+  vtkSmartPointer<vtkActor> addedFromBackgroundActor = 
+    vtkSmartPointer<vtkActor>::New();
+  addedFromBackgroundActor->SetMapper(addedFromBackgroundMapper);
+  // Color black
+  addedFromBackgroundActor->GetProperty()->SetColor(0.0,
+                                                    0.0,
+                                                    0.0);
+
   leftRenderer->AddActor(originalActor);
   leftRenderer->AddActor(removedActor);
   leftRenderer->AddActor(addedActor);
+  leftRenderer->AddActor(addedFromBackgroundActor);
   rightRenderer->AddActor(newActor);
 
   vtkSmartPointer<vtkRenderWindow> renderWindow = 
