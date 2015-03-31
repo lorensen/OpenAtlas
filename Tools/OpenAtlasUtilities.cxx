@@ -133,7 +133,12 @@ void Configuration::ParseFile(std::string filename)
       << "Reason: "
       << itksys::SystemTools::GetLastSystemError() );
     }
-
+  // regex requirements:
+  //    1) accept entry suffix
+  //    2) ignore space seperation between heading and filename
+  //    3) get spaces in filename (Windows)
+  //    4) ignore trailing whitespace
+  std::string regExpression = "[^:]*:[ ]*(.*[a-zA-Z0-9._/\\]+)";
   // read a line
   std::string line;
   while (!file.eof())
@@ -141,97 +146,97 @@ void Configuration::ParseFile(std::string filename)
     std::getline(file, line, '\n');
     if (line.find("#") == std::string::npos)
       {
-      itksys::RegularExpression re("AtlasName[^:]*:[ ]*([^$]*)");
+      itksys::RegularExpression re("AtlasName" + regExpression);
       if (re.find(line))
         {
         this->m_AtlasName = re.match(1);
         continue;
         }
-      re.compile("VolumeFileName[^:]*:[ ]*([^$]*)");
+      re.compile("VolumeFileName" + regExpression);
       if (re.find(line))
         {
         this->m_VolumeFileName = re.match(1);
         continue;
         }
-      re.compile("LabelFileName[^:]*:[ ]*([^$]*)");
+      re.compile("LabelFileName" + regExpression);
       if (re.find(line))
         {
         this->m_LabelFileName = re.match(1);
         continue;
         }
-      re.compile("AdjacenciesFileName[^:]*:[ ]*([^$]*)");
+      re.compile("AdjacenciesFileName" + regExpression);
       if (re.find(line))
         {
         this->m_AdjacenciesFileName = re.match(1);
         continue;
         }
-      re.compile("ColorTableFileName[^:]*:[ ]*([^$]*)");
+      re.compile("ColorTableFileName" + regExpression);
       if (re.find(line))
         {
         m_ColorTableFileName = re.match(1);
         continue;
         }
-      re.compile("ModelsDirectory[^:]*:[ ]*([^$]*)");
+      re.compile("ModelsDirectory" + regExpression);
       if (re.find(line))
         {
         m_ModelsDirectory = re.match(1);
         continue;
         }
-      re.compile("VTKDirectory[^:]*:[ ]*([^$]*)");
+      re.compile("VTKDirectory" + regExpression);
       if (re.find(line))
         {
         m_VTKDirectory = re.match(1);
         continue;
         }
-      re.compile("STLDirectory[^:]*:[ ]*([^$]*)");
+      re.compile("STLDirectory" + regExpression);
       if (re.find(line))
         {
         m_STLDirectory = re.match(1);
         continue;
         }
-      re.compile("ScreenshotDirectory[^:]*:[ ]*([^$]*)");
+      re.compile("ScreenshotDirectory" + regExpression);
       if (re.find(line))
         {
         m_ScreenshotDirectory = re.match(1);
         continue;
         }
-      re.compile("ChangesDirectory[^:]*:[ ]*([^$]*)");
+      re.compile("ChangesDirectory" + regExpression);
       if (re.find(line))
         {
         m_ChangesDirectory = re.match(1);
         continue;
         }
-      re.compile("StatisticsDirectory[^:]*:[ ]*([^$]*)");
+      re.compile("StatisticsDirectory" + regExpression);
       if (re.find(line))
         {
         m_StatisticsDirectory = re.match(1);
         continue;
         }
-      re.compile("MRMLDirectory[^:]*:[ ]*([^$]*)");
+      re.compile("MRMLDirectory" + regExpression);
       if (re.find(line))
         {
         m_MRMLDirectory = re.match(1);
         continue;
         }
-      re.compile("GitDirectory[^:]*:[ ]*([^$]*)");
+      re.compile("GitDirectory" + regExpression);
       if (re.find(line))
         {
         m_GitDirectory = re.match(1);
         continue;
         }
-      re.compile("GitURL[^:]*:[ ]*([^$]*)");
+      re.compile("GitURL" + regExpression);
       if (re.find(line))
         {
         m_GitURL = re.match(1);
         continue;
         }
-      re.compile("GitWikiDirectory[^:]*:[ ]*([^$]*)");
+      re.compile("GitWikiDirectory" + regExpression);
       if (re.find(line))
         {
         m_GitWikiDirectory = re.match(1);
         continue;
         }
-      re.compile("FiducialsDirectory[^:]*:[ ]*([^$]*)");
+      re.compile("FiducialsDirectory" + regExpression);
       if (re.find(line))
         {
         m_FiducialsDirectory = re.match(1);
