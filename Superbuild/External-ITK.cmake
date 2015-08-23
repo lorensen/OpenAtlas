@@ -1,7 +1,7 @@
 #---------------------------------------------------------------------------
 # Get and build itk
 
-set( ITK_TAG "v4.7.0" )
+set( ITK_TAG "v4.8.0" )
 
 ExternalProject_Add( ITK
   GIT_REPOSITORY "${git_protocol}://itk.org/ITK.git"
