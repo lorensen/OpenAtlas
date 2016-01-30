@@ -3,7 +3,7 @@
 #
 #-----------------------------------------------------------------------------
 # January 29, 2015
-set( VTK_TAG "6a100d345e48bf9c3654ddc9103977f82b61599e")
+set( VTK_TAG "v7.0.0")
 ExternalProject_Add(VTK
   GIT_REPOSITORY "${git_protocol}://vtk.org/VTK.git"
   GIT_TAG "${VTK_TAG}"
@@ -27,7 +27,7 @@ ExternalProject_Add(VTK
     -DModule_vtkIOLegacy:BOOL=ON
     -DModule_vtkImagingStatistics:BOOL=ON
     -DModule_vtkInteractionWidgets:BOOL=ON
-    -DModule_vtkRenderingOpenGL:BOOL=ON
+    -DModule_vtkRenderingOpenGL2:BOOL=ON
 
   INSTALL_COMMAND ""
 )
