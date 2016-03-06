@@ -17,7 +17,7 @@ find_package(VTK COMPONENTS
   vtkIOLegacy
   vtkImagingStatistics
   vtkInteractionWidgets
-  vtkRenderingOpenGL
+  vtkRenderingOpenGL2
 )
 include(${VTK_USE_FILE})
  
