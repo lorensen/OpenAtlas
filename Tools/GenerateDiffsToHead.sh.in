@@ -29,6 +29,11 @@ ChangesDir=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 ChangesDirectory`
 Colors=`@OpenAtlas_BINARY_DIR@/$AppDir/$Prog $1 ColorTableFileName`
 ConfigDir=`dirname $1`
 
+if [ ! -e "$GitDir" ]; then
+    echo "GenerateDiffsToHead: git directory does not exists, skipping GenerateDiffsToHead"
+    exit 0
+fi
+
 # Put a copy of the HEAD in a tmp directory
 TempDir=`mktemp -d -t ${Atlas}.XXX`
 mkdir -p ${TempDir}

@@ -48,6 +48,9 @@ echo "Done" | tee -a ${LogFile}
 echo -n "Generate MRB file for ${Atlas}..." | tee -a ${LogFile}
 @OpenAtlas_BINARY_DIR@/GenerateMRB.sh $1 | tee -a ${LogFile}
 echo "Done" | tee -a ${LogFile}
+echo -n "Generate Portable MRB file for ${Atlas}..." | tee -a ${LogFile}
+@OpenAtlas_BINARY_DIR@/GeneratePortableMRB.sh $1 | tee -a ${LogFile}
+echo "Done" | tee -a ${LogFile}
 echo -n "Generate differences from latest checked in version ${Atlas}..." | tee -a ${LogFile}
 @OpenAtlas_BINARY_DIR@/GenerateDiffsToHead.sh $1 | tee -a ${LogFile}
 echo "Done" | tee -a ${LogFile}
