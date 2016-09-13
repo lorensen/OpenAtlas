@@ -54,10 +54,11 @@ echo "</MRML>" >> ${TempDir}/${Atlas}Combined.tmp
 popd
 
 # Replace full paths with relative paths
-sed s:${AtlasLabelDir}/:Atlas/:g ${TempDir}/${Atlas}Combined.tmp |\
+# NOTE Order of the sed's is important
+sed s:${VTKDirectory}/:Models/:g ${TempDir}/${Atlas}Combined.tmp |\
+sed s:${AtlasLabelDir}/:Atlas/:g |\
 sed s:${AtlasVolumeDir}/:Atlas/:g |\
 sed s:${AtlasColorTableDir}/:Atlas/:g |\
-sed s:${VTKDirectory}/:Models/:g |\
 sed s:${FiducialsDirectory}:Fiducials/:g >${TempDir}/${Atlas}.mrml
 
 # Copy all required file to a temporary directory
@@ -76,7 +77,7 @@ done
 echo "zipping ${TempDir}/${Atlas}.mrml into $MRBFile"
 pushd ${TempDir}
 rm ${Atlas}Combined.tmp
-zip  -r $MRBFile ${Atlas}.mrml Models Fiducials Atlas
+zip  -q -r $MRBFile ${Atlas}.mrml Models Fiducials Atlas
 popd
 pushd ${SceneDir}
 # Move the mrb bundle

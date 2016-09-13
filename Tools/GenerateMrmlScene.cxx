@@ -9,7 +9,9 @@
 #include <cstdlib>
 #include <iostream>
 #include <fstream>
-
+#include <algorithm>
+#include <vector>
+#include <string>
 int main (int argc, char *argv[])
 {
   if (argc < 3)
@@ -47,6 +49,7 @@ int main (int argc, char *argv[])
   dir.Load(modelDir.c_str());
   std::cout << "Number of files is: " <<   dir.GetNumberOfFiles() << std::endl;
 
+  std::vector<std::string> sortedFileNames;
   for (unsigned long i = 0; i < dir.GetNumberOfFiles(); ++i)
     {
     const char *fullFileName = dir.GetFile(i);
@@ -55,9 +58,21 @@ int main (int argc, char *argv[])
       {
       continue;
       }
+    std::string s = fullFileName;
+    sortedFileNames.push_back(s);
+    }
+
+  // Sort the model names
+  std::sort(sortedFileNames.begin(), sortedFileNames.end());
+
+  // Create ModelStorage, ModelDisplay, and Model nodes
+  for (unsigned long i = 0; i < sortedFileNames.size(); ++i)
+    {
+     const char* fullFileName = sortedFileNames[i].c_str();
+     std::cout << fullFileName << std::endl;
     // Extract label number from filename
-    std::string fileName = itksys::SystemTools::GetFilenameWithoutExtension(fullFileName);
-    std::string fileExt = itksys::SystemTools::GetFilenameLastExtension(fullFileName);
+     std::string fileName = itksys::SystemTools::GetFilenameWithoutExtension(sortedFileNames[i].c_str());
+     std::string fileExt = itksys::SystemTools::GetFilenameLastExtension(sortedFileNames[i].c_str());
 
     // Get the extension (without a dot)
     itksys::RegularExpression extRe(".(.*)");
@@ -75,7 +90,7 @@ int main (int argc, char *argv[])
     g = colors[label][1];
     b = colors[label][2];
 
-    // Create ModelStorage, ModelDisplay, and Model nodes
+    // Output the mrml nodes
     mout << " <ModelStorage" << std::endl;
     mout << "  id=\"vtkMRMLModelStorageNode_" << fileName << "(" << extString << ")"
          << "\"  name=\"ModelStorage\""
