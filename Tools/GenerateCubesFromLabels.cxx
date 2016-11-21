@@ -1,6 +1,6 @@
 //
 // GenerateModelsFromLabels
-//   Usage: GenerateModelsFromLabels AtlasgFile Startlabel Endlabel
+//   Usage: GenerateModelsFromLabels AtlasConfigFile StartLabel EndLabel
 //          where
 //          AtlasConfigFile is an atlas configuration file that defines
 //            locations of various atlas file
