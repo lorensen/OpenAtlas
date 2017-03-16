@@ -90,8 +90,8 @@ int main (int argc, char *argv[])
     }
 
   // write intro
-  afout << "#Atlas Summary for " << atlasName << std::endl;
-  afout << "| Label | Name | STL file" << std::endl;
+  afout << "# Atlas Summary for " << atlasName << std::endl;
+  afout << "| Label | Name | STL file |" << std::endl;
   afout << "|-------:|------|------|" << std::endl;
   // write one line per label
   for (size_t i = 0; i < labels.size(); ++i)
@@ -125,7 +125,7 @@ int main (int argc, char *argv[])
     afout << "|" << i << "|"
           << "[" << shortLabel << "]"
           << "(" << gitURL << "/raw/master/Models/Screenshot/" << labels[i] << ".png)"
-          << "|[STL](" << gitURL << "/blob/master/Models/STL/" << labels[i] << "-" << i << ".stl)"
+          << "|[STL](" << gitURL << "/blob/master/Models/STL/" << labels[i] << "-" << i << ".stl) |"
           << std::endl;
     }
   afout.close();
