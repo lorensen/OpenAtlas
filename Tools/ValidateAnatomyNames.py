@@ -17,13 +17,13 @@ def ExtractConcept(fullName):
     return concept
 
 def RemoveSpatialTerms(fullName):
-    allPhrases = {"left", "right", "medial"}
+    allPhrases = {"left", "right", "muscle", "tendon"}
     concept = re.sub('_', " ", fullName)
     for phrase in allPhrases:
         concept = re.sub(phrase, "", concept)
     return concept
 
-dbname = "/Users/lorensen/ProjectsGIT/ta98-sqlite/db/ta98wikipedia.sqlite"
+dbname = "/home/lorensen/ProjectsGIT/ta98-sqlite/db/ta98wikipedia.sqlite"
 con = sqlite3.connect(dbname)
 cur = con.cursor()
 
