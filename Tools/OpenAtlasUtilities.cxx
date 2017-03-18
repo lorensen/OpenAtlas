@@ -118,6 +118,35 @@ int ReadAdjacenyFile(std::string filename, std::vector<std::set<unsigned int> > 
   return 0;
 }
 
+int ReadUrlFile(std::string filename, std::map<std::string, std::string> &urls)
+{
+  std::ifstream file;
+  file.open(filename.c_str());
+  if (file.fail())
+    {
+    itkGenericExceptionMacro(
+      "The file " << filename <<" cannot be opened for reading!"
+      << std::endl
+      << "Reason: "
+      << itksys::SystemTools::GetLastSystemError() );
+    }
+  std::string line;
+  while (!file.eof())
+    {
+    std::getline(file, line, '\n');
+    std::istringstream isstream(line);
+    std::string url;
+    std::string name;
+    if (line.find("#") == std::string::npos)
+      {
+      isstream >> name >> url;
+      urls[name] = url;
+      }
+    }
+  file.close();
+  return 0;
+}
+
 namespace OpenAtlas
 {
 void Configuration::ParseFile(std::string filename)
@@ -240,6 +269,12 @@ void Configuration::ParseFile(std::string filename)
       if (re.find(line))
         {
         m_FiducialsDirectory = re.match(1);
+        continue;
+        }
+      re.compile("WikipediaUrls" + regExpression);
+      if (re.find(line))
+        {
+        m_WikipediaUrls = re.match(1);
         continue;
         }
       }

@@ -7,6 +7,7 @@
 int ReadLabelFile(std::string, std::vector<std::string> &);
 int ReadColorFile(std::string, std::vector<std::vector<float> >&);
 int ReadAdjacenyFile(std::string, std::vector<std::set<unsigned int> > &);
+int ReadUrlFile(std::string, std::map<std::string, std::string> &);
 namespace OpenAtlas
 {
 class Configuration
@@ -32,6 +33,7 @@ public:
   const std::string &GitURL() {return m_GitURL;}
   const std::string &GitWikiDirectory() {return m_GitWikiDirectory;}
   const std::string &FiducialsDirectory() {return m_FiducialsDirectory;}
+  const std::string &WikipediaUrls() {return m_WikipediaUrls;}
 
 protected:
   Configuration() {}
@@ -54,6 +56,7 @@ private:
   std::string m_GitURL;
   std::string m_GitWikiDirectory;
   std::string m_FiducialsDirectory;
+  std::string m_WikipediaUrls;
 };
 }
 

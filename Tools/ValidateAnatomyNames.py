@@ -23,7 +23,7 @@ def RemoveSpatialTerms(fullName):
         concept = re.sub(phrase, "", concept)
     return concept
 
-dbname = "/home/lorensen/ProjectsGIT/ta98-sqlite/db/ta98.sqlite"
+dbname = "/Users/lorensen/ProjectsGIT/ta98-sqlite/db/ta98wikipedia.sqlite"
 con = sqlite3.connect(dbname)
 cur = con.cursor()
 
@@ -49,4 +49,13 @@ for concept in conceptList:
 nonspatialName = RemoveSpatialTerms(myName)
 
 matches = process.extract(nonspatialName, possibilities, limit=5)
-print myName + ": " + str(matches)
+
+matches = process.extractOne(nonspatialName, possibilities, score_cutoff=100)
+#if matches is not None:
+#    print myName + ": " + matches[0]
+
+if matches is not None:
+    cmd = "select wp_page_info.page_url from wikipedia join wp_page_info on wikipedia.wp_title=wp_page_info.wp_title where wikipedia.name_en=\"" + matches[0] + "\""
+    for row in cur.execute(cmd):
+        print myName + " " + str(row[0])
+        break

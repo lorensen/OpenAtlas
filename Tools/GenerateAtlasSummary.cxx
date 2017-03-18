@@ -79,6 +79,14 @@ int main (int argc, char *argv[])
     return EXIT_FAILURE;
     }
 
+  // Read the wikipedia urls file if present
+  std::map<std::string, std::string> urls;
+  std::string wikipediaUrls = config.WikipediaUrls();
+  if (wikipediaUrls != "" && itksys::SystemTools::FileExists(wikipediaUrls))
+  {
+    ReadUrlFile(wikipediaUrls, urls);
+  }
+
   // Open the atlas summary file
   std::stringstream atlasSummaryFileName;  
   atlasSummaryFileName << gitWikiDirectory << "/" << "Atlas-Summary.md";
@@ -91,8 +99,8 @@ int main (int argc, char *argv[])
 
   // write intro
   afout << "# Atlas Summary for " << atlasName << std::endl;
-  afout << "| Label | Name | STL file |" << std::endl;
-  afout << "|-------:|------|------|" << std::endl;
+  afout << "| Label | Name | STL file | Wikipedia |" << std::endl;
+  afout << "|-------:|------|------|------|" << std::endl;
   // write one line per label
   for (size_t i = 0; i < labels.size(); ++i)
     {
@@ -125,8 +133,15 @@ int main (int argc, char *argv[])
     afout << "|" << i << "|"
           << "[" << shortLabel << "]"
           << "(" << gitURL << "/raw/master/Models/Screenshot/" << labels[i] << ".png)"
-          << "|[STL](" << gitURL << "/blob/master/Models/STL/" << labels[i] << "-" << i << ".stl) |"
-          << std::endl;
+          << "|[STL](" << gitURL << "/blob/master/Models/STL/" << labels[i] << "-" << i << ".stl) ";
+    if (urls.find(labels[i]) != urls.end())
+    {
+      afout << "|" << "[Wikipedia]" << "(" << urls[labels[i]] << ") |" << std::endl;
+    }
+    else
+    {
+      afout << "||" << std::endl;
+    }
     }
   afout.close();
 
