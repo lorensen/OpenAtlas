@@ -99,8 +99,8 @@ int main (int argc, char *argv[])
 
   // write intro
   afout << "# Atlas Summary for " << atlasName << std::endl;
-  afout << "| Label | Name | STL file | Wikipedia |" << std::endl;
-  afout << "|-------:|------|------|------|" << std::endl;
+  afout << "| Label | Name | STL file | Wikipedia | WWW Images |" << std::endl;
+  afout << "|-------:|------|------|------|------|" << std::endl;
   // write one line per label
   for (size_t i = 0; i < labels.size(); ++i)
     {
@@ -136,12 +136,13 @@ int main (int argc, char *argv[])
           << "|[STL](" << gitURL << "/blob/master/Models/STL/" << labels[i] << "-" << i << ".stl) ";
     if (urls.find(labels[i]) != urls.end())
     {
-      afout << "|" << "[Wikipedia]" << "(" << urls[labels[i]] << ") |" << std::endl;
+    afout << "|" << "[Wikipedia]" << "(" << urls[labels[i]] << ")";
     }
     else
     {
-    afout << "|" << "[Google]" << "(" << "https://www.google.com/webhp?sourceid=web&ion=1&espv=2&ie=UTF-8#&sitesearch=wikipedia.org&q=" << labels[i] << ") |" << std::endl;
+    afout << "|" << "[Google]" << "(" << "https://www.google.com/webhp?sourceid=web&ion=1&espv=2&ie=UTF-8#&sitesearch=wikipedia.org&q=" << labels[i] << ")";
     }
+    afout << "|" << "[Images]" << "(" << "https://www.google.com/webhp?sourceid=web&ion=1&espv=2&ie=UTF-8#&tbm=isch&q=" << labels[i] << ") |" << std::endl;
     }
   afout.close();
 
