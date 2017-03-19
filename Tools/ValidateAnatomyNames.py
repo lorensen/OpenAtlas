@@ -17,7 +17,7 @@ def ExtractConcept(fullName):
     return concept
 
 def RemoveSpatialTerms(fullName):
-    allPhrases = {"left", "right", "muscle", "tendon"}
+    allPhrases = {"left", "right", "muscle", "tendon", "dorsomedial", "interior", "anterior", "superior", "\bpars\b", "\bexterna\b"}
     concept = re.sub('_', " ", fullName)
     for phrase in allPhrases:
         concept = re.sub(phrase, "", concept)
@@ -49,8 +49,9 @@ for concept in conceptList:
 nonspatialName = RemoveSpatialTerms(myName)
 
 matches = process.extract(nonspatialName, possibilities, limit=5)
-
+#print myName + str(matches)
 matches = process.extractOne(nonspatialName, possibilities, score_cutoff=100)
+
 #if matches is not None:
 #    print myName + ": " + matches[0]
 
