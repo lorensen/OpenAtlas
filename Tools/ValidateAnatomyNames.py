@@ -6,7 +6,6 @@ import re
 from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
 
-myName = str(sys.argv[1])
 
 def ExtractConcept(fullName):
     allPhrases = {"left", "right", "medial", r'\bof\b', r'\bpart\b', r'\binterna\b', r'\(*\)', r'\band\b', r'\brh\b', r'\blh\b', r'[0-9]*'}
@@ -23,7 +22,8 @@ def RemoveSpatialTerms(fullName):
         concept = re.sub(phrase, "", concept)
     return concept
 
-dbname = "/home/lorensen/ProjectsGIT/ta98-sqlite/db/ta98wikipedia.sqlite"
+dbname = sys.argv[1]
+myName = str(sys.argv[2])
 con = sqlite3.connect(dbname)
 cur = con.cursor()
 
