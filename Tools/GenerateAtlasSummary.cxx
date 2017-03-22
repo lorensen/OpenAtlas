@@ -121,8 +121,8 @@ int main (int argc, char *argv[])
       {
       continue;
       }
-    char shortLabel[54];
-    std::size_t length = labels[i].copy(shortLabel,50,0);
+    char shortLabel[44];
+    std::size_t length = labels[i].copy(shortLabel,40,0);
     if (length < labels[i].size())
       {
       shortLabel[length++]='.';
