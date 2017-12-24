@@ -146,9 +146,9 @@ int main (int argc, char *argv[])
     if (*sit == label)
       {
       actor->GetProperty()->EdgeVisibilityOn();
-      actor->GetProperty()->SetEdgeColor(colors[*sit][0] * .4,
-                                         colors[*sit][1] * .4,
-                                         colors[*sit][2] * .4);
+      actor->GetProperty()->SetEdgeColor(1,
+                                         1,
+                                         1);
       if (colors[*sit][3] == 0.0)
         {
         actor->GetProperty()->SetOpacity(.4);
@@ -202,9 +202,9 @@ int main (int argc, char *argv[])
     actor->GetProperty()->SetColor(colors[*sit][0],
                                    colors[*sit][1],
                                    colors[*sit][2]);
-    actor->GetProperty()->SetEdgeColor(colors[*sit][0] * .4,
-                                       colors[*sit][1] * .4,
-                                       colors[*sit][2] * .4);
+    actor->GetProperty()->SetEdgeColor(colors[*sit][0] * 1.1,
+                                       colors[*sit][1] * 1.1,
+                                       colors[*sit][2] * 1.1);
     actor->GetProperty()->EdgeVisibilityOn();
     rightRenderer->AddActor(actor);
     }
