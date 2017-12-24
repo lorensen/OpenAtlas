@@ -140,9 +140,9 @@ int main (int argc, char *argv[])
     }
     else
     {
-    afout << "|" << "[Google]" << "(" << "https://www.google.com/webhp?sourceid=web&ion=1&espv=2&ie=UTF-8#&sitesearch=wikipedia.org&q=" << labels[i] << ")";
+    afout << "|" << "[Google]" << "(" << "https://www.google.com/search?sitesearch=wikipedia.org&q=" << labels[i] << ")";
     }
-    afout << "|" << "[Images]" << "(" << "https://www.google.com/webhp?sourceid=web&ion=1&espv=2&ie=UTF-8#&tbm=isch&q=" << labels[i] << ") |" << std::endl;
+    afout << "|" << "[Images]" << "(" << "https://www.google.com/search?tbm=isch&q=" << labels[i] << ") |" << std::endl;
     }
   afout.close();
 
