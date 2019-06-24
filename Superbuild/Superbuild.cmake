@@ -37,7 +37,7 @@ ExternalProject_Add( OpenAtlas
   CMAKE_ARGS
     ${ep_common_args}
     -DBUILD_SHARED_LIBS:BOOL=FALSE
-    -DBUILD_TESTING:BOOL=TRUE
+    -DBUILD_TESTING:BOOL=OFF
      # ITK
     -DITK_DIR:PATH=${ITK_DIR}
     # VTK

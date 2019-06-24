@@ -3,7 +3,7 @@
 #
 #-----------------------------------------------------------------------------
 # November, 2016
-set( VTK_TAG "v7.1.0")
+set( VTK_TAG "v8.2.0")
 ExternalProject_Add(VTK
   GIT_REPOSITORY "${git_protocol}://vtk.org/VTK.git"
   GIT_TAG "${VTK_TAG}"
@@ -12,6 +12,7 @@ ExternalProject_Add(VTK
   CMAKE_GENERATOR ${gen}
   CMAKE_ARGS
     ${ep_common_args}
+    -DVTK_DATA_STORE:PATH=/home/lorensen/ProjectsGIT/VTKExternalData
     -DBUILD_SHARED_LIBS:BOOL=TRUE
     -DVTK_DEBUG_LEAKS:BOOL=FALSE
     -DBUILD_EXAMPLES:BOOL=OFF
