@@ -22,6 +22,8 @@
 #include <vtksys/SystemTools.hxx>
 
 #include <sstream>
+#include <chrono>
+#include <thread>
 
 void Room (vtkSmartPointer<vtkRenderer> &renderer, double bounds[6], bool fromRight);
 
@@ -60,6 +62,7 @@ int main (int argc, char *argv[])
     vtkSmartPointer<vtkRenderer>::New();
   leftRenderer->SetViewport(leftViewport);
   leftRenderer->SetBackground(.6, .5, .4);
+  leftRenderer->UseHiddenLineRemovalOn();
 
   vtkSmartPointer<vtkRenderer> rightRenderer =
     vtkSmartPointer<vtkRenderer>::New();
@@ -140,12 +143,14 @@ int main (int argc, char *argv[])
       vtkSmartPointer<vtkActor>::New();
     actor->SetMapper(mapper);
     actor->GetProperty()->SetOpacity(colors[*sit][3]);
+    actor->GetProperty()->SetOpacity(.5);
     actor->GetProperty()->SetColor(colors[*sit][0],
                                    colors[*sit][1],
                                    colors[*sit][2]);
     if (*sit == label)
       {
-      actor->GetProperty()->EdgeVisibilityOn();
+//      actor->GetProperty()->EdgeVisibilityOn();
+      actor->GetProperty()->SetOpacity(1);
       actor->GetProperty()->SetEdgeColor(1,
                                          1,
                                          1);
@@ -281,6 +286,7 @@ int main (int argc, char *argv[])
 
   leftRenderer->AddActor(textActor);
   renderWindow->Render();
+  renderWindow->Render();
 
   // Begin mouse interaction
   if (argc < 4)
@@ -290,13 +296,21 @@ int main (int argc, char *argv[])
     }
   else
     {
+    // Perform and extra render to make sure it is displayed
+    int swapBuffers = renderWindow->GetSwapBuffers();
+    // Since we're reading from back-buffer, it's essential that we turn off swapping
+    // otherwise what remains in the back-buffer after the swap is undefined by OpenGL specs.
+    renderWindow->SwapBuffersOff();
+    renderWindow->Render();
     // Screenshot  
     vtkSmartPointer<vtkWindowToImageFilter> windowToImageFilter = 
       vtkSmartPointer<vtkWindowToImageFilter>::New();
     windowToImageFilter->SetInput(renderWindow);
     windowToImageFilter->ReadFrontBufferOff();
     windowToImageFilter->Modified();
+    std::this_thread::sleep_for(std::chrono::milliseconds(250));
     windowToImageFilter->Update();
+    renderWindow->SetSwapBuffers(swapBuffers); // restore swap state.
   
     std::ostringstream snapshotFileName;
     snapshotFileName << config.ScreenshotDirectory() << "/" << labels[label] << ".png" << std::ends;
